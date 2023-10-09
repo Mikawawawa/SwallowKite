@@ -59,7 +59,7 @@ export class MainScene {
     const scene = this.scene;
     var promises = [];
 
-    scene.clearColor = new BABYLON.Color4.FromInts(10, 10, 10, 255);
+    scene.clearColor = BABYLON.Color4.FromInts(10, 10, 10, 255);
 
     // environment light
     var areaLight = BABYLON.CubeTexture.CreateFromPrefilteredData(
@@ -69,6 +69,7 @@ export class MainScene {
     areaLight.name = "areaLight";
     areaLight.gammaSpace = false;
     scene.environmentTexture = areaLight;
+    // @ts-ignore
     scene.environmentTexture.setReflectionTextureMatrix(
       BABYLON.Matrix.RotationY(BABYLON.Tools.ToRadians(190))
     );
