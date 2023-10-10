@@ -34,6 +34,7 @@ import JoyTypography, {
 } from "@mui/joy/Typography";
 import Stack from "@mui/material/Stack";
 import { Sheet } from "@mui/joy";
+import { DrawerComponent } from "@/components/Drawer";
 
 const materialTheme = materialExtendTheme();
 
@@ -98,7 +99,7 @@ export default function Home() {
                 alignItems={"center"}
                 justifyContent={"center"}
               >
-                Sketch Area
+                <DrawerComponent />
               </Stack>
             </Grid>
           </Grid>
