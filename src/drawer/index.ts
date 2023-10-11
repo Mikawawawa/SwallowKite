@@ -7,8 +7,11 @@ export class Drawer {
     this.canvas = document.getElementById(containerId) as HTMLDivElement;
 
     const app = new PIXI.Application({
-      //   background: "#1099bb",
-      resizeTo: window,
+      resizeTo: this.canvas,
+    });
+
+    window.addEventListener("resize", () => {
+      app.resize();
     });
 
     // @ts-ignore
@@ -23,7 +26,7 @@ export class Drawer {
     // container.pivot.y = container.height / 2;
 
     // Inner radius of the circle
-    const radius = 100;
+    const radius = 200;
 
     // The blur amount
     const blurSize = 32;
@@ -68,27 +71,30 @@ export class Drawer {
         );
         const focus = new PIXI.Sprite(texture);
 
-        const texture2 = PIXI.Texture.from("https://pixijs.com/assets/bunny.png");
-    
+        const texture2 = PIXI.Texture.from("/kite.jpeg");
+
         // Create a 5x5 grid of bunnies
         for (let i = 0; i < 25; i++) {
           const bunny = new PIXI.Sprite(texture2);
-    
+          (bunny.width = 20), (bunny.height = 20);
+
           bunny.anchor.set(0.5);
-          bunny.x = (i % 5) * 40;
-          bunny.y = Math.floor(i / 5) * 40 + (i % 2) * 10;
+          bunny.x = 100 + (i % 5) * 80;
+          bunny.y = 100 + Math.floor(i / 5) * 80 + (i % 2) * 5;
+
           container.addChild(bunny);
         }
 
-        app.stage.addChild(focus);
-        container.mask = focus;
+        // app.stage.addChild(focus);
+
+        // container.mask = focus;
 
         app.stage.eventMode = "static";
         app.stage.hitArea = app.screen;
-        app.stage.on("pointermove", (event) => {
-          focus.position.x = event.global.x - focus.width / 2;
-          focus.position.y = event.global.y - focus.height / 2;
-        });
+        // app.stage.on("pointermove", (event) => {
+        //   focus.position.x = event.global.x - focus.width / 2;
+        //   focus.position.y = event.global.y - focus.height / 2;
+        // });
       }
     );
 

@@ -3,15 +3,8 @@ import Image from "next/image";
 import styles from "./page.module.css";
 import { SceneComponent } from "@/components/scene";
 import * as React from "react";
-import Box from "@mui/material/Box";
 import Grid from "@mui/material/Unstable_Grid2";
-import Drawer from "@mui/material/Drawer";
 import Typography from "@mui/material/Typography";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import Alert from "@mui/material/Alert";
-import AlertTitle from "@mui/material/AlertTitle";
-import MediaCard from "@/components/MediaCard";
 
 import {
   experimental_extendTheme as materialExtendTheme,
@@ -20,33 +13,12 @@ import {
 } from "@mui/material/styles";
 import { CssVarsProvider as JoyCssVarsProvider, styled } from "@mui/joy/styles";
 
-import useScrollTrigger from "@mui/material/useScrollTrigger";
-
-import { createTheme } from "@mui/material/styles";
-
-import { AppBar, ThemeProvider, Toolbar } from "@mui/material";
-
-import MaterialTypography, {
-  typographyClasses as muiTypographyClasses,
-} from "@mui/material/Typography";
-import JoyTypography, {
-  typographyClasses as joyTyographyClasses,
-} from "@mui/joy/Typography";
 import Stack from "@mui/material/Stack";
-import { Sheet } from "@mui/joy";
 import { DrawerComponent } from "@/components/Drawer";
+import { Box, Toolbar } from "@mui/material";
+import { Layer } from "@/components/Controller/Layer";
 
 const materialTheme = materialExtendTheme();
-
-const Item = styled(Sheet)(({ theme }) => ({
-  backgroundColor:
-    theme.palette.mode === "dark" ? theme.palette.background.level1 : "#fff",
-  ...theme.typography["body-sm"],
-  padding: theme.spacing(1),
-  textAlign: "center",
-  borderRadius: 4,
-  color: theme.vars.palette.text.secondary,
-}));
 
 export default function Home() {
   return (
@@ -60,6 +32,7 @@ export default function Home() {
           sx={{
             height: "100%",
             width: "100%",
+            overflow: "hidden"
           }}
         >
           <Toolbar>
@@ -68,41 +41,47 @@ export default function Home() {
             </Typography>
           </Toolbar>
 
-          <Grid
-            container
+          <Stack
+            direction="row"
             component={"main"}
             sx={{
               flex: 1,
+              flexWrap: 'nowrap'
             }}
           >
-            <Grid
-              xs={4}
+            <Box
               sx={{
                 height: "100%",
+                width: "30vw",
               }}
             >
               <SceneComponent />
-            </Grid>
+            </Box>
 
-            <Grid
-              xs={8}
+            <Box
               sx={{
-                background: "#87604f",
+                width: '70vw',
                 color: "white",
+                flexWrap: "nowrap",
+                display: "flex",
+                flexDirection: "row",
               }}
             >
-              <Stack
+              <Box
                 sx={{
+                  flex: 1,
                   height: "100%",
-                  width: "100%",
+                  backgroundColor: "#F1C2DE",
                 }}
-                alignItems={"center"}
-                justifyContent={"center"}
               >
                 <DrawerComponent />
-              </Stack>
-            </Grid>
-          </Grid>
+              </Box>
+
+              <Box sx={{ flexShrink: 0 }}>
+                <Layer />
+              </Box>
+            </Box>
+          </Stack>
         </Stack>
       </JoyCssVarsProvider>
     </MaterialCssVarsProvider>

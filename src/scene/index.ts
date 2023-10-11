@@ -59,11 +59,11 @@ export class MainScene {
     const scene = this.scene;
     var promises = [];
 
-    scene.clearColor = BABYLON.Color4.FromInts(10, 10, 10, 255);
+    scene.clearColor = BABYLON.Color4.FromInts(180, 180, 180, 255);
 
     // environment light
     var areaLight = BABYLON.CubeTexture.CreateFromPrefilteredData(
-      "https://patrickryanms.github.io/BabylonJStextures/Demos/sheen/singleSourceAreaLight.env",
+      "/singleSourceAreaLight.env",
       scene
     );
     areaLight.name = "areaLight";
@@ -77,7 +77,8 @@ export class MainScene {
     // Load assets
     promises.push(
       BABYLON.SceneLoader.AppendAsync(
-        "https://patrickryanms.github.io/BabylonJStextures/Demos/sheen/SheenCloth.gltf"
+        // "https://patrickryanms.github.io/BabylonJStextures/Demos/sheen/SheenCloth.gltf"
+        "/SheenCloth.gltf"
       )
     );
 
