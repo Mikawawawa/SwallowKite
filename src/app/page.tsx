@@ -1,9 +1,6 @@
 "use client";
-import Image from "next/image";
-import styles from "./page.module.css";
-import { SceneComponent } from "@/components/scene";
+import { SceneComponent } from "@/components/MainScene";
 import * as React from "react";
-import Grid from "@mui/material/Unstable_Grid2";
 import Typography from "@mui/material/Typography";
 
 import {
@@ -11,7 +8,7 @@ import {
   Experimental_CssVarsProvider as MaterialCssVarsProvider,
   THEME_ID as MATERIAL_THEME_ID,
 } from "@mui/material/styles";
-import { CssVarsProvider as JoyCssVarsProvider, styled } from "@mui/joy/styles";
+import { CssVarsProvider as JoyCssVarsProvider } from "@mui/joy/styles";
 
 import Stack from "@mui/material/Stack";
 import { DrawerComponent } from "@/components/Drawer";

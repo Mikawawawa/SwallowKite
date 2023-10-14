@@ -233,7 +233,7 @@ export const Layer = () => {
             <ImageLayerCard />
           </ListItem>
           <ListItem>
-            <Button variant="quiet">添加新图层</Button>
+            <Button variant="soft">添加新图层</Button>
           </ListItem>
           {/* <ListItem>
             <ListItemButton>

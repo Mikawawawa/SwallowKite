@@ -19,17 +19,7 @@ export class MainScene {
     });
   }
 
-  render() {
-    const scene = this.scene;
-    this.initScene();
-    // var sphere = BABYLON.MeshBuilder.CreateSphere(
-    //   "sphere",
-    //   { diameter: 2, segments: 32 },
-    //   scene
-    // );
-
-    // Move the sphere upward 1/2 its height
-    // sphere.position.y = 1;
+  async renderLoop() {
     this.engine.runRenderLoop(() => {
       this.scene.render();
     });
@@ -83,12 +73,57 @@ export class MainScene {
     );
 
     // Callback when assets are loaded
-    Promise.all(promises).then(function () {
+    return Promise.all(promises).then(() => {
       const root = scene.getMeshByName("__root__");
       if (!root) {
         return;
       }
+
       root.scaling = new BABYLON.Vector3(20, 20, 20);
+
+      this.scene.render();
     });
+  }
+
+  updateMaterial() {
+    const scene = this.scene;
+    const model = this.scene.getMeshByName("SheenCloth_mesh"); // 替换为你的模型名称
+
+    if (!model) {
+      return;
+    }
+    // 找到材质
+    const material = model.material; // 假设你要更新材质的纹理
+
+    if (!material) {
+      return;
+    }
+
+    console.log(model.material);
+    // 获取纹理对象
+
+    // 创建一个米白色纯色贴图
+    const textureSize = 256; // 贴图大小
+    const color = new BABYLON.Color3(1, 1, 0.92); // 米白色
+    const dynamicTexture = new BABYLON.DynamicTexture(
+      "dynamicTexture",
+      textureSize,
+      scene,
+      false
+    );
+
+    dynamicTexture.drawText(
+      "Hello, World!",
+      null,
+      null,
+      "40px Arial",
+      `white`,
+      `rgba(255,255,238.0.5)`,
+      true
+    );
+
+    // 将新的基本颜色贴图分配给材质
+    // @ts-expect-error unknown
+    material.albedoTexture = dynamicTexture; // 也可能叫diffuseTexture
   }
 }
