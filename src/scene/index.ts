@@ -7,6 +7,9 @@ export class MainScene {
   public canvas: HTMLCanvasElement;
   public scene: BABYLON.Scene;
   public camera: BABYLON.Camera;
+
+  public originalMaterial: BABYLON.DynamicTexture | undefined;
+
   constructor(containerId: string) {
     this.canvas = document.getElementById(containerId) as HTMLCanvasElement;
     this.engine = new BABYLON.Engine(this.canvas, true);
@@ -85,8 +88,35 @@ export class MainScene {
     });
   }
 
+  getNextMaterial() {
+    if (!this.originalMaterial) {
+      const textureSize = 256; // 贴图大小
+      // const color = new BABYLON.Color3(1, 1, 0.92); // 米白色
+      const dynamicTexture = new BABYLON.DynamicTexture(
+        "dynamicTexture",
+        textureSize,
+        this.scene,
+        false
+      );
+
+      dynamicTexture.drawText(
+        "Hello, World!",
+        null,
+        null,
+        "40px Arial",
+        `white`,
+        `rgba(255,255,238.0.5)`,
+        true
+      );
+
+      return dynamicTexture;
+    } else {
+      console.log("originalMaterial", this.originalMaterial);
+      return this.originalMaterial;
+    }
+  }
+
   updateMaterial() {
-    const scene = this.scene;
     const model = this.scene.getMeshByName("SheenCloth_mesh"); // 替换为你的模型名称
 
     if (!model) {
@@ -102,28 +132,11 @@ export class MainScene {
     console.log(model.material);
     // 获取纹理对象
 
-    // 创建一个米白色纯色贴图
-    const textureSize = 256; // 贴图大小
-    const color = new BABYLON.Color3(1, 1, 0.92); // 米白色
-    const dynamicTexture = new BABYLON.DynamicTexture(
-      "dynamicTexture",
-      textureSize,
-      scene,
-      false
-    );
-
-    dynamicTexture.drawText(
-      "Hello, World!",
-      null,
-      null,
-      "40px Arial",
-      `white`,
-      `rgba(255,255,238.0.5)`,
-      true
-    );
-
+    const nextTexture = this.getNextMaterial();
+    // @ts-expect-error unknown
+    this.originalMaterial = material.albedoTexture;
     // 将新的基本颜色贴图分配给材质
     // @ts-expect-error unknown
-    material.albedoTexture = dynamicTexture; // 也可能叫diffuseTexture
+    material.albedoTexture = nextTexture; // 也可能叫diffuseTexture
   }
 }
