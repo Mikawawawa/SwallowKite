@@ -2,12 +2,15 @@ import * as PIXI from "pixi.js";
 
 export class Drawer {
   public canvas: HTMLDivElement;
+  private app: PIXI.Application;
 
   constructor(containerId: string) {
     this.canvas = document.getElementById(containerId) as HTMLDivElement;
 
     const app = new PIXI.Application({
       resizeTo: this.canvas,
+      backgroundColor: 0x00000000,
+      preserveDrawingBuffer: true
     });
 
     window.addEventListener("resize", () => {
@@ -98,11 +101,13 @@ export class Drawer {
       }
     );
 
+    this.app = app;
+
     // Listen for animate update
-    // app.ticker.add((delta) => {
-    //   // rotate the container!
-    //   // use delta to create frame-independent transform
-    //   container.rotation -= 0.01 * delta;
-    // });
+  }
+
+  exportTexture() {
+    // @ts-expect-error 123
+    return this.canvas.querySelector("canvas").toDataURL?.("image/png");
   }
 }

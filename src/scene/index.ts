@@ -1,4 +1,5 @@
 // BabylonScene.js
+import { Drawer } from "@/drawer";
 import * as BABYLON from "babylonjs";
 import "babylonjs-loaders";
 
@@ -91,25 +92,32 @@ export class MainScene {
   getNextMaterial() {
     if (!this.originalMaterial) {
       const textureSize = 256; // 贴图大小
+      // @ts-expect-error
+      const drawer = window.drawer as Drawer;
+
+      const texture = new BABYLON.Texture(drawer.exportTexture() as string, this.scene); // drawer.exportTexture()是dataURL格式的图片数据
+      
+      return texture
       // const color = new BABYLON.Color3(1, 1, 0.92); // 米白色
-      const dynamicTexture = new BABYLON.DynamicTexture(
-        "dynamicTexture",
-        textureSize,
-        this.scene,
-        false
-      );
 
-      dynamicTexture.drawText(
-        "Hello, World!",
-        null,
-        null,
-        "40px Arial",
-        `white`,
-        `rgba(255,255,238.0.5)`,
-        true
-      );
+      // const dynamicTexture = new BABYLON.DynamicTexture(
+      //   "dynamicTexture",
+      //   textureSize,
+      //   this.scene,
+      //   false
+      // );
 
-      return dynamicTexture;
+      // dynamicTexture.drawText(
+      //   "Hello, World!",
+      //   null,
+      //   null,
+      //   "40px Arial",
+      //   `white`,
+      //   `rgba(255,255,238.0.5)`,
+      //   true
+      // );
+
+      // return dynamicTexture;
     } else {
       console.log("originalMaterial", this.originalMaterial);
       return this.originalMaterial;
@@ -129,10 +137,9 @@ export class MainScene {
       return;
     }
 
-    console.log(model.material);
     // 获取纹理对象
-
     const nextTexture = this.getNextMaterial();
+    console.log("nextTexture", nextTexture);
     // @ts-expect-error unknown
     this.originalMaterial = material.albedoTexture;
     // 将新的基本颜色贴图分配给材质

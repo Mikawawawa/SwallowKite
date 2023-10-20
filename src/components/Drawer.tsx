@@ -12,6 +12,8 @@ export function DrawerComponent() {
     if (hasInit) return;
     hasInit = true;
     const drawer = new Drawer(DrawerContainer);
+    // @ts-expect-error 123
+    window.drawer = drawer;
   }, []);
 
   return (
