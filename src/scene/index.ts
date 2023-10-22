@@ -51,7 +51,9 @@ export class MainScene {
     camera.keysRight.push(68); // D键
 
     camera.minZ = 0.01; // 最小缩放距离
+    // @ts-ignore
     camera.lowerRadiusLimit = 0.05; // 缩放限制的最小值
+    // @ts-ignore
     camera.upperRadiusLimit = 10; // 缩放限制的最大值
 
     return camera;
