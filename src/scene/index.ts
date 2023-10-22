@@ -109,7 +109,7 @@ export class MainScene {
     promises.push(
       BABYLON.SceneLoader.AppendAsync(
         // "https://patrickryanms.github.io/BabylonJStextures/Demos/sheen/SheenCloth.gltf"
-        "/gltf/one.gltf"
+        "/model/one.gltf"
       )
     );
 
