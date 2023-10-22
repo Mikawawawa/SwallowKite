@@ -27,7 +27,6 @@ export class Drawer {
       props: {
         content: "#F1C2DE", // 纯色图层
       },
-      opacity: 0.3,
       scale: 0.5,
       offset: { x: 100, y: 100 },
       // size: { width: 200, height: 150 },
@@ -44,14 +43,24 @@ export class Drawer {
       rotation: 0,
     },
     {
+      type: "image",
+      props: {
+        src: "/technicalFabricSmall_normal_256.png",
+      },
+      opacity: 0.5,
+
+      rotation: 0,
+    },
+    {
       type: "pattern",
       props: {
         src: "/kite.jpeg",
         rowGap: 400,
         columnGap: 400,
+        scale: 0.4
       },
-      opacity: 0.1,
-      scale: 0.5,
+      opacity: 0.6,
+      scale: 0.8,
       rotation: 0,
     },
   ];

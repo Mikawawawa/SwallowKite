@@ -18,6 +18,9 @@ export class MainScene {
     this.scene = new BABYLON.Scene(this.engine);
     this.camera = this.initCamera();
 
+    this.engine.hideLoadingUI(); // 隐藏加载界面
+    this.scene.debugLayer.show({embedMode: true});
+
     window.addEventListener("resize", () => {
       this.engine.resize();
     });
@@ -30,24 +33,49 @@ export class MainScene {
   }
 
   initCamera() {
-    const camera = new BABYLON.ArcRotateCamera(
-      "ArcRotateCamera",
-      BABYLON.Tools.ToRadians(205),
-      BABYLON.Tools.ToRadians(78),
-      1.6,
-      new BABYLON.Vector3(0, 0.3, 0),
+    const camera = new BABYLON.UniversalCamera(
+      "UniversalCamera",
+      new BABYLON.Vector3(0, 1, -1),
       this.scene
     );
-    camera.minZ = 0.1;
-    // This attaches the camera to the canvas
+
+    camera.speed = 0.1; // 控制相机移动速度
+    camera.angularSensibility = 2000; // 控制相机旋转灵敏度
+
+    // 将相机附加到画布
     camera.attachControl(this.canvas, true);
-    camera.lowerRadiusLimit = 0.05;
-    camera.upperRadiusLimit = 10;
-    camera.wheelDeltaPercentage = 0.01;
-    camera.minZ = 0.01;
+
+    camera.keysUp.push(87); // W键
+    camera.keysDown.push(83); // S键
+    camera.keysLeft.push(65); // A键
+    camera.keysRight.push(68); // D键
+
+    camera.minZ = 0.01; // 最小缩放距离
+    camera.lowerRadiusLimit = 0.05; // 缩放限制的最小值
+    camera.upperRadiusLimit = 10; // 缩放限制的最大值
 
     return camera;
   }
+
+  // initCamera() {
+  //   const camera = new BABYLON.ArcRotateCamera(
+  //     "ArcRotateCamera",
+  //     BABYLON.Tools.ToRadians(-90),
+  //     BABYLON.Tools.ToRadians(90),
+  //     1.6,
+  //     new BABYLON.Vector3(0, 1, -1),
+  //     this.scene
+  //   );
+  //   camera.minZ = 0.1;
+  //   // This attaches the camera to the canvas
+  //   camera.attachControl(this.canvas, true);
+  //   camera.lowerRadiusLimit = 0.05;
+  //   camera.upperRadiusLimit = 10;
+  //   camera.wheelDeltaPercentage = 0.01;
+  //   camera.minZ = 0.01;
+
+  //   return camera;
+  // }
 
   initScene() {
     const scene = this.scene;
@@ -61,7 +89,7 @@ export class MainScene {
       scene
     );
     areaLight.name = "areaLight";
-    areaLight.gammaSpace = false;
+    areaLight.gammaSpace = true;
     scene.environmentTexture = areaLight;
     // @ts-ignore
     scene.environmentTexture.setReflectionTextureMatrix(
@@ -69,10 +97,17 @@ export class MainScene {
     );
 
     // Load assets
+    // promises.push(
+    //   BABYLON.SceneLoader.AppendAsync(
+    //     // "https://patrickryanms.github.io/BabylonJStextures/Demos/sheen/SheenCloth.gltf"
+    //     "/SheenCloth.gltf"
+    //   )
+    // );
+
     promises.push(
       BABYLON.SceneLoader.AppendAsync(
         // "https://patrickryanms.github.io/BabylonJStextures/Demos/sheen/SheenCloth.gltf"
-        "/SheenCloth.gltf"
+        "/gltf/one.gltf"
       )
     );
 
@@ -83,7 +118,7 @@ export class MainScene {
         return;
       }
 
-      root.scaling = new BABYLON.Vector3(20, 20, 20);
+      root.scaling = new BABYLON.Vector3(1, 1, 1);
 
       this.scene.render();
     });
@@ -95,9 +130,12 @@ export class MainScene {
       // @ts-expect-error
       const drawer = window.drawer as Drawer;
 
-      const texture = new BABYLON.Texture(drawer.exportTexture() as string, this.scene); // drawer.exportTexture()是dataURL格式的图片数据
-      
-      return texture
+      const texture = new BABYLON.Texture(
+        drawer.exportTexture() as string,
+        this.scene
+      ); // drawer.exportTexture()是dataURL格式的图片数据
+
+      return texture;
       // const color = new BABYLON.Color3(1, 1, 0.92); // 米白色
 
       // const dynamicTexture = new BABYLON.DynamicTexture(
@@ -125,11 +163,13 @@ export class MainScene {
   }
 
   updateMaterial() {
-    const model = this.scene.getMeshByName("SheenCloth_mesh"); // 替换为你的模型名称
+    const model = this.scene.getMeshByName("Cloth_primitive0"); // 替换为你的模型名称
+    console.log("model", model);
 
     if (!model) {
       return;
     }
+
     // 找到材质
     const material = model.material; // 假设你要更新材质的纹理
 
