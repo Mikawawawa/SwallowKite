@@ -68,7 +68,6 @@ export default function Home() {
                 sx={{
                   flex: 1,
                   height: "100%",
-                  backgroundColor: "#F1C2DE",
                 }}
               >
                 <DrawerComponent />
