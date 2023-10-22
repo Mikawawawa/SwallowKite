@@ -19,7 +19,7 @@ export class MainScene {
     this.camera = this.initCamera();
 
     this.engine.hideLoadingUI(); // 隐藏加载界面
-    this.scene.debugLayer.show({embedMode: true});
+    // this.scene.debugLayer.show({embedMode: true});
 
     window.addEventListener("resize", () => {
       this.engine.resize();
