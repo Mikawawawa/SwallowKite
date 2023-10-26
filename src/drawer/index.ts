@@ -1,69 +1,12 @@
 import * as PIXI from "pixi.js";
+import { TextureLayerForRender } from "./useLayerReducer";
 
 export class Drawer {
   public canvas: HTMLDivElement;
   private app: PIXI.Application;
   private stage: PIXI.Container;
 
-  layers: Array<{
-    type: string;
-    opacity?: number;
-    size?: {
-      width?: number;
-      height?: number;
-    };
-    rotation?: number;
-    scale?: number;
-    offset?: {
-      x?: number;
-      y?: number;
-    };
-    props: {
-      [k: string]: any;
-    };
-  }> = [
-    {
-      type: "solid",
-      props: {
-        content: "#F1C2DE", // 纯色图层
-      },
-      scale: 0.5,
-      offset: { x: 100, y: 100 },
-      // size: { width: 200, height: 150 },
-      rotation: 0.5,
-    },
-    {
-      type: "image",
-      props: {
-        src: "/technicalFabricSmall_normal_256.png",
-      },
-      opacity: 0.5,
-
-      size: { width: 200, height: 150 },
-      rotation: 0,
-    },
-    {
-      type: "image",
-      props: {
-        src: "/technicalFabricSmall_normal_256.png",
-      },
-      opacity: 0.5,
-
-      rotation: 0,
-    },
-    {
-      type: "pattern",
-      props: {
-        src: "/kite.jpeg",
-        rowGap: 400,
-        columnGap: 400,
-        scale: 0.4
-      },
-      opacity: 0.6,
-      scale: 0.8,
-      rotation: 0,
-    },
-  ];
+  layers: Array<TextureLayerForRender> = [];
 
   constructor(containerId: string) {
     this.canvas = document.getElementById(containerId) as HTMLDivElement;
@@ -85,7 +28,7 @@ export class Drawer {
 
     this.app = app;
 
-    window.addEventListener("resize", () => {
+    this.canvas.addEventListener("resize", () => {
       this.stage.height = this.app.view.height;
       this.stage.width = this.app.view.width;
 
@@ -164,6 +107,10 @@ export class Drawer {
 
     // 渲染 PIXI 应用
     this.app.renderer.render(this.stage);
+  };
+
+  updateLayers = (layers: TextureLayerForRender[]) => {
+    this.layers = layers;
   };
 }
 

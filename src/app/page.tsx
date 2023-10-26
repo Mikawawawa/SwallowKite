@@ -29,7 +29,7 @@ export default function Home() {
           sx={{
             height: "100%",
             width: "100%",
-            overflow: "hidden"
+            overflow: "hidden",
           }}
         >
           <Toolbar>
@@ -43,7 +43,7 @@ export default function Home() {
             component={"main"}
             sx={{
               flex: 1,
-              flexWrap: 'nowrap'
+              flexWrap: "nowrap",
             }}
           >
             <Box
@@ -57,25 +57,14 @@ export default function Home() {
 
             <Box
               sx={{
-                width: '70vw',
+                width: "70vw",
                 color: "white",
                 flexWrap: "nowrap",
                 display: "flex",
                 flexDirection: "row",
               }}
             >
-              <Box
-                sx={{
-                  flex: 1,
-                  height: "100%",
-                }}
-              >
-                <DrawerComponent />
-              </Box>
-
-              <Box sx={{ flexShrink: 0 }}>
-                <Layer />
-              </Box>
+              <DrawerComponent />
             </Box>
           </Stack>
         </Stack>

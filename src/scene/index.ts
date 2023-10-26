@@ -24,6 +24,12 @@ export class MainScene {
     window.addEventListener("resize", () => {
       this.engine.resize();
     });
+
+    // const objResizeObserver = new ResizeObserver((e) => {
+    //   console.log("resize", e);
+    //   this.engine.resize();
+    // });
+    // 观察文本域元素
   }
 
   async renderLoop() {
@@ -35,12 +41,12 @@ export class MainScene {
   initCamera() {
     const camera = new BABYLON.UniversalCamera(
       "UniversalCamera",
-      new BABYLON.Vector3(0, 1, -1),
+      new BABYLON.Vector3(0, 1, -2),
       this.scene
     );
 
     camera.speed = 0.1; // 控制相机移动速度
-    camera.angularSensibility = 2000; // 控制相机旋转灵敏度
+    camera.angularSensibility = 4000; // 控制相机旋转灵敏度
 
     // 将相机附加到画布
     camera.attachControl(this.canvas, true);
@@ -109,7 +115,7 @@ export class MainScene {
     promises.push(
       BABYLON.SceneLoader.AppendAsync(
         // "https://patrickryanms.github.io/BabylonJStextures/Demos/sheen/SheenCloth.gltf"
-        "/model/one.gltf"
+        "/qipao.gltf"
       )
     );
 
@@ -165,7 +171,7 @@ export class MainScene {
   }
 
   updateMaterial() {
-    const model = this.scene.getMeshByName("Cloth_primitive0"); // 替换为你的模型名称
+    const model = this.scene.getMeshByName("main"); // 替换为你的模型名称
     console.log("model", model);
 
     if (!model) {

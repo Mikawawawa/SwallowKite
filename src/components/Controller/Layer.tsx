@@ -17,52 +17,30 @@ import ListItemButton from "@mui/joy/ListItemButton";
 import ListItemDecorator from "@mui/joy/ListItemDecorator";
 import ListItemContent from "@mui/joy/ListItemContent";
 import { Box } from "@mui/material";
+import { FunctionComponent } from "react";
+import { TextureLayerForRender } from "@/drawer/useLayerReducer";
 
-function ColorLayerCard() {
+function ColorLayerCard(props: { color: string }) {
   return (
     <Card sx={{ width: 320 }}>
       <div>
         <Typography level="title-lg">色彩</Typography>
         <Typography level="body-sm">
-          #F1C2DE{" "}
+          {props.color}{" "}
           <Box
             sx={{
               width: "32px",
               height: "18px",
-              backgroundColor: "#F1C2DE",
+              backgroundColor: props.color,
             }}
           ></Box>
         </Typography>
       </div>
-
-      {/* <CardContent orientation="horizontal">
-        <Stack direction="row-reverse" spacing={2}>
-          <IconButton
-            variant="solid"
-            size="md"
-            color="primary"
-            aria-label="Explore Bahamas Islands"
-            sx={{ ml: "auto", alignSelf: "center", fontWeight: 600 }}
-          >
-            复制
-          </IconButton>
-
-          <IconButton
-            variant="solid"
-            size="md"
-            color="primary"
-            aria-label="Explore Bahamas Islands"
-            sx={{ ml: "auto", alignSelf: "center", fontWeight: 600 }}
-          >
-            删除
-          </IconButton>
-        </Stack>
-      </CardContent> */}
     </Card>
   );
 }
 
-function DotLayerCard() {
+function DotLayerCard(props: { source: string }) {
   return (
     <Card sx={{ width: 320 }}>
       <div>
@@ -84,7 +62,7 @@ function DotLayerCard() {
                 sx={{
                   width: "100%",
                   height: "100%",
-                  backgroundImage: "url(/kite.jpeg)",
+                  backgroundImage: `url(${props.source})`,
                   backgroundSize: "contain",
                   backgroundRepeat: "no-repeat",
                   backgroundPosition: "center",
@@ -139,7 +117,7 @@ function DotLayerCard() {
   );
 }
 
-function ImageLayerCard() {
+function ImageLayerCard(props: { source: string }) {
   return (
     <Card sx={{ width: 320 }}>
       <div>
@@ -161,8 +139,7 @@ function ImageLayerCard() {
                 sx={{
                   width: "100%",
                   height: "100%",
-                  backgroundImage:
-                    "url(https://pixijs.com/assets/bg_grass.jpg)",
+                  backgroundImage: `url(${props.source})`,
                   backgroundSize: "contain",
                   backgroundRepeat: "no-repeat",
                   backgroundPosition: "center",
@@ -200,7 +177,9 @@ function ImageLayerCard() {
   );
 }
 
-export const Layer = () => {
+export const Layer: FunctionComponent<{
+  data: TextureLayerForRender[];
+}> = ({ data }) => {
   return (
     <List
       size="sm"
@@ -221,7 +200,38 @@ export const Layer = () => {
             "& .JoyListItemButton-root": { p: "8px" },
           }}
         >
-          <ListItem>
+          {data?.map?.((item) => {
+            console.log(item);
+            switch (item.type) {
+              case "pattern": {
+                return (
+                  <ListItem key={item.id}>
+                    <DotLayerCard source={item.props.src} />
+                  </ListItem>
+                );
+              }
+              case "image": {
+                return (
+                  <ListItem key={item.id}>
+                    <ImageLayerCard source={item.props.src} />
+                  </ListItem>
+                );
+              }
+              case "solid": {
+                return (
+                  <ListItem key={item.id}>
+                    <ColorLayerCard color={item.props.content} />
+                  </ListItem>
+                );
+              }
+            }
+            // return (
+            //   <ListItem key={item.id}>
+            //     <DotLayerCard />
+            //   </ListItem>
+            // );
+          })}
+          {/* <ListItem>
             <ColorLayerCard />
           </ListItem>
 
@@ -231,7 +241,7 @@ export const Layer = () => {
 
           <ListItem>
             <ImageLayerCard />
-          </ListItem>
+          </ListItem> */}
           <ListItem>
             <Button variant="soft">添加新图层</Button>
           </ListItem>
