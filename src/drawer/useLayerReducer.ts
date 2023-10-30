@@ -1,4 +1,5 @@
 import { useEffect, useReducer } from "react";
+// @ts-ignore
 import { v4 as uuidv4 } from "uuid";
 
 const tempValue = [
@@ -160,6 +161,7 @@ export function useLayerManager() {
 
   useEffect(() => {
     clear();
+    // @ts-ignore
     tempValue.map((item) => addLayer(item));
   }, []);
 

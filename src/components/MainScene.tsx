@@ -46,6 +46,7 @@ export function SceneComponent() {
           <Button
             variant="soft"
             color="neutral"
+            // @ts-ignore
             size="small"
             onClick={() => {
               if (scene.current) {

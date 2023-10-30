@@ -126,7 +126,6 @@ export class MainScene {
     camera.wheelPrecision = 20;
     camera.minZ = 0.001;
 
-
     // const camera = new BABYLON.ArcRotateCamera(
     //   "Camera",
     //   0,
@@ -142,7 +141,6 @@ export class MainScene {
     // camera.attachControl(this.canvas, true);
     // camera.wheelPrecision = 20;
     // camera.minZ = 0.001;
-
 
     return camera;
   }
@@ -390,7 +388,7 @@ export class MainScene {
 
     // @ts-expect-error unknown
     this.texture = nextTexture;
-
+    // @ts-expect-error unknown
     material.albedoTexture = nextTexture; // 也可能叫diffuseTexture
     // 将新的基本颜色贴图分配给材质
   }
