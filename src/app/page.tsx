@@ -33,7 +33,13 @@ export default function Home() {
           }}
         >
           <Toolbar>
-            <Typography variant="h6" component="div">
+            <Typography
+              variant="h6"
+              component="div"
+              sx={{
+                color: "#FFFFFF",
+              }}
+            >
               Swallow Kite
             </Typography>
           </Toolbar>
@@ -44,27 +50,29 @@ export default function Home() {
             sx={{
               flex: 1,
               flexWrap: "nowrap",
+              padding: 3,
             }}
+            spacing={2}
           >
-            <Box
+            {/* <Box
               sx={{
-                height: "100%",
-                width: "30vw",
-              }}
-            >
-              <SceneComponent />
-            </Box>
-
-            <Box
-              sx={{
-                width: "70vw",
+                flex: 7,
                 color: "white",
                 flexWrap: "nowrap",
                 display: "flex",
                 flexDirection: "row",
               }}
+            > */}
+            <DrawerComponent />
+            {/* </Box> */}
+
+            <Box
+              sx={{
+                height: "100%",
+                flex: 3,
+              }}
             >
-              <DrawerComponent />
+              <SceneComponent />
             </Box>
           </Stack>
         </Stack>

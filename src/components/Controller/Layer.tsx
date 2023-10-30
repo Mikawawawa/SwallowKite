@@ -8,6 +8,7 @@ import {
   Slider,
   Stack,
   Typography,
+  styled,
 } from "@mui/joy";
 
 import { Chip } from "@mui/joy";
@@ -20,9 +21,13 @@ import { Box } from "@mui/material";
 import { FunctionComponent } from "react";
 import { TextureLayerForRender } from "@/drawer/useLayerReducer";
 
+const PaperCard = styled(Card)(() => ({
+  borderRadius: "0px",
+}));
+
 function ColorLayerCard(props: { color: string }) {
   return (
-    <Card sx={{ width: 320 }}>
+    <PaperCard sx={{ width: 320 }}>
       <div>
         <Typography level="title-lg">色彩</Typography>
         <Typography level="body-sm">
@@ -36,13 +41,13 @@ function ColorLayerCard(props: { color: string }) {
           ></Box>
         </Typography>
       </div>
-    </Card>
+    </PaperCard>
   );
 }
 
 function DotLayerCard(props: { source: string }) {
   return (
-    <Card sx={{ width: 320 }}>
+    <PaperCard sx={{ width: 320 }}>
       <div>
         <Typography level="title-lg">图案</Typography>
         <Typography level="body-sm">
@@ -113,13 +118,13 @@ function DotLayerCard(props: { source: string }) {
             </IconButton>
           </Stack>
         </CardContent> */}
-    </Card>
+    </PaperCard>
   );
 }
 
 function ImageLayerCard(props: { source: string }) {
   return (
-    <Card sx={{ width: 320 }}>
+    <PaperCard sx={{ width: 320 }}>
       <div>
         <Typography level="title-lg">图案</Typography>
         <Typography level="body-sm">
@@ -173,7 +178,7 @@ function ImageLayerCard(props: { source: string }) {
               </IconButton>
             </Stack>
           </CardContent> */}
-    </Card>
+    </PaperCard>
   );
 }
 
@@ -181,57 +186,46 @@ export const Layer: FunctionComponent<{
   data: TextureLayerForRender[];
 }> = ({ data }) => {
   return (
-    <List
-      size="sm"
+    <Stack
       sx={{
-        width: "100%",
+        width: "320px",
         height: "100%",
         "--ListItem-radius": "8px",
         "--List-gap": "4px",
       }}
     >
-      <ListItem nested>
-        <ListSubheader>
-          <Typography level="title-lg">图层</Typography>
-        </ListSubheader>
-        <List
-          aria-labelledby="nav-list-browse"
-          sx={{
-            "& .JoyListItemButton-root": { p: "8px" },
-          }}
-        >
-          {data?.map?.((item) => {
-            console.log(item);
-            switch (item.type) {
-              case "pattern": {
-                return (
-                  <ListItem key={item.id}>
-                    <DotLayerCard source={item.props.src} />
-                  </ListItem>
-                );
-              }
-              case "image": {
-                return (
-                  <ListItem key={item.id}>
-                    <ImageLayerCard source={item.props.src} />
-                  </ListItem>
-                );
-              }
-              case "solid": {
-                return (
-                  <ListItem key={item.id}>
-                    <ColorLayerCard color={item.props.content} />
-                  </ListItem>
-                );
-              }
-            }
-            // return (
-            //   <ListItem key={item.id}>
-            //     <DotLayerCard />
-            //   </ListItem>
-            // );
-          })}
-          {/* <ListItem>
+      {data?.map?.((item) => {
+        console.log(item);
+        switch (item.type) {
+          case "pattern": {
+            return (
+              <Box key={item.id}>
+                <DotLayerCard source={item.props.src} />
+              </Box>
+            );
+          }
+          case "image": {
+            return (
+              <Box key={item.id}>
+                <ImageLayerCard source={item.props.src} />
+              </Box>
+            );
+          }
+          case "solid": {
+            return (
+              <Box key={item.id}>
+                <ColorLayerCard color={item.props.content} />
+              </Box>
+            );
+          }
+        }
+        // return (
+        //   <ListItem key={item.id}>
+        //     <DotLayerCard />
+        //   </ListItem>
+        // );
+      })}
+      {/* <ListItem>
             <ColorLayerCard />
           </ListItem>
 
@@ -242,10 +236,10 @@ export const Layer: FunctionComponent<{
           <ListItem>
             <ImageLayerCard />
           </ListItem> */}
-          <ListItem>
-            <Button variant="soft">添加新图层</Button>
-          </ListItem>
-          {/* <ListItem>
+      <Box>
+        <Button variant="soft">添加新图层</Button>
+      </Box>
+      {/* <ListItem>
             <ListItemButton>
               <ListItemDecorator
                 sx={{ color: "neutral.500" }}
@@ -261,8 +255,6 @@ export const Layer: FunctionComponent<{
               </Chip>
             </ListItemButton>
           </ListItem> */}
-        </List>
-      </ListItem>
-    </List>
+    </Stack>
   );
 };

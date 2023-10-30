@@ -1,7 +1,7 @@
 "use client";
 import { Drawer } from "@/drawer";
 import { MainScene } from "@/scene";
-import { Box } from "@mui/joy";
+import { Box, Stack, Typography } from "@mui/joy";
 import React, { useEffect, useRef } from "react";
 import { Layer } from "./Controller/Layer";
 import { useLayerManager } from "@/drawer/useLayerReducer";
@@ -29,26 +29,70 @@ export function DrawerComponent() {
 
   return (
     <>
-      <Box
+      <Stack
+        direction={"column"}
+        spacing={2}
         sx={{
-          flex: 1,
           height: "100%",
         }}
       >
-        <div
-          tabIndex={-1}
-          id={DrawerContainer}
-          style={{
-            outline: "none",
-            height: "100%",
-            width: "100%",
+        <Typography
+          level="title-lg"
+          sx={{
+            color: "white",
           }}
-        />
-      </Box>
+        >
+          图层
+        </Typography>
+        <Box
+          sx={{
+            flexShrink: 0,
+            overflowY: "auto",
+            flex: 1,
+            boxShadow: "#767575 0px -2px 13px 1px",
+            backgroundColor: "var(--joy-palette-background-surface)",
+          }}
+        >
+          <Layer data={layersHelper.layers} />
+        </Box>
+      </Stack>
 
-      <Box sx={{ flexShrink: 0, width: "320px", overflow: 'auto' }}>
-        <Layer data={layersHelper.layers} />
-      </Box>
+      <Stack
+        direction={"column"}
+        spacing={2}
+        sx={{
+          flex: 5,
+          height: "100%",
+        }}
+      >
+        <Typography
+          level="title-lg"
+          sx={{
+            color: "white",
+          }}
+        >
+          预览
+        </Typography>
+
+        <Stack
+          sx={{
+            flex: 1,
+            padding: 4,
+            boxShadow: "#767575 0px -2px 13px 1px",
+            backgroundColor: "var(--joy-palette-background-surface)",
+          }}
+        >
+          <div
+            tabIndex={-1}
+            id={DrawerContainer}
+            style={{
+              outline: "none",
+              height: "100%",
+              width: "100%",
+            }}
+          />
+        </Stack>
+      </Stack>
     </>
   );
 }
