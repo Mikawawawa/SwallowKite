@@ -15,7 +15,7 @@ export class MainScene {
 
   constructor(containerId: string) {
     this.canvas = document.getElementById(containerId) as HTMLCanvasElement;
-    this.engine = new BABYLON.Engine(this.canvas, true);
+    this.engine = new BABYLON.Engine(this.canvas, true, {}, true);
 
     this.scene = new BABYLON.Scene(this.engine);
     this.camera = this.initCamera();
@@ -120,11 +120,29 @@ export class MainScene {
       this.scene
     );
 
-    camera.setPosition(new BABYLON.Vector3(0, 10, 10));
+    camera.setPosition(new BABYLON.Vector3(5, 5, 5));
     camera.fov = 0.25;
     camera.attachControl(this.canvas, true);
     camera.wheelPrecision = 20;
     camera.minZ = 0.001;
+
+
+    // const camera = new BABYLON.ArcRotateCamera(
+    //   "Camera",
+    //   0,
+    //   0,
+    //   1,
+    //   new BABYLON.Vector3(0, 1, 0),
+    //   this.scene
+    // );
+
+    // camera.setPosition(new BABYLON.Vector3(0, 0, 10));
+    // // camera.fov = 0.25;
+    // camera.fov = 1;
+    // camera.attachControl(this.canvas, true);
+    // camera.wheelPrecision = 20;
+    // camera.minZ = 0.001;
+
 
     return camera;
   }
@@ -167,6 +185,7 @@ export class MainScene {
       BABYLON.SceneLoader.AppendAsync(
         // "https://patrickryanms.github.io/BabylonJStextures/Demos/sheen/SheenCloth.gltf"
         "/qipao.gltf"
+        // "pimon.glb"
       )
     );
 
@@ -276,19 +295,19 @@ export class MainScene {
       //       (b) => b.name === "rimIntensity"
       //     ).value = 0.08;
 
-      //     if (this.texture) {
-      //       pimonMat.albedoTexture = this.texture; // 也可能叫diffuseTexture
-      //       pimonMat.diffuseTexture = this.texture; // 也可能叫diffuseTexture
-      //     }
+      //     // if (this.texture) {
+      //     //   pimonMat.albedoTexture = this.texture; // 也可能叫diffuseTexture
+      //     //   pimonMat.diffuseTexture = this.texture; // 也可能叫diffuseTexture
+      //     // }
 
       //     // node.getInputBlockByPredicate((b) => b.name === "Texture").value = pimon.material.albedoTexture
       //     scene.meshes.forEach((m) => {
-      //       // if (
-      //       //   m.name.indexOf("pimon") !== 1 &&
-      //       //   m.name.indexOf("outline") !== 0
-      //       // ) {
+      //       if (
+      //         m.name.indexOf("pimon") !== 1 &&
+      //         m.name.indexOf("outline") !== 0
+      //       ) {
       //         m.material = pimonMat;
-      //       // }
+      //       }
       //     });
       //   }
       // );
