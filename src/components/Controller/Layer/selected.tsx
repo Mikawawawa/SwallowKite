@@ -35,15 +35,18 @@ export const SelectedLayer: FunctionComponent<
   const elRef = useRef<null | HTMLDivElement>(null);
 
   const animateIn = () => {
-    Array.from(elRef.current?.querySelectorAll?.("*[data-fade-in]")).forEach(
+    Array.from(elRef.current?.querySelectorAll?.("*[data-fade-in]") || []).forEach(
       (el, i) => {
         spring({
           values: {
             translateY: [-15, 0],
             opacity: [0, 1],
           },
+          // @ts-ignore
           onUpdate: ({ translateY, opacity }) => {
-            el.style.opacity = opacity;
+            // @ts-ignore
+            el.style!.opacity = opacity;
+            // @ts-ignore
             el.style.transform = `translateY(${translateY}px)`;
           },
           delay: i * 75,
