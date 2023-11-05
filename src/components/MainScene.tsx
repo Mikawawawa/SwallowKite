@@ -18,7 +18,6 @@ export function SceneComponent() {
     scene.current = new MainScene(BabylonContainer);
 
     scene.current.initScene().then(() => {
-      console.log("here 1");
       scene.current?.renderLoop();
       setAfterDraw(true);
     });
@@ -50,7 +49,6 @@ export function SceneComponent() {
             size="small"
             onClick={() => {
               if (scene.current) {
-                console.log("there");
                 scene.current?.updateMaterial("main");
               }
             }}

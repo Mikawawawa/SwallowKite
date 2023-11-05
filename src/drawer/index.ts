@@ -69,10 +69,15 @@ export class Drawer {
 
           const { rowGap, columnGap, scale } = layer?.props;
 
-          for (let y = 0; y < height; y += rowGap) {
-            for (let x = 0; x < width; x += columnGap) {
+          const patternSpriteOrigin = PIXI.Sprite.from(props.src);
+
+          const lineHeight = (1 + rowGap || 1) * patternSpriteOrigin.height;
+          const colWidth = (1 + columnGap || 1) * patternSpriteOrigin.width;
+
+          for (let y = 0; y < height; y += lineHeight) {
+            for (let x = 0; x < width; x += colWidth) {
               const patternSprite = PIXI.Sprite.from(props.src);
-              patternSprite.position.set(x + ((y / rowGap) % 2), y);
+              patternSprite.position.set(x + ((y / lineHeight) % 2), y);
               patternSprite.scale.set(scale || 1);
               layerSprite.addChild(patternSprite);
             }

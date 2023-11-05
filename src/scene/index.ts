@@ -333,40 +333,36 @@ export class MainScene {
   }
 
   getNextMaterial() {
-    if (!this.texture) {
-      const textureSize = 256; // 贴图大小
-      // @ts-expect-error
-      const drawer = window.drawer as Drawer;
+    const textureSize = 256; // 贴图大小
+    // @ts-expect-error
+    const drawer = window.drawer as Drawer;
 
-      const texture = new BABYLON.Texture(
-        drawer.exportTexture() as string,
-        this.scene
-      ); // drawer.exportTexture()是dataURL格式的图片数据
+    const texture = new BABYLON.Texture(
+      drawer.exportTexture() as string,
+      this.scene
+    ); // drawer.exportTexture()是dataURL格式的图片数据
 
-      return texture;
-      // const color = new BABYLON.Color3(1, 1, 0.92); // 米白色
+    return texture;
+    // const color = new BABYLON.Color3(1, 1, 0.92); // 米白色
 
-      // const dynamicTexture = new BABYLON.DynamicTexture(
-      //   "dynamicTexture",
-      //   textureSize,
-      //   this.scene,
-      //   false
-      // );
+    // const dynamicTexture = new BABYLON.DynamicTexture(
+    //   "dynamicTexture",
+    //   textureSize,
+    //   this.scene,
+    //   false
+    // );
 
-      // dynamicTexture.drawText(
-      //   "Hello, World!",
-      //   null,
-      //   null,
-      //   "40px Arial",
-      //   `white`,
-      //   `rgba(255,255,238.0.5)`,
-      //   true
-      // );
+    // dynamicTexture.drawText(
+    //   "Hello, World!",
+    //   null,
+    //   null,
+    //   "40px Arial",
+    //   `white`,
+    //   `rgba(255,255,238.0.5)`,
+    //   true
+    // );
 
-      // return dynamicTexture;
-    } else {
-      return this.texture;
-    }
+    // return dynamicTexture;
   }
 
   updateMaterial(name: string) {

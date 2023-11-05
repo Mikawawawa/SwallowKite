@@ -36,9 +36,12 @@ const tempValue = [
     type: "pattern",
     props: {
       src: "/kite.jpeg",
-      rowGap: 400,
-      columnGap: 400,
-      scale: 0.4,
+      rowGap: 200,
+      columnGap: 200,
+      scale: 0.6506709277209668,
+      zoom: -62,
+      leftRightSpacing: 100,
+      topBottomSpacing: 100,
     },
     opacity: 0.6,
     scale: 0.8,
@@ -93,7 +96,7 @@ const layerReducer = (state: InitialState, action: Action): InitialState => {
         layersMap: new Map(),
       };
     }
-    case "ADD_LAYER":
+    case "ADD_LAYER": {
       // 处理添加新图层的逻辑
       const id = uuidv4();
       action.payload.id = id;
@@ -102,7 +105,9 @@ const layerReducer = (state: InitialState, action: Action): InitialState => {
         ...state,
         layers: [...layers, action.payload as TextureLayer],
       };
-    case "UPDATE_LAYER":
+      break;
+    }
+    case "UPDATE_LAYER": {
       // 处理更新图层的逻辑
       if (layersMap.has(action.payload.id)) {
         const updatedLayers = layers.map((layer) =>
@@ -114,8 +119,9 @@ const layerReducer = (state: InitialState, action: Action): InitialState => {
           layers: updatedLayers,
         };
       }
-      return state; // 如果没有找到对应的图层，返回原状态
-    case "REMOVE_LAYER":
+      break;
+    }
+    case "REMOVE_LAYER": {
       // 处理删除图层的逻辑
       const layerToRemove = layersMap.get(action.payload);
       if (layerToRemove) {
@@ -128,10 +134,13 @@ const layerReducer = (state: InitialState, action: Action): InitialState => {
           layers: updatedLayers,
         };
       }
-      return state; // 如果没有找到要删除的图层，返回原状态
-    default:
+      break;
+    }
+    default: {
       return state;
+    }
   }
+  return { ...state };
 };
 
 export function useLayerManager() {

@@ -13,7 +13,6 @@ import { CssVarsProvider as JoyCssVarsProvider } from "@mui/joy/styles";
 import Stack from "@mui/material/Stack";
 import { DrawerComponent } from "@/components/Drawer";
 import { Box, Toolbar } from "@mui/material";
-import { Layer } from "@/components/Controller/Layer";
 
 const materialTheme = materialExtendTheme();
 
@@ -27,8 +26,8 @@ export default function Home() {
         <Stack
           direction="column"
           sx={{
-            height: "100%",
-            width: "100%",
+            height: "100vh",
+            width: "100vw",
             overflow: "hidden",
           }}
         >
@@ -51,20 +50,11 @@ export default function Home() {
               flex: 1,
               flexWrap: "nowrap",
               padding: 3,
+              overflow: "hidden",
             }}
             spacing={2}
           >
-            {/* <Box
-              sx={{
-                flex: 7,
-                color: "white",
-                flexWrap: "nowrap",
-                display: "flex",
-                flexDirection: "row",
-              }}
-            > */}
             <DrawerComponent />
-            {/* </Box> */}
 
             <Box
               sx={{

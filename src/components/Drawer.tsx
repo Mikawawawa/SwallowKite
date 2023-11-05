@@ -3,7 +3,7 @@ import { Drawer } from "@/drawer";
 import { MainScene } from "@/scene";
 import { Box, Stack, Typography } from "@mui/joy";
 import React, { useEffect, useRef } from "react";
-import { Layer } from "./Controller/Layer";
+import { LayerController } from "./Controller";
 import { useLayerManager } from "@/drawer/useLayerReducer";
 
 const DrawerContainer = "renderDrawerContainer";
@@ -47,13 +47,13 @@ export function DrawerComponent() {
         <Box
           sx={{
             flexShrink: 0,
-            overflowY: "auto",
+            overflowY: "hidden",
             flex: 1,
             boxShadow: "#767575 0px -2px 13px 1px",
             backgroundColor: "var(--joy-palette-background-surface)",
           }}
         >
-          <Layer data={layersHelper.layers} />
+          <LayerController helper={layersHelper} />
         </Box>
       </Stack>
 
