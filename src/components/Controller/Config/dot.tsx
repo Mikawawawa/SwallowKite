@@ -5,6 +5,7 @@ import { FunctionComponent } from "react";
 import { useForm, Controller, useWatch } from "react-hook-form";
 import * as yup from "yup";
 import { LayerConfigSlider } from "./fields/Slider";
+import { ImagePicker } from "./fields/ImagePicker";
 
 export const DotLayerPreviewer = React.memo(function Previewer({
   config,
@@ -14,20 +15,6 @@ export const DotLayerPreviewer = React.memo(function Previewer({
   return (
     <>
       <Typography level="title-lg">图案</Typography>
-      <Typography level="body-sm">
-        <AspectRatio maxHeight={100}>
-          <Box
-            sx={{
-              width: "100%",
-              height: "100%",
-              backgroundImage: `url(${config.src})`,
-              backgroundSize: "contain",
-              backgroundRepeat: "no-repeat",
-              backgroundPosition: "center",
-            }}
-          />
-        </AspectRatio>
-      </Typography>
     </>
   );
 });
@@ -60,6 +47,14 @@ export const DotLayerConfig: FunctionComponent<{
   return (
     <form>
       <Stack direction="column" sx={{ flex: 1 }}>
+        <Stack direction="column">
+          <label>贴图</label>
+          <Controller
+            name="src"
+            control={control}
+            render={({ field }) => <ImagePicker {...field} />}
+          />
+        </Stack>
         <Stack direction="column">
           <label>左右间距</label>
           <Controller
