@@ -44,17 +44,17 @@ export class MainScene {
   initLight() {
     const light = new BABYLON.PointLight(
       "light",
-      new BABYLON.Vector3(3, 14, -10),
+      new BABYLON.Vector3(3, -14, 10),
       this.scene
     );
     const light2 = new BABYLON.PointLight(
       "light2",
-      new BABYLON.Vector3(3, 20, -10),
+      new BABYLON.Vector3(-3, -20, -10),
       this.scene
     );
-    light.intensity = 2; //????
-    light.diffuse = new BABYLON.Color3(1, 1, 0.7);
-    // light2.intensity = 1
+    light.intensity = 3; // 可根据需求调整
+    light.diffuse = new BABYLON.Color3(1, 1, 1); // 修改光照颜色为白色
+
     light.shadowMinZ = 0.1;
     light.shadowMaxZ = 1200;
 
@@ -76,11 +76,12 @@ export class MainScene {
     areaLight.name = "areaLight";
     areaLight.gammaSpace = true;
 
+    this.scene.environmentIntensity = 2;
     this.scene.environmentTexture = areaLight;
-    // @ts-ignore
-    this.scene.environmentTexture.setReflectionTextureMatrix(
-      BABYLON.Matrix.RotationY(BABYLON.Tools.ToRadians(190))
-    );
+    // // @ts-ignore
+    // this.scene.environmentTexture.setReflectionTextureMatrix(
+    //   BABYLON.Matrix.RotationY(BABYLON.Tools.ToRadians(190))
+    // );
 
     return light;
   }
