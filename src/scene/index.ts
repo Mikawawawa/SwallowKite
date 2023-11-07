@@ -1,7 +1,9 @@
 // BabylonScene.js
 import { Drawer } from "@/drawer";
-import * as BABYLON from "babylonjs";
+
 import "babylonjs-loaders";
+import * as BABYLON from "babylonjs";
+import * as Materials from 'babylonjs-materials';
 
 export class MainScene {
   public engine: BABYLON.Engine;
@@ -15,14 +17,16 @@ export class MainScene {
 
   constructor(containerId: string) {
     this.canvas = document.getElementById(containerId) as HTMLCanvasElement;
-    this.engine = new BABYLON.Engine(this.canvas, true, {}, true);
+    this.engine = new BABYLON.Engine(this.canvas, true, {}, false);
 
     this.scene = new BABYLON.Scene(this.engine);
     this.camera = this.initCamera();
     this.light = this.initLight();
 
-    this.engine.hideLoadingUI(); // 隐藏加载界面
-    // this.scene.debugLayer.show({ embedMode: true, handleResize: false });
+    // this.engine.hideLoadingUI(); // 隐藏加载界面
+
+    this.setSkyBox()
+    // this.scene.debugLayer.show({ embedMode: false, handleResize: false });
 
     window.addEventListener("resize", () => {
       this.engine.resize();
@@ -52,6 +56,9 @@ export class MainScene {
       new BABYLON.Vector3(-3, -20, -10),
       this.scene
     );
+
+    const light3 = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), this.scene);
+
     light.intensity = 3; // 可根据需求调整
     light.diffuse = new BABYLON.Color3(1, 1, 1); // 修改光照颜色为白色
 
@@ -115,17 +122,19 @@ export class MainScene {
     const camera = new BABYLON.ArcRotateCamera(
       "Camera",
       0,
+      5,
       0,
-      1,
-      new BABYLON.Vector3(0, 1, 0),
+      new BABYLON.Vector3(10, 5, 10),
       this.scene
     );
 
-    camera.setPosition(new BABYLON.Vector3(5, 5, 5));
+    camera.setPosition(new BABYLON.Vector3(-50, 20, -50));
     camera.fov = 0.25;
     camera.attachControl(this.canvas, true);
     camera.wheelPrecision = 20;
     camera.minZ = 0.001;
+    camera.lowerRadiusLimit = 0
+
 
     // const camera = new BABYLON.ArcRotateCamera(
     //   "Camera",
@@ -180,12 +189,21 @@ export class MainScene {
     //   )
     // );
 
+    const ground = BABYLON.Mesh.CreateGroundFromHeightMap("ground", "heightMap.png", 100, 100, 100, 0, 10, scene, false);
+    const groundMaterial = new BABYLON.StandardMaterial("ground", scene);
+    groundMaterial.diffuseTexture = new BABYLON.Texture("img/background.jpg", scene);
+    groundMaterial.diffuseTexture.uScale = 6;
+    groundMaterial.diffuseTexture.vScale = 6;
+    groundMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+    ground.position.y = -2.05;
+    ground.material = groundMaterial;
+
     promises.push(
       BABYLON.SceneLoader.AppendAsync(
         // "https://patrickryanms.github.io/BabylonJStextures/Demos/sheen/SheenCloth.gltf"
         "/qipao.gltf"
         // "pimon.glb"
-      )
+      ),
     );
 
     // Callback when assets are loaded
@@ -194,6 +212,12 @@ export class MainScene {
       if (!root) {
         return;
       }
+
+
+
+      root.position = new BABYLON.Vector3(0, -2, 0)
+      root.scaling = new BABYLON.Vector3(10, 10, 10)
+
 
       // var pimon = scene.getMeshByName("pimon");
       // var pimonOutline = scene.getMeshByName("outline");
@@ -388,5 +412,58 @@ export class MainScene {
     // @ts-expect-error unknown
     material.albedoTexture = nextTexture; // 也可能叫diffuseTexture
     // 将新的基本颜色贴图分配给材质
+  }
+
+  setSkyBox() {
+    const scene = this.scene
+    // Sky material
+    const skyboxMaterial = new Materials.SkyMaterial("skyMaterial", scene);
+    skyboxMaterial.backFaceCulling = false;
+    //skyboxMaterial._cachedDefines.FOG = true;
+
+    // Sky mesh (box)
+    const skybox = BABYLON.Mesh.CreateBox("skyBox", 2000.0, scene);
+    skybox.material = skyboxMaterial;
+
+    /*
+    * Keys:
+    * - 1: Day
+    * - 2: Evening
+    * - 3: Increase Luminance
+    * - 4: Decrease Luminance
+    * - 5: Increase Turbidity
+    * - 6: Decrease Turbidity
+      * - 7: Move horizon to -50
+      * - 8: Restore horizon to 0
+    */
+    const setSkyConfig = function (property: string, from: number, to: number) {
+      var keys = [
+        { frame: 0, value: from },
+        { frame: 100, value: to }
+      ];
+
+      const animation = new BABYLON.Animation("animation", property, 100, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+      animation.setKeys(keys);
+
+      scene.stopAnimation(skybox);
+      scene.beginDirectAnimation(skybox, [animation], 0, 100, false, 1);
+    };
+
+    const setDayConfig = () => {
+      // setSkyConfig("material.inclination", skyboxMaterial.inclination, 0); // 1
+      setSkyConfig("material.inclination", skyboxMaterial.inclination, -0.5); // 2
+
+      setSkyConfig("material.luminance", skyboxMaterial.luminance, 0.1); // 3
+      // setSkyConfig("material.luminance", skyboxMaterial.luminance, 1.0); // 4
+
+      setSkyConfig("material.turbidity", skyboxMaterial.turbidity, 40); // 5
+      // setSkyConfig("material.turbidity", skyboxMaterial.turbidity, 5); // 6
+
+      setSkyConfig("material.cameraOffset.y", skyboxMaterial.cameraOffset.y, 50); // 7
+      // setSkyConfig("material.cameraOffset.y", skyboxMaterial.cameraOffset.y, 0);  // 8
+    }
+
+    // Set to Day
+    setSkyConfig("material.inclination", skyboxMaterial.inclination, 0);
   }
 }
