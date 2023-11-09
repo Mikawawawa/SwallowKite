@@ -193,7 +193,9 @@ export class MainScene {
     const ground = BABYLON.Mesh.CreateGroundFromHeightMap("ground", "heightMap.png", 100, 100, 100, 0, 10, scene, false);
     const groundMaterial = new BABYLON.StandardMaterial("ground", scene);
     groundMaterial.diffuseTexture = new BABYLON.Texture("img/background.jpg", scene);
+    // @ts-ignore
     groundMaterial.diffuseTexture.uScale = 6;
+    // @ts-ignore
     groundMaterial.diffuseTexture.vScale = 6;
     groundMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
     ground.position.y = -2.05;
