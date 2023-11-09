@@ -132,7 +132,7 @@ export class MainScene {
     camera.fov = 0.25;
     camera.attachControl(this.canvas, true);
     camera.wheelPrecision = 20;
-    camera.minZ = 0.001;
+    camera.minZ = 0.1;
     camera.lowerRadiusLimit = 0
 
 
