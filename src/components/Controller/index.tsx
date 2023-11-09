@@ -48,9 +48,16 @@ export const LayerController: FunctionComponent<{
           return (
             <Layer
               key={item.id}
+              item={item}
               index={index}
               selected={selected}
               setSelected={setFocusedLayerIndex}
+              onChange={(value: any) => {
+                updateLayer(item.id, {
+                  ...item,
+                  ...value,
+                });
+              }}
             >
               <LayerConfig
                 selected={selected}
