@@ -122,9 +122,10 @@ export class MainScene {
     const camera = new BABYLON.ArcRotateCamera(
       "Camera",
       0,
-      5,
       0,
-      new BABYLON.Vector3(10, 5, 10),
+      0,
+      // new BABYLON.Vector3(10, 5, 10),
+      new BABYLON.Vector3(0, 10, 0),
       this.scene
     );
 
