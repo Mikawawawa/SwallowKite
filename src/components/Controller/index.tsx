@@ -60,6 +60,13 @@ export const LayerController: FunctionComponent<{
               }}
             >
               <LayerConfig
+                setType={(type) => {
+                  updateLayer(item.id, {
+                    ...item,
+                    type,
+                    props: {},
+                  });
+                }}
                 selected={selected}
                 layer={data[index]}
                 onChange={(value: any) => {
@@ -78,6 +85,7 @@ export const LayerController: FunctionComponent<{
         <Flipped flipId={"layers-cta"}>
           {Array.isArray(data) && (
             <Button
+              onClick={() => addLayer({})}
               variant="soft"
               sx={{
                 position: "sticky",

@@ -74,12 +74,11 @@ export const SelectedLayer: FunctionComponent<
       <PaperCard ref={elRef} onClick={selected ? closeSelected : setSelected}>
         {children}
 
-        <FadeInBox>
+        <FadeInBox key={selected.toString()}>
           {selected && (
             <LayerBasicConfig
               config={item}
-              onChange={(newConfig) => {
-                console.log(newConfig);
+              onChange={(newConfig: any) => {
                 onChange?.(newConfig);
               }}
             />

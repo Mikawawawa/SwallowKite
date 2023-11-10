@@ -81,6 +81,7 @@ type InitialState = {
 
 // 操作类型
 type Action =
+  | { type: "SET"; payload: TextureLayer[] }
   | { type: "ADD_LAYER"; payload: TextureLayerForRender }
   | { type: "UPDATE_LAYER"; payload: { id: string; layer: TextureLayer } }
   | { type: "REMOVE_LAYER"; payload: string } // payload 是图层的唯一标识符
@@ -91,10 +92,27 @@ const layerReducer = (state: InitialState, action: Action): InitialState => {
   const { layers, layersMap } = state;
   switch (action.type) {
     case "CLEAR": {
+      layersMap.clear();
       return {
         layers: [],
-        layersMap: new Map(),
+        layersMap: layersMap,
       };
+      break;
+    }
+    case "SET": {
+      layersMap.clear();
+      action.payload.forEach((value, index) => {
+        const newId = value.id || uuidv4();
+        if (!value.id) {
+          value.id = newId;
+        }
+        layersMap.set(newId, value);
+      });
+      return {
+        layers: action.payload,
+        layersMap,
+      };
+      break;
     }
     case "ADD_LAYER": {
       // 处理添加新图层的逻辑
@@ -168,16 +186,15 @@ export function useLayerManager() {
     dispatch({ type: "REMOVE_LAYER", payload: id });
   };
 
-  useEffect(() => {
-    clear();
-    // @ts-ignore
-    tempValue.map((item) => addLayer(item));
-  }, []);
+  const setLayers = (initValue: TextureLayer[]) => {
+    dispatch({ type: "SET", payload: initValue });
+  };
 
   return {
     layers: state.layers,
     addLayer,
     updateLayer,
     removeLayer,
+    setLayers
   };
 }

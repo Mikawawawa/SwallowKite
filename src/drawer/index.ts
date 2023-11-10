@@ -54,31 +54,37 @@ export class Drawer {
       switch (type) {
         case "solid": {
           layerSprite = new PIXI.Graphics();
-          (layerSprite as PIXI.Graphics).beginFill(
-            parseInt(props.content.substring(1), 16)
-          );
-          (layerSprite as PIXI.Graphics).drawRect(0, 0, width, height);
+          if (props.content) {
+            (layerSprite as PIXI.Graphics).beginFill(
+              parseInt(props.content.substring(1), 16)
+            );
+            (layerSprite as PIXI.Graphics).drawRect(0, 0, width, height);
+          }
+
           break;
         }
         case "image": {
-          layerSprite = PIXI.Sprite.from(props.src);
+          layerSprite = PIXI.Sprite.from(props.src || "/kite.jpeg");
           break;
         }
         case "pattern": {
           layerSprite = new PIXI.Container();
 
-          const { rowGap, columnGap, scale } = layer?.props;
+          if (!layer?.props?.src) {
+            break;
+          }
+          const { rowGap = 1, columnGap = 1, scale = 1 } = layer?.props || {};
 
           const patternSpriteOrigin = PIXI.Sprite.from(props.src);
 
-          const lineHeight = (1 + rowGap || 1) * patternSpriteOrigin.height;
-          const colWidth = (1 + columnGap || 1) * patternSpriteOrigin.width;
+          const lineHeight = (1 + rowGap) * patternSpriteOrigin.height;
+          const colWidth = (1 + columnGap) * patternSpriteOrigin.width;
 
           for (let y = 0; y < height; y += lineHeight) {
             for (let x = 0; x < width; x += colWidth) {
               const patternSprite = PIXI.Sprite.from(props.src);
               patternSprite.position.set(x + ((y / lineHeight) % 2), y);
-              patternSprite.scale.set(scale || 1);
+              patternSprite.scale.set(scale);
               layerSprite.addChild(patternSprite);
             }
           }

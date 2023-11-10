@@ -1,14 +1,51 @@
 "use client";
 import { Drawer } from "@/drawer";
 import { MainScene } from "@/scene";
-import { Box, Stack, Typography } from "@mui/joy";
+import { Box, Button, Stack, Typography } from "@mui/joy";
 import React, { useEffect, useRef } from "react";
 import { LayerController } from "./Controller";
 import { useLayerManager } from "@/drawer/useLayerReducer";
+import { IO } from "@/service/io";
 
 const DrawerContainer = "renderDrawerContainer";
 
 let hasInit = false;
+
+function useThrottle(callback: Function, delay: number) {
+  const lastExecTime = useRef(0);
+  const timerRef = useRef<NodeJS.Timeout>(null);
+
+  useEffect(() => {
+    return () => {
+      // 清除定时器，确保在组件卸载时不会触发回调
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, []);
+
+  return function throttledCallback(...args: any[]) {
+    const currentTime = Date.now();
+
+    if (currentTime - lastExecTime.current > delay) {
+      callback(...args);
+      lastExecTime.current = currentTime;
+    } else {
+      // 如果在延迟时间内调用了函数，清除之前的定时器，并设置新的定时器
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+
+      // @ts-ignore
+      timerRef.current = setTimeout(() => {
+        callback(...args);
+        lastExecTime.current = Date.now();
+      }, delay);
+    }
+  };
+}
+
+export default useThrottle;
 
 export function DrawerComponent() {
   const drawerRef = useRef<Drawer>();
@@ -17,14 +54,27 @@ export function DrawerComponent() {
   useEffect(() => {
     if (hasInit) return;
     hasInit = true;
+    IO.get("layers").then((layers) => {
+      if (Array.isArray(layers)) {
+        // @ts-ignore
+        layersHelper.setLayers(layers);
+      }
+    });
+
     const drawer = new Drawer(DrawerContainer);
     drawerRef.current = drawer;
     // @ts-expect-error 123
     window.drawer = drawer;
   }, []);
 
+  const save = useThrottle((value: Record<string, any>) => {
+    console.log("save", value);
+    IO.save("layers", value);
+  }, 3000);
+
   useEffect(() => {
     drawerRef.current?.updateLayers(layersHelper.layers);
+    save(layersHelper.layers);
   }, [layersHelper.layers]);
 
   return (
