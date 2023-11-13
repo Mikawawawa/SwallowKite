@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
 import "./global.css";
-import { CssBaseline } from "@mui/material";
+import { Theme } from "@/theme";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,10 +17,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="zh-cn">
       <body className={inter.className}>
-        <CssBaseline />
-        {children}
+        <Theme>{children}</Theme>
       </body>
     </html>
   );

@@ -6,6 +6,7 @@ import React, { useEffect, useRef } from "react";
 import { LayerController } from "./Controller";
 import { useLayerManager } from "@/drawer/useLayerReducer";
 import { IO } from "@/service/io";
+import { Surface } from "./Surface";
 
 const DrawerContainer = "renderDrawerContainer";
 
@@ -94,17 +95,15 @@ export function DrawerComponent() {
         >
           图层
         </Typography>
-        <Box
+        <Surface
           sx={{
             flexShrink: 0,
             overflowY: "hidden",
             flex: 1,
-            boxShadow: "#767575 0px -2px 13px 1px",
-            backgroundColor: "var(--joy-palette-background-surface)",
           }}
         >
           <LayerController helper={layersHelper} />
-        </Box>
+        </Surface>
       </Stack>
 
       <Stack
@@ -124,12 +123,10 @@ export function DrawerComponent() {
           预览
         </Typography>
 
-        <Stack
+        <Surface
           sx={{
             flex: 1,
             padding: 4,
-            boxShadow: "#767575 0px -2px 13px 1px",
-            backgroundColor: "var(--joy-palette-background-surface)",
           }}
         >
           <div
@@ -141,7 +138,7 @@ export function DrawerComponent() {
               width: "100%",
             }}
           />
-        </Stack>
+        </Surface>
       </Stack>
     </>
   );

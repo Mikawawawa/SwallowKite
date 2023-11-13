@@ -2,6 +2,7 @@
 import { MainScene } from "@/scene";
 import { Box, Button, Stack, Typography } from "@mui/joy";
 import React, { useEffect, useRef, useState } from "react";
+import { Surface } from "./Surface";
 
 const BabylonContainer = "renderCanvas";
 
@@ -58,12 +59,10 @@ export function SceneComponent() {
         )}
       </Stack>
 
-      <Stack
+      <Surface
         sx={{
           flex: 1,
           padding: 4,
-          boxShadow: "#767575 0px -2px 13px 1px",
-          backgroundColor: "var(--joy-palette-background-surface)",
         }}
       >
         <canvas
@@ -75,7 +74,7 @@ export function SceneComponent() {
             width: "100%",
           }}
         />
-      </Stack>
+      </Surface>
     </Stack>
   );
 }
