@@ -84,9 +84,12 @@ export const useSolutionStorage = (storageKey: string) => {
   const [solutionManager] = useState(() => new SolutionManager(storageKey));
   const [data, setData] = useState<ObjectItem[]>(solutionManager.getData());
 
+  const [inited, setInited] = useState(false);
+
   useEffect(() => {
     const updateData = () => {
       setData(solutionManager.getData());
+      setInited(true);
     };
 
     solutionManager.loadData().then(updateData);
@@ -122,5 +125,6 @@ export const useSolutionStorage = (storageKey: string) => {
     removeItem,
     updateItem,
     reorderItems,
+    inited,
   };
 };

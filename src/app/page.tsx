@@ -6,8 +6,40 @@ import CardContent from "@mui/joy/CardContent";
 import Typography from "@mui/joy/Typography";
 import LocationOnRoundedIcon from "@mui/icons-material/LocationOnRounded";
 import { useRouter } from "next/router";
-import { Box, Grid } from "@mui/joy";
+import {
+  AspectRatio,
+  Box,
+  Button,
+  Grid,
+  IconButton,
+  Sheet,
+  Skeleton,
+  Stack,
+} from "@mui/joy";
 import { useSolutionStorage } from "@/service/SolutionManger";
+
+import BookmarkAdd from "@mui/icons-material/BookmarkAddOutlined";
+
+function BasicCardSkeleton() {
+  return (
+    <Card sx={{ minHeight: "280px", width: "100%" }}>
+      <AspectRatio ratio="21/9">
+        <Skeleton variant="overlay">
+          <img
+            alt=""
+            src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="
+          />
+        </Skeleton>
+      </AspectRatio>
+      <Typography>
+        <Skeleton>
+          Lorem ipsum is placeholder text commonly used in the graphic, print,
+          and publishing industries.
+        </Skeleton>
+      </Typography>
+    </Card>
+  );
+}
 
 function GradientCover({ name, createdAt, updatedAt, onClick }: any) {
   return (
@@ -79,32 +111,57 @@ function AddCard({ onClick }: any) {
 }
 
 export default function SolutionList() {
-  const { data, addItem } = useSolutionStorage("swallow-kite-solutions");
+  const { inited, data, addItem } = useSolutionStorage(
+    "swallow-kite-solutions"
+  );
 
   return (
-    <Box sx={{ width: "80%", margin: "auto", marginTop: 0 }}>
-      <Typography level="title-lg" sx={{ color: "#FFFFFF" }}>
-        Gallery
-      </Typography>
-      <Grid container spacing={{ xs: 2 }}>
-        {data.map((item, index) => (
-          <Grid xs={12} sm={6} md={4} lg={3} key={index}>
-            <GradientCover
-              {...item}
-              onClick={() => (location.href = `/solution?key=${item.key}`)}
-            />
-          </Grid>
-        ))}
+    <Stack
+      component={Sheet}
+      color="warning"
+      variant="soft"
+      sx={{
+        width: "90%",
+        minHeight: "90vh",
+        margin: "auto",
+        marginTop: 0,
+        padding: "40px",
+      }}
+      spacing={4}
+    >
+      <Typography level="title-lg">Gallery</Typography>
 
-        <Grid xs={12} sm={6} md={4} lg={3}>
-          <AddCard
-            onClick={() => {
-              // @ts-ignore
-              addItem();
-            }}
-          />
-        </Grid>
+      <Grid container spacing={{ xs: 2 }}>
+        {inited ? (
+          <>
+            {data.map((item, index) => (
+              <Grid xs={12} sm={6} md={4} lg={3} key={index}>
+                <GradientCover
+                  {...item}
+                  onClick={() => (location.href = `/solution?key=${item.key}`)}
+                />
+              </Grid>
+            ))}
+
+            <Grid xs={12} sm={6} md={4} lg={3}>
+              <AddCard
+                onClick={() => {
+                  // @ts-ignore
+                  addItem();
+                }}
+              />
+            </Grid>
+          </>
+        ) : (
+          Array(4)
+            .fill(1)
+            .map((_, index) => (
+              <Grid xs={12} sm={6} md={4} lg={3} key={index}>
+                <BasicCardSkeleton />
+              </Grid>
+            ))
+        )}
       </Grid>
-    </Box>
+    </Stack>
   );
 }
