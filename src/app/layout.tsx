@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 
 import "./global.css";
 import { Theme } from "@/theme";
+import { Stack, Typography } from "@mui/joy";
+import { Toolbar } from "@mui/material";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,7 +21,29 @@ export default function RootLayout({
   return (
     <html lang="zh-cn">
       <body className={inter.className}>
-        <Theme>{children}</Theme>
+        <Theme>
+          <Stack
+            direction="column"
+            sx={{
+              height: "100vh",
+              width: "100vw",
+              overflow: "hidden",
+            }}
+          >
+            <Toolbar>
+              <Typography
+                level="title-lg"
+                component="div"
+                sx={{
+                  color: "#FFFFFF",
+                }}
+              >
+                Swallow Kite
+              </Typography>
+            </Toolbar>
+            {children}
+          </Stack>
+        </Theme>
       </body>
     </html>
   );
