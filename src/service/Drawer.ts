@@ -38,6 +38,7 @@ export class Drawer {
   }
 
   exportTexture() {
+    console.log('here')
     return this.app.view.toDataURL?.("image/png");
   }
 

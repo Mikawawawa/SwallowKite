@@ -71,10 +71,18 @@ export const SelectedLayer: FunctionComponent<
 
   return (
     <Flipped flipId={`${parentId}-productBackground`} onComplete={animateIn}>
-      <PaperCard ref={elRef} onClick={selected ? closeSelected : setSelected}>
+      <PaperCard
+        ref={elRef}
+        onClick={selected ? closeSelected : setSelected}
+        sx={{
+          cursor: "pointer",
+        }}
+      >
         {children}
 
-        <FadeInBox key={selected.toString()}>
+        <FadeInBox key={selected.toString()} sx={{
+          cursor: 'initial'
+        }}>
           {selected && (
             <LayerBasicConfig
               config={item}

@@ -3,7 +3,7 @@ import { Drawer } from "@/service/Drawer";
 
 import "babylonjs-loaders";
 import * as BABYLON from "babylonjs";
-import * as Materials from 'babylonjs-materials';
+import * as Materials from "babylonjs-materials";
 
 export class MainScene {
   public engine: BABYLON.Engine;
@@ -25,7 +25,7 @@ export class MainScene {
 
     // this.engine.hideLoadingUI(); // 隐藏加载界面
 
-    this.setSkyBox()
+    this.setSkyBox();
     // this.scene.debugLayer.show({ embedMode: false, handleResize: false });
 
     window.addEventListener("resize", () => {
@@ -57,7 +57,11 @@ export class MainScene {
       this.scene
     );
 
-    const light3 = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), this.scene);
+    const light3 = new BABYLON.HemisphericLight(
+      "light",
+      new BABYLON.Vector3(0, 1, 0),
+      this.scene
+    );
 
     light.intensity = 3; // 可根据需求调整
     light.diffuse = new BABYLON.Color3(1, 1, 1); // 修改光照颜色为白色
@@ -134,8 +138,7 @@ export class MainScene {
     camera.attachControl(this.canvas, true);
     camera.wheelPrecision = 20;
     camera.minZ = 0.1;
-    camera.lowerRadiusLimit = 0
-
+    camera.lowerRadiusLimit = 0;
 
     // const camera = new BABYLON.ArcRotateCamera(
     //   "Camera",
@@ -190,9 +193,22 @@ export class MainScene {
     //   )
     // );
 
-    const ground = BABYLON.Mesh.CreateGroundFromHeightMap("ground", "heightMap.png", 100, 100, 100, 0, 10, scene, false);
+    const ground = BABYLON.Mesh.CreateGroundFromHeightMap(
+      "ground",
+      "heightMap.png",
+      100,
+      100,
+      100,
+      0,
+      10,
+      scene,
+      false
+    );
     const groundMaterial = new BABYLON.StandardMaterial("ground", scene);
-    groundMaterial.diffuseTexture = new BABYLON.Texture("/img/background.jpg", scene);
+    groundMaterial.diffuseTexture = new BABYLON.Texture(
+      "/img/background.jpg",
+      scene
+    );
     // @ts-ignore
     groundMaterial.diffuseTexture.uScale = 6;
     // @ts-ignore
@@ -206,7 +222,7 @@ export class MainScene {
         // "https://patrickryanms.github.io/BabylonJStextures/Demos/sheen/SheenCloth.gltf"
         "/qipao.gltf"
         // "pimon.glb"
-      ),
+      )
     );
 
     // Callback when assets are loaded
@@ -216,11 +232,8 @@ export class MainScene {
         return;
       }
 
-
-
-      root.position = new BABYLON.Vector3(0, -2, 0)
-      root.scaling = new BABYLON.Vector3(10, 10, 10)
-
+      root.position = new BABYLON.Vector3(0, -2, 0);
+      root.scaling = new BABYLON.Vector3(10, 10, 10);
 
       // var pimon = scene.getMeshByName("pimon");
       // var pimonOutline = scene.getMeshByName("outline");
@@ -360,15 +373,12 @@ export class MainScene {
     });
   }
 
-  getNextMaterial() {
-    const textureSize = 256; // 贴图大小
+  getNextMaterial(src: string) {
+    // const textureSize = 256; // 贴图大小
     // @ts-expect-error
     const drawer = window.drawer as Drawer;
 
-    const texture = new BABYLON.Texture(
-      drawer.exportTexture() as string,
-      this.scene
-    ); // drawer.exportTexture()是dataURL格式的图片数据
+    const texture = new BABYLON.Texture(src, this.scene); // drawer.exportTexture()是dataURL格式的图片数据
 
     return texture;
     // const color = new BABYLON.Color3(1, 1, 0.92); // 米白色
@@ -393,10 +403,10 @@ export class MainScene {
     // return dynamicTexture;
   }
 
-  updateMaterial(name: string) {
+  updateMaterial(name: string, src: string) {
     const model = this.scene.getMeshByName(name); // 替换为你的模型名称
-
-    if (!model) {
+    console.log("model, src", model, src);
+    if (!model || !src) {
       return;
     }
 
@@ -408,7 +418,7 @@ export class MainScene {
     }
 
     // 获取纹理对象
-    const nextTexture = this.getNextMaterial();
+    const nextTexture = this.getNextMaterial(src);
 
     // @ts-expect-error unknown
     this.texture = nextTexture;
@@ -418,7 +428,7 @@ export class MainScene {
   }
 
   setSkyBox() {
-    const scene = this.scene
+    const scene = this.scene;
     // Sky material
     const skyboxMaterial = new Materials.SkyMaterial("skyMaterial", scene);
     skyboxMaterial.backFaceCulling = false;
@@ -429,23 +439,29 @@ export class MainScene {
     skybox.material = skyboxMaterial;
 
     /*
-    * Keys:
-    * - 1: Day
-    * - 2: Evening
-    * - 3: Increase Luminance
-    * - 4: Decrease Luminance
-    * - 5: Increase Turbidity
-    * - 6: Decrease Turbidity
-      * - 7: Move horizon to -50
-      * - 8: Restore horizon to 0
-    */
+     * Keys:
+     * - 1: Day
+     * - 2: Evening
+     * - 3: Increase Luminance
+     * - 4: Decrease Luminance
+     * - 5: Increase Turbidity
+     * - 6: Decrease Turbidity
+     * - 7: Move horizon to -50
+     * - 8: Restore horizon to 0
+     */
     const setSkyConfig = function (property: string, from: number, to: number) {
       var keys = [
         { frame: 0, value: from },
-        { frame: 100, value: to }
+        { frame: 100, value: to },
       ];
 
-      const animation = new BABYLON.Animation("animation", property, 100, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+      const animation = new BABYLON.Animation(
+        "animation",
+        property,
+        100,
+        BABYLON.Animation.ANIMATIONTYPE_FLOAT,
+        BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT
+      );
       animation.setKeys(keys);
 
       scene.stopAnimation(skybox);
@@ -462,9 +478,13 @@ export class MainScene {
       setSkyConfig("material.turbidity", skyboxMaterial.turbidity, 40); // 5
       // setSkyConfig("material.turbidity", skyboxMaterial.turbidity, 5); // 6
 
-      setSkyConfig("material.cameraOffset.y", skyboxMaterial.cameraOffset.y, 50); // 7
+      setSkyConfig(
+        "material.cameraOffset.y",
+        skyboxMaterial.cameraOffset.y,
+        50
+      ); // 7
       // setSkyConfig("material.cameraOffset.y", skyboxMaterial.cameraOffset.y, 0);  // 8
-    }
+    };
 
     // Set to Day
     setSkyConfig("material.inclination", skyboxMaterial.inclination, 0);

@@ -6,8 +6,8 @@ export const Surface = (props: StackProps) => {
       {...{
         ...(props || {}),
         sx: {
-          boxShadow: "#767575 0px -2px 13px 1px",
-          backgroundColor: "var(--joy-palette-background-surface)",
+          boxShadow: "0 4px 4px rgba(204, 197, 185, 0.5)",
+          backgroundColor: "#FFFFFF",
           ...(props.sx || {}),
         },
       }}

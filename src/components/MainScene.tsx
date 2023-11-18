@@ -20,8 +20,8 @@ export const SceneComponent = forwardRef(
     const scene = useRef<MainScene>();
 
     useImperativeHandle(ref, () => ({
-      updateMaterial: (key: string) => {
-        scene.current?.updateMaterial?.(key);
+      updateMaterial: (key: string, src: string) => {
+        scene.current?.updateMaterial?.(key, src);
       },
     }));
 
@@ -54,7 +54,7 @@ export const SceneComponent = forwardRef(
             场景
           </Typography>
 
-          {afterDraw && (
+          {/* {afterDraw && (
             <Button
               variant="soft"
               color="neutral"
@@ -68,7 +68,7 @@ export const SceneComponent = forwardRef(
             >
               更新贴图
             </Button>
-          )}
+          )} */}
         </Stack>
 
         <Surface

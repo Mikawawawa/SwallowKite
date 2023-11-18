@@ -20,14 +20,16 @@ export default function Home({ params }: any) {
   const sceneRef = React.useRef<MainScene>();
 
   const save = useThrottle((value: Record<string, any>) => {
-    SolutionManager.save(params.solutionId, value);
-    sceneRef.current?.updateMaterial?.("main");
+    const texture = drawerRef.current?.exportTexture?.() as string;
+    console.log('draw', texture)
+    SolutionManager.save(params.solutionId, { ...value, texture });
+
+    sceneRef.current?.updateMaterial?.("main", texture);
   }, 1000);
 
   useEffect(() => {
     SolutionManager.get(params.solutionId).then((layers) => {
       if (Array.isArray(layers)) {
-        // @ts-ignore
         layersHelper.setLayers(layers);
       }
     });
@@ -49,7 +51,6 @@ export default function Home({ params }: any) {
         ref={drawerRef}
         layersHelper={layersHelper}
         onChange={(value) => {
-          console.log("onChange");
           drawerRef.current?.updateLayers?.(value);
           save(value);
         }}

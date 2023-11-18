@@ -1,7 +1,6 @@
 "use client";
 import { Drawer } from "@/service/Drawer";
-import { MainScene } from "@/service/Scene";
-import { Box, Button, Stack, Typography } from "@mui/joy";
+import { Stack, Typography } from "@mui/joy";
 import React, { useEffect, useImperativeHandle, useRef } from "react";
 import { LayerController } from "./Controller";
 import {
@@ -9,8 +8,6 @@ import {
   useLayerManager,
 } from "@/hooks/useLayerReducer";
 import { Surface } from "./Surface";
-import { IO } from "@/service/io";
-import { useThrottle } from "@/hooks/useThrottle";
 
 const DrawerContainer = "renderDrawerContainer";
 
@@ -27,7 +24,14 @@ export const DrawerComponent = React.forwardRef(function DrawerComponentInner(
   ref
 ) {
   useImperativeHandle(ref, () => ({
-    ...drawerRef.current,
+    updateLayers: (value: TextureLayerForRender[]) => {
+      drawerRef.current?.updateLayers(value);
+    },
+    exportTexture: () => {
+      const res = drawerRef.current?.exportTexture?.();
+      console.log("res", res);
+      return res;
+    },
   }));
 
   const drawerRef = useRef<Drawer>();
