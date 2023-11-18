@@ -63,7 +63,7 @@ export const DotLayerConfig: FunctionComponent<{
             render={({ field }) => (
               <LayerConfigSlider
                 {...field}
-                min={-100}
+                min={-99}
                 max={300}
                 valueLabelFormat={(value) => {
                   return `${(1 + value / 100).toFixed(2)} x`;
@@ -81,7 +81,7 @@ export const DotLayerConfig: FunctionComponent<{
             render={({ field }) => (
               <LayerConfigSlider
                 {...field}
-                min={-100}
+                min={-99}
                 max={300}
                 valueLabelFormat={(value) => {
                   return `${(1 + value / 100).toFixed(2)} x`;

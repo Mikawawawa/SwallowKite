@@ -7,7 +7,7 @@ import * as yup from "yup";
 import { LayerConfigSlider } from "./fields/Slider";
 import { RgbColorPicker } from "react-colorful";
 import { ColorPicker } from "./fields/ColorPicker";
-import { TextureLayerForRender } from "@/drawer/useLayerReducer";
+import { TextureLayerForRender } from "@/hooks/useLayerReducer";
 
 export const LayerBasicConfig: FunctionComponent<{
   config: Partial<TextureLayerForRender>;

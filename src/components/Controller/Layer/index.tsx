@@ -2,7 +2,7 @@ import React, { FunctionComponent, PropsWithChildren } from "react";
 import { SelectedLayer } from "./selected";
 import { LayerCard } from "./idle";
 import { Box } from "@mui/joy";
-import { TextureLayerForRender } from "@/drawer/useLayerReducer";
+import { TextureLayerForRender } from "@/hooks/useLayerReducer";
 
 // This part should be refactored
 // Layer should just show the least information at first

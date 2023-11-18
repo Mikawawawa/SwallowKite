@@ -4,12 +4,11 @@ import Card from "@mui/joy/Card";
 import CardCover from "@mui/joy/CardCover";
 import CardContent from "@mui/joy/CardContent";
 import Typography from "@mui/joy/Typography";
+
 import LocationOnRoundedIcon from "@mui/icons-material/LocationOnRounded";
-import { useRouter } from "next/router";
 import {
   AspectRatio,
   Box,
-  Button,
   Grid,
   IconButton,
   Sheet,
@@ -18,7 +17,12 @@ import {
 } from "@mui/joy";
 import { useSolutionStorage } from "@/service/SolutionManger";
 
-import BookmarkAdd from "@mui/icons-material/BookmarkAddOutlined";
+import Link from "next/link";
+import {
+  Delete,
+  DeleteOutlineOutlined,
+  RemoveCircleOutline,
+} from "@mui/icons-material";
 
 function BasicCardSkeleton() {
   return (
@@ -41,9 +45,15 @@ function BasicCardSkeleton() {
   );
 }
 
-function GradientCover({ name, createdAt, updatedAt, onClick }: any) {
+function GradientCover({ name, createdAt, updatedAt, onRemove }: any) {
   return (
-    <Card sx={{ minHeight: "280px", width: "100%" }} onClick={onClick}>
+    <Card
+      sx={{
+        minHeight: "280px",
+        width: "100%",
+        position: "relative",
+      }}
+    >
       <CardCover>
         <img
           src="https://images.unsplash.com/photo-1542773998-9325f0a098d7?auto=format&fit=crop&w=320"
@@ -69,6 +79,41 @@ function GradientCover({ name, createdAt, updatedAt, onClick }: any) {
           {new Date(createdAt).toLocaleString()}
         </Typography>
       </CardContent>
+
+      <Box
+        sx={{
+          position: "absolute",
+          width: "100%",
+          height: "100%",
+          top: 0,
+          left: 0,
+          opacity: 0,
+          zIndex: 1,
+          transition: "all 0.3s ease-out",
+          "&:hover": {
+            opacity: 1,
+          },
+        }}
+      >
+        <IconButton
+          className="card-cta-delete"
+          aria-label="bookmark Bahamas Islands"
+          variant="outlined"
+          size="sm"
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            onRemove?.();
+          }}
+          sx={{ position: "absolute", top: 1, right: 1, zIndex: 1 }}
+        >
+          <DeleteOutlineOutlined
+            sx={{
+              color: "white",
+            }}
+          />
+        </IconButton>
+      </Box>
     </Card>
   );
 }
@@ -111,7 +156,7 @@ function AddCard({ onClick }: any) {
 }
 
 export default function SolutionList() {
-  const { inited, data, addItem } = useSolutionStorage(
+  const { inited, data, addItem, removeItem } = useSolutionStorage(
     "swallow-kite-solutions"
   );
 
@@ -135,11 +180,20 @@ export default function SolutionList() {
         {inited ? (
           <>
             {data.map((item, index) => (
-              <Grid xs={12} sm={6} md={4} lg={3} key={index}>
-                <GradientCover
-                  {...item}
-                  onClick={() => (location.href = `/solution?key=${item.key}`)}
-                />
+              <Grid xs={12} sm={6} md={4} lg={3} key={item.key}>
+                <Link
+                  href={`/solution/${item.key}`}
+                  style={{
+                    textDecoration: "none",
+                  }}
+                >
+                  <GradientCover
+                    {...item}
+                    onRemove={() => {
+                      removeItem(item.key);
+                    }}
+                  />
+                </Link>
               </Grid>
             ))}
 

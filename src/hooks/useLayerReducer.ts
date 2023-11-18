@@ -195,6 +195,7 @@ export function useLayerManager() {
     addLayer,
     updateLayer,
     removeLayer,
-    setLayers
+    setLayers,
+    clear
   };
 }

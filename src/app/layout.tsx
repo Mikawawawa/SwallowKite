@@ -5,6 +5,7 @@ import "./global.css";
 import { Theme } from "@/theme";
 import { Stack, Typography } from "@mui/joy";
 import { Toolbar } from "@mui/material";
+import Link from "next/link";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -31,15 +32,22 @@ export default function RootLayout({
             }}
           >
             <Toolbar>
-              <Typography
-                level="title-lg"
-                component="div"
-                sx={{
-                  color: "#FFFFFF",
+              <Link
+                href="/"
+                style={{
+                  textDecoration: "none",
                 }}
               >
-                Swallow Kite
-              </Typography>
+                <Typography
+                  level="title-lg"
+                  component="div"
+                  sx={{
+                    color: "#FFFFFF",
+                  }}
+                >
+                  Swallow Kite
+                </Typography>
+              </Link>
             </Toolbar>
             {children}
           </Stack>

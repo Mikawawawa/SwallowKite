@@ -10,7 +10,7 @@ import {
 import {
   TextureLayerForRender,
   useLayerManager,
-} from "@/drawer/useLayerReducer";
+} from "@/hooks/useLayerReducer";
 
 import { Flipper, Flipped } from "react-flip-toolkit";
 

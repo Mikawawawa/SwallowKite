@@ -5,7 +5,7 @@ import { ColorLayerConfig, ColorLayerPreviewer } from "./color";
 import {
   TextureLayerForRender,
   useLayerManager,
-} from "@/drawer/useLayerReducer";
+} from "@/hooks/useLayerReducer";
 import {
   Box,
   Button,

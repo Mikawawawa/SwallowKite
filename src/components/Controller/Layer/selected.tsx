@@ -11,7 +11,7 @@ import React, {
 import { Flipped, spring } from "react-flip-toolkit";
 import { PaperCard } from "./styled";
 import { LayerBasicConfig } from "../Config/layer";
-import { TextureLayerForRender } from "@/drawer/useLayerReducer";
+import { TextureLayerForRender } from "@/hooks/useLayerReducer";
 
 const FadeInBox = (props: BoxProps) => {
   return (
