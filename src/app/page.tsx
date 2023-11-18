@@ -23,6 +23,7 @@ import {
   DeleteOutlineOutlined,
   RemoveCircleOutline,
 } from "@mui/icons-material";
+import { HoverBox } from "@/components/HoverBox";
 
 function BasicCardSkeleton() {
   return (
@@ -187,23 +188,27 @@ export default function SolutionList() {
                     textDecoration: "none",
                   }}
                 >
-                  <GradientCover
-                    {...item}
-                    onRemove={() => {
-                      removeItem(item.key);
-                    }}
-                  />
+                  <HoverBox>
+                    <GradientCover
+                      {...item}
+                      onRemove={() => {
+                        removeItem(item.key);
+                      }}
+                    />
+                  </HoverBox>
                 </Link>
               </Grid>
             ))}
 
             <Grid xs={12} sm={6} md={4} lg={3}>
-              <AddCard
-                onClick={() => {
-                  // @ts-ignore
-                  addItem();
-                }}
-              />
+              <HoverBox>
+                <AddCard
+                  onClick={() => {
+                    // @ts-ignore
+                    addItem();
+                  }}
+                />
+              </HoverBox>
             </Grid>
           </>
         ) : (
