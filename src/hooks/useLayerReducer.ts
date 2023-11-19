@@ -83,13 +83,21 @@ type InitialState = {
 type Action =
   | { type: "SET"; payload: TextureLayer[] }
   | { type: "ADD_LAYER"; payload: TextureLayerForRender }
-  | { type: "UPDATE_LAYER"; payload: { id: string; layer: TextureLayer } }
+  | {
+      type: "UPDATE_LAYER";
+      payload: {
+        callback: any;
+        id: string;
+        layer: TextureLayer;
+      };
+    }
   | { type: "REMOVE_LAYER"; payload: string } // payload 是图层的唯一标识符
   | { type: "CLEAR" };
 
 // Reducer函数
 const layerReducer = (state: InitialState, action: Action): InitialState => {
   const { layers, layersMap } = state;
+
   switch (action.type) {
     case "CLEAR": {
       layersMap.clear();
@@ -132,10 +140,19 @@ const layerReducer = (state: InitialState, action: Action): InitialState => {
           layer.id === action.payload.id ? action.payload.layer : layer
         );
         layersMap.set(action.payload.id, action.payload.layer);
-        return {
+
+        const newState = {
           ...state,
           layers: updatedLayers,
         };
+
+        console.log(newState)
+
+        if (action.payload.callback) {
+          requestAnimationFrame(() => action.payload.callback?.(newState));
+        }
+
+        return newState;
       }
       break;
     }
@@ -177,8 +194,15 @@ export function useLayerManager() {
   };
 
   // 更新图层
-  const updateLayer = (id: string, updatedLayer: TextureLayer) => {
-    dispatch({ type: "UPDATE_LAYER", payload: { id, layer: updatedLayer } });
+  const updateLayer = (
+    id: string,
+    updatedLayer: TextureLayer,
+    callback: Function
+  ) => {
+    dispatch({
+      type: "UPDATE_LAYER",
+      payload: { id, layer: updatedLayer, callback },
+    });
   };
 
   // 删除图层
@@ -196,6 +220,6 @@ export function useLayerManager() {
     updateLayer,
     removeLayer,
     setLayers,
-    clear
+    clear,
   };
 }

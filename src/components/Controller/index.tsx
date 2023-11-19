@@ -1,10 +1,11 @@
 import { Button, Card, Stack, styled } from "@mui/joy";
-
-import { Box } from "@mui/material";
+import { throttle } from "lodash";
+import { Box, debounce } from "@mui/material";
 import {
   FunctionComponent,
   MouseEventHandler,
   PropsWithChildren,
+  useCallback,
   useState,
 } from "react";
 import {
@@ -19,11 +20,23 @@ import { Layer } from "./Layer";
 
 export const LayerController: FunctionComponent<{
   helper: ReturnType<typeof useLayerManager>;
-}> = ({ helper }) => {
+  onChange: Function;
+}> = ({ helper, onChange }) => {
   const { layers: data, addLayer, updateLayer } = helper;
 
   const [focusedLayerIndex, setFocusedLayerIndex] = useState<null | number>(
     null
+  );
+
+  const handleUpdate = useCallback(
+    (id: string, data: any) => {
+      const notify = throttle((value) => {
+        console.log('value',value)
+        onChange(value?.layers);
+      }, 10);
+      updateLayer(id, data, notify);
+    },
+    [onChange, updateLayer]
   );
 
   return (
@@ -53,7 +66,7 @@ export const LayerController: FunctionComponent<{
               selected={selected}
               setSelected={setFocusedLayerIndex}
               onChange={(value: any) => {
-                updateLayer(item.id, {
+                handleUpdate(item.id, {
                   ...item,
                   ...value,
                 });
@@ -61,7 +74,7 @@ export const LayerController: FunctionComponent<{
             >
               <LayerConfig
                 setType={(type) => {
-                  updateLayer(item.id, {
+                  handleUpdate(item.id, {
                     ...item,
                     type,
                     props: {},
@@ -70,7 +83,7 @@ export const LayerController: FunctionComponent<{
                 selected={selected}
                 layer={data[index]}
                 onChange={(value: any) => {
-                  updateLayer(item.id, {
+                  handleUpdate(item.id, {
                     ...item,
                     props: {
                       ...item.props,
@@ -85,6 +98,7 @@ export const LayerController: FunctionComponent<{
         <Flipped flipId={"layers-cta"}>
           {Array.isArray(data) && (
             <Button
+              // @ts-ignore
               onClick={() => addLayer({})}
               variant="soft"
               sx={{

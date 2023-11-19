@@ -46,7 +46,8 @@ function BasicCardSkeleton() {
   );
 }
 
-function GradientCover({ name, createdAt, updatedAt, onRemove }: any) {
+function GradientCover({ name, createdAt, updatedAt, onRemove, texture }: any) {
+  console.log('texture', texture)
   return (
     <Card
       sx={{
@@ -57,8 +58,14 @@ function GradientCover({ name, createdAt, updatedAt, onRemove }: any) {
     >
       <CardCover>
         <img
-          src="https://images.unsplash.com/photo-1542773998-9325f0a098d7?auto=format&fit=crop&w=320"
-          srcSet="https://images.unsplash.com/photo-1542773998-9325f0a098d7?auto=format&fit=crop&w=320&dpr=2 2x"
+          src={
+            texture ||
+            "https://images.unsplash.com/photo-1542773998-9325f0a098d7?auto=format&fit=crop&w=320"
+          }
+          srcSet={
+            texture ||
+            "https://images.unsplash.com/photo-1542773998-9325f0a098d7?auto=format&fit=crop&w=320&dpr=2 2x"
+          }
           loading="lazy"
           alt=""
         />
@@ -180,25 +187,28 @@ export default function SolutionList() {
       <Grid container spacing={{ xs: 2 }}>
         {inited ? (
           <>
-            {data.map((item, index) => (
-              <Grid xs={12} sm={6} md={4} lg={3} key={item.key}>
-                <Link
-                  href={`/solution/${item.key}`}
-                  style={{
-                    textDecoration: "none",
-                  }}
-                >
-                  <HoverBox>
-                    <GradientCover
-                      {...item}
-                      onRemove={() => {
-                        removeItem(item.key);
-                      }}
-                    />
-                  </HoverBox>
-                </Link>
-              </Grid>
-            ))}
+            {data.map((item, index) => {
+              const { key, ...restProps } = item || {};
+              return (
+                <Grid xs={12} sm={6} md={4} lg={3} key={key}>
+                  <Link
+                    href={`/solution/${key}`}
+                    style={{
+                      textDecoration: "none",
+                    }}
+                  >
+                    <HoverBox>
+                      <GradientCover
+                        {...restProps}
+                        onRemove={() => {
+                          removeItem(key);
+                        }}
+                      />
+                    </HoverBox>
+                  </Link>
+                </Grid>
+              );
+            })}
 
             <Grid xs={12} sm={6} md={4} lg={3}>
               <HoverBox>

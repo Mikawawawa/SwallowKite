@@ -12,11 +12,11 @@ import { Surface } from "./Surface";
 
 const BabylonContainer = "renderCanvas";
 
-let hasInit = false;
+
 
 export const SceneComponent = forwardRef(
   function SceneComponentInner(props, ref) {
-    const [afterDraw, setAfterDraw] = useState(false);
+    const hasInit = useRef(false);
     const scene = useRef<MainScene>();
 
     useImperativeHandle(ref, () => ({
@@ -26,13 +26,12 @@ export const SceneComponent = forwardRef(
     }));
 
     useEffect(() => {
-      if (hasInit) return;
-      hasInit = true;
+      if (hasInit.current) return;
+      hasInit.current = true;
       scene.current = new MainScene(BabylonContainer);
 
       scene.current.initScene().then(() => {
         scene.current?.renderLoop();
-        setAfterDraw(true);
       });
     }, []);
 

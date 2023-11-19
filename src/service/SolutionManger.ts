@@ -29,7 +29,19 @@ export class SolutionManager {
         this.storageKey
       );
       if (storedData) {
-        this.data = storedData;
+        this.data = (await Promise.all(
+          storedData.map(async (item) => {
+            const data = await SolutionManager.get(
+              window.encodeURIComponent(item.key)
+            );
+
+            return {
+              ...item,
+              ...(data as Object),
+            };
+          })
+        )) as ObjectItem[];
+        console.log("this.data", this.data);
       }
     } catch (error) {
       console.error("Error fetching data from local storage:", error);

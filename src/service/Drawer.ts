@@ -43,7 +43,7 @@ export class Drawer {
   }
 
   render() {
-    this.layers.forEach((layer) => {
+    this.layers?.forEach?.((layer) => {
       const { type, props, opacity, offset, size, rotation, scale } = layer;
 
       let layerSprite: PIXI.Sprite | PIXI.Graphics | PIXI.Container;

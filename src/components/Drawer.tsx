@@ -11,8 +11,6 @@ import { Surface } from "./Surface";
 
 const DrawerContainer = "renderDrawerContainer";
 
-let hasInit = false;
-
 export const DrawerComponent = React.forwardRef(function DrawerComponentInner(
   {
     layersHelper,
@@ -23,6 +21,8 @@ export const DrawerComponent = React.forwardRef(function DrawerComponentInner(
   },
   ref
 ) {
+  const hasInit = useRef<boolean>(false);
+
   useImperativeHandle(ref, () => ({
     updateLayers: (value: TextureLayerForRender[]) => {
       drawerRef.current?.updateLayers(value);
@@ -37,8 +37,8 @@ export const DrawerComponent = React.forwardRef(function DrawerComponentInner(
   const drawerRef = useRef<Drawer>();
 
   useEffect(() => {
-    if (hasInit) return;
-    hasInit = true;
+    if (hasInit.current) return;
+    hasInit.current = true;
 
     const drawer = new Drawer(DrawerContainer);
     drawerRef.current = drawer;
@@ -46,11 +46,11 @@ export const DrawerComponent = React.forwardRef(function DrawerComponentInner(
     window.drawer = drawer;
   }, []);
 
-  useEffect(() => {
-    // drawerRef.current?.updateLayers(layersHelper.layers);
-    // save(layersHelper.layers);
-    onChange(layersHelper.layers);
-  }, [layersHelper.layers]);
+  // useEffect(() => {
+  //   // drawerRef.current?.updateLayers(layersHelper.layers);
+  //   // save(layersHelper.layers);
+  //   onChange(layersHelper.layers);
+  // }, [layersHelper.layers]);
 
   return (
     <>
@@ -76,7 +76,7 @@ export const DrawerComponent = React.forwardRef(function DrawerComponentInner(
             flex: 1,
           }}
         >
-          <LayerController helper={layersHelper} />
+          <LayerController helper={layersHelper} onChange={onChange} />
         </Surface>
       </Stack>
 
