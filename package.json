@@ -21,6 +21,7 @@
     "babylonjs-materials": "^6.28.1",
     "localforage": "^1.10.0",
     "lodash": "^4.17.21",
+    "nanoid": "^5.0.3",
     "next": "13.5.4",
     "pixi.js": "^7.3.1",
     "react": "^18",

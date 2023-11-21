@@ -1,6 +1,7 @@
 "use client";
 import localforage from "localforage";
 import { useEffect, useState } from "react";
+import { StorageService } from "./Storage";
 
 export interface ObjectItem {
   key: string;
@@ -9,25 +10,19 @@ export interface ObjectItem {
   updatedAt: number;
 }
 
-export class SolutionManager {
+export class SolutionManager extends StorageService {
   private storageKey: string;
   private data: ObjectItem[];
 
   constructor(storageKey: string) {
+    super();
     this.storageKey = storageKey;
     this.data = [];
   }
 
-  private generateUniqueKey(): string {
-    // Generate a unique key based on the current timestamp
-    return window.btoa(Date.now().toString());
-  }
-
-  async loadData() {
+  async load() {
     try {
-      const storedData = await localforage.getItem<ObjectItem[]>(
-        this.storageKey
-      );
+      const storedData = await super.loadData<ObjectItem[]>(this.storageKey);
       if (storedData) {
         this.data = (await Promise.all(
           storedData.map(async (item) => {
@@ -48,9 +43,9 @@ export class SolutionManager {
     }
   }
 
-  private async saveData() {
+  async saveData() {
     try {
-      await localforage.setItem(this.storageKey, this.data);
+      await super.saveData(this.storageKey, this.data);
     } catch (error) {
       console.error("Error saving data to local storage:", error);
     }
@@ -123,7 +118,7 @@ export const useSolutionStorage = (storageKey: string) => {
       setInited(true);
     };
 
-    solutionManager.loadData().then(updateData);
+    solutionManager.load().then(updateData);
 
     return () => {
       // Cleanup

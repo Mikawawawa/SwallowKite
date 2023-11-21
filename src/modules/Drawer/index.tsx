@@ -7,7 +7,7 @@ import {
   TextureLayerForRender,
   useLayerManager,
 } from "@/hooks/useLayerReducer";
-import { Surface } from "./Surface";
+import { Surface } from "../../components/Surface";
 
 const DrawerContainer = "renderDrawerContainer";
 

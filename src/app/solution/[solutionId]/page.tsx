@@ -1,10 +1,10 @@
 "use client";
 
-import { SceneComponent } from "@/components/MainScene";
+import { SceneComponent } from "@/modules/MainScene";
 import * as React from "react";
 
 import Stack from "@mui/material/Stack";
-import { DrawerComponent } from "@/components/Drawer";
+import { DrawerComponent } from "@/modules/Drawer";
 import { Box, Toolbar } from "@mui/material";
 import { useLayerManager } from "@/hooks/useLayerReducer";
 import { useEffect } from "react";
@@ -27,7 +27,8 @@ export default function Home({ params }: any) {
   }, 1000);
 
   useEffect(() => {
-    SolutionManager.get(params.solutionId).then(({ value: layers }: any) => {
+    SolutionManager.get(params.solutionId).then((result: any) => {
+      const { value: layers } = result || {};
       if (Array.isArray(layers)) {
         layersHelper.setLayers(layers);
       }
