@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from "react";
+import { ImageStorageManager, ImageItem } from "@/service/AssetGallery";
 import {
   Button,
   TextField,
   Typography,
-  Card,
-  CardContent,
-  CardActions,
+  ImageList,
+  ImageListItem,
+  ImageListItemBar,
   IconButton,
 } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { ImageItem, ImageStorageManager } from "@/service/AssetGallery";
+import EditIcon from "@mui/icons-material/Edit";
+import { HoverBox } from "@/components/HoverBox";
 
-const ImageManager: React.FC<{ namespace: string }> = ({ namespace }) => {
+export const AssetGallery: React.FC<{ namespace: string }> = ({
+  namespace,
+}) => {
   const imageStorage = new ImageStorageManager(namespace);
   const [imageList, setImageList] = useState<ImageItem[]>([]);
   const [newImageName, setNewImageName] = useState<string>("");
@@ -28,32 +31,27 @@ const ImageManager: React.FC<{ namespace: string }> = ({ namespace }) => {
 
   const handleAddImage = async () => {
     if (newImageSource) {
-      const key = await imageStorage.addImage(newImageSource, newImageName);
+      await imageStorage.addImage(newImageSource, newImageName);
       setNewImageName("");
       setNewImageSource("");
-      setImageList([
-        ...imageList,
-        { key, source: newImageSource, name: newImageName },
-      ]);
+      setImageList(await imageStorage.getImageList());
     }
   };
 
   const handleRemoveImage = async (key: string) => {
     await imageStorage.removeImage(key);
-    setImageList(imageList.filter((item) => item.key !== key));
+    setImageList(await imageStorage.getImageList());
   };
 
   const handleUpdateImage = async (key: string, name: string) => {
     await imageStorage.updateImage(key, { name });
-    setImageList(
-      imageList.map((item) => (item.key === key ? { ...item, name } : item))
-    );
+    setImageList(await imageStorage.getImageList());
   };
 
   return (
     <div>
       <Typography variant="h4" gutterBottom>
-        Image Manager
+        Image List Manager
       </Typography>
       <div>
         <TextField
@@ -72,36 +70,26 @@ const ImageManager: React.FC<{ namespace: string }> = ({ namespace }) => {
           Add Image
         </Button>
       </div>
-      <div style={{ marginTop: "20px" }}>
+      <ImageList sx={{ width: "100%" }} cols={4}>
         {imageList.map((image) => (
-          <Card key={image.key} style={{ marginBottom: "10px" }}>
-            <CardContent>
-              <Typography variant="h6">{image.name}</Typography>
-              <img
-                src={image.source}
-                alt={image.name}
-                style={{ maxWidth: "100%" }}
+          <HoverBox key={image.key}>
+            <ImageListItem>
+              <img src={image.source} alt={image.name} loading="lazy" />
+              <ImageListItemBar
+                title={image.name}
+                actionIcon={
+                  <IconButton
+                    onClick={() => handleRemoveImage(image.key)}
+                    color="error"
+                  >
+                    <EditIcon />
+                  </IconButton>
+                }
               />
-            </CardContent>
-            <CardActions>
-              <IconButton
-                color="error"
-                onClick={() => handleRemoveImage(image.key)}
-              >
-                <DeleteIcon />
-              </IconButton>
-              <TextField
-                label="New Name"
-                variant="outlined"
-                size="small"
-                onChange={(e) => handleUpdateImage(image.key, e.target.value)}
-              />
-            </CardActions>
-          </Card>
+            </ImageListItem>
+          </HoverBox>
         ))}
-      </div>
+      </ImageList>
     </div>
   );
 };
-
-export default ImageManager;

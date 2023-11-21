@@ -6,11 +6,12 @@ import { Theme } from "@/theme";
 import { Stack, Typography } from "@mui/joy";
 import { Toolbar } from "@mui/material";
 import Link from "next/link";
+import DrawerFilters from "@/components/InsetDrawer";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "风筝纹理预览",
+  title: "SwallowKite",
   description: "Developed by Mikawawa",
 };
 
@@ -32,22 +33,32 @@ export default function RootLayout({
             }}
           >
             <Toolbar>
-              <Link
-                href="/"
-                style={{
-                  textDecoration: "none",
+              <Stack
+                direction="row"
+                justifyContent={"space-between"}
+                sx={{
+                  width: "100%",
                 }}
               >
-                <Typography
-                  level="title-lg"
-                  component="div"
-                  sx={{
-                    color: "#FFFFFF",
+                <Link
+                  href="/"
+                  style={{
+                    textDecoration: "none",
                   }}
                 >
-                  Swallow Kite
-                </Typography>
-              </Link>
+                  <Typography
+                    level="title-lg"
+                    component="div"
+                    sx={{
+                      color: "#FFFFFF",
+                    }}
+                  >
+                    Swallow Kite
+                  </Typography>
+                </Link>
+
+                <DrawerFilters />
+              </Stack>
             </Toolbar>
             {children}
           </Stack>
