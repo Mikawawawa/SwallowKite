@@ -35,6 +35,7 @@ export default function DrawerFilters() {
   const [open, setOpen] = React.useState(false);
   const [type, setType] = React.useState("Guesthouse");
   const [amenities, setAmenities] = React.useState([0, 6]);
+  const [selected, setSelected] = React.useState<string>();
 
   return (
     <React.Fragment>
@@ -69,10 +70,18 @@ export default function DrawerFilters() {
           }}
         >
           <DialogTitle>Assets Gallery</DialogTitle>
+
           <ModalClose />
           <Divider sx={{ mt: "auto" }} />
           <DialogContent sx={{ gap: 2 }}>
-            <AssetGallery namespace={"ugc"} />
+            <Typography>
+              This is the demo for image selection component
+            </Typography>
+            <AssetGallery
+              debug={process.env.NODE_ENV === "development"}
+              namespace={"ugc"}
+              onChange={(source) => setSelected(source)}
+            />
             {/* <FormControl>
               <FormLabel sx={{ typography: "title-md", fontWeight: "bold" }}>
                 Property type
@@ -254,6 +263,17 @@ export default function DrawerFilters() {
             </Button>
             <Button onClick={() => setOpen(false)}>Show 165 properties</Button>
           </Stack> */}
+
+          <Button
+            variant="soft"
+            disabled={!selected}
+            onClick={() => {
+              setOpen(false);
+              console.log("source", selected);
+            }}
+          >
+            Choose
+          </Button>
         </Sheet>
       </Drawer>
     </React.Fragment>

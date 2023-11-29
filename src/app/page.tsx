@@ -20,15 +20,15 @@ export default function SolutionList() {
 
   return (
     <Stack
-      component={Sheet}
-      color="warning"
-      variant="soft"
       sx={{
-        width: "90%",
         minHeight: "90vh",
-        margin: "auto",
+        marginLeft: 3,
+        marginRight: 3,
         marginTop: 0,
-        padding: "40px",
+        padding: 4,
+        backdropFilter: "blur(50px)",
+        backgroundColor: "rgba(255, 255, 255, 0.3)",
+        borderRadius: "16px",
       }}
       spacing={4}
     >

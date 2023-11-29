@@ -12,7 +12,7 @@ import { DeleteOutlineOutlined } from "@mui/icons-material";
 
 export function BasicCardSkeleton() {
   return (
-    <Card sx={{ minHeight: "280px", width: "100%" }}>
+    <Card sx={{ minHeight: "280px", width: "100%" }} variant="soft">
       <AspectRatio ratio="21/9">
         <Skeleton variant="overlay">
           <img
@@ -45,6 +45,7 @@ export function GradientCover({
         width: "100%",
         position: "relative",
       }}
+      variant="soft"
     >
       <CardCover>
         <img
@@ -122,6 +123,7 @@ export function AddCard({ onClick }: any) {
       component="li"
       sx={{ width: "100%", minHeight: "280px", flexGrow: 1, cursor: "pointer" }}
       onClick={onClick}
+      variant="soft"
     >
       <CardCover>
         <video

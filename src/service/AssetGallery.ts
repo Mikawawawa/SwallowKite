@@ -17,6 +17,10 @@ export class ImageStorageManager extends StorageService {
 
   async addImage(source: string, name?: string): Promise<string> {
     const key = this.generateUniqueKey();
+    console.log("key", key);
+    if (!key) {
+      throw Error("Get empty key");
+    }
 
     // Save the image data
     await this.saveData(key, { source, name });
@@ -53,12 +57,11 @@ export class ImageStorageManager extends StorageService {
 
   async getImage(key: string): Promise<ImageItem | null> {
     const existingData = await this.loadData<ImageItem>(key);
-
     if (!existingData) {
       return null;
     }
 
-    return existingData;
+    return { ...existingData, key };
   }
 
   async getImageList(): Promise<ImageItem[]> {

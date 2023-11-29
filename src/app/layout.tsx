@@ -4,7 +4,7 @@ import { Inter } from "next/font/google";
 import "./global.css";
 import { Theme } from "@/theme";
 import { Stack, Typography } from "@mui/joy";
-import { Toolbar } from "@mui/material";
+import { Skeleton, Toolbar } from "@mui/material";
 import Link from "next/link";
 import DrawerFilters from "@/components/InsetDrawer";
 
@@ -32,7 +32,11 @@ export default function RootLayout({
               overflow: "hidden",
             }}
           >
-            <Toolbar>
+            <Toolbar
+              sx={{
+                backdropFilter: "blur(10px)",
+              }}
+            >
               <Stack
                 direction="row"
                 justifyContent={"space-between"}
@@ -60,6 +64,7 @@ export default function RootLayout({
                 <DrawerFilters />
               </Stack>
             </Toolbar>
+
             {children}
           </Stack>
         </Theme>

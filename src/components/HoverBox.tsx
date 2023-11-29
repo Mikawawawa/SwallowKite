@@ -14,7 +14,9 @@ export const HoverBox: FunctionComponent<PropsWithChildren<{}>> = (props) => {
         transform: Transform,
         zIndex: scale ? 10 : 0,
         transition: "transform 0.1s ease",
-        boxShadow: scale ? "0 4px 4px rgba(204, 197, 185, 0.5)" : "none",
+        filter: scale
+          ? "drop-shadow(0 4px 4px rgba(154, 137, 145, 0.5))"
+          : "none",
         "&div": {
           transform: "translateZ(12px)",
         },

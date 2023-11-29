@@ -17,6 +17,13 @@ import { CacheProvider } from "@emotion/react";
 import { CssBaseline } from "@mui/joy";
 import React from "react";
 
+import { motion } from "framer-motion";
+
+const variants = {
+  hidden: { opacity: 0, x: 0, y: -200 },
+  enter: { opacity: 1, x: 0, y: 0 },
+};
+
 export const Theme: FunctionComponent<PropsWithChildren<any>> = ({
   children,
 }) => {
@@ -61,6 +68,7 @@ export const Theme: FunctionComponent<PropsWithChildren<any>> = ({
       />
     );
   });
+
   return (
     <MaterialCssVarsProvider
       defaultMode="system"
@@ -68,7 +76,14 @@ export const Theme: FunctionComponent<PropsWithChildren<any>> = ({
     >
       <JoyCssVarsProvider defaultMode="system">
         <CssBaseline />
-        {children}
+        <motion.main
+          variants={variants}
+          initial="hidden"
+          animate="enter"
+          transition={{ type: "linear" }}
+        >
+          {children}
+        </motion.main>
       </JoyCssVarsProvider>
     </MaterialCssVarsProvider>
   );
