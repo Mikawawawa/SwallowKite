@@ -1,72 +1,86 @@
 "use client";
-import { SceneComponent } from "@/components/MainScene";
 import * as React from "react";
-import Typography from "@mui/material/Typography";
+import Typography from "@mui/joy/Typography";
 
+import { Grid, Sheet, Stack } from "@mui/joy";
+import { useSolutionStorage } from "@/service/SolutionManger";
+
+import Link from "next/link";
+import { HoverBox } from "@/components/HoverBox";
 import {
-  experimental_extendTheme as materialExtendTheme,
-  Experimental_CssVarsProvider as MaterialCssVarsProvider,
-  THEME_ID as MATERIAL_THEME_ID,
-} from "@mui/material/styles";
-import { CssVarsProvider as JoyCssVarsProvider } from "@mui/joy/styles";
+  GradientCover,
+  BasicCardSkeleton,
+  AddCard,
+} from "@/modules/Solution/Cards";
 
-import Stack from "@mui/material/Stack";
-import { DrawerComponent } from "@/components/Drawer";
-import { Box, Toolbar } from "@mui/material";
+export default function SolutionList() {
+  const { inited, data, addItem, removeItem } = useSolutionStorage(
+    "swallow-kite-solutions"
+  );
 
-const materialTheme = materialExtendTheme();
-
-export default function Home() {
   return (
-    <MaterialCssVarsProvider
-      defaultMode="system"
-      theme={{ [MATERIAL_THEME_ID]: materialTheme }}
+    <Stack
+      sx={{
+        minHeight: "90vh",
+        marginLeft: 3,
+        marginRight: 3,
+        marginTop: 0,
+        padding: 4,
+        backdropFilter: "blur(50px)",
+        backgroundColor: "rgba(255, 255, 255, 0.3)",
+        borderRadius: "16px",
+      }}
+      spacing={4}
     >
-      <JoyCssVarsProvider defaultMode="system">
-        <Stack
-          direction="column"
-          sx={{
-            height: "100vh",
-            width: "100vw",
-            overflow: "hidden",
-          }}
-        >
-          <Toolbar>
-            <Typography
-              variant="h6"
-              component="div"
-              sx={{
-                color: "#FFFFFF",
-              }}
-            >
-              Swallow Kite
-            </Typography>
-          </Toolbar>
+      <Typography level="title-lg">Gallery</Typography>
 
-          <Stack
-            direction="row"
-            component={"main"}
-            sx={{
-              flex: 1,
-              flexWrap: "nowrap",
-              padding: 3,
-              overflow: "hidden",
-            }}
-            spacing={2}
-          >
-            <DrawerComponent />
+      <Grid container spacing={{ xs: 2 }}>
+        {inited ? (
+          <>
+            {data.map((item, index) => {
+              const { key, ...restProps } = item || {};
+              return (
+                <Grid xs={12} sm={6} md={4} lg={3} key={key}>
+                  <Link
+                    href={`/solution/${key}`}
+                    style={{
+                      textDecoration: "none",
+                    }}
+                  >
+                    <HoverBox>
+                      <GradientCover
+                        {...restProps}
+                        onRemove={() => {
+                          removeItem(key);
+                        }}
+                      />
+                    </HoverBox>
+                  </Link>
+                </Grid>
+              );
+            })}
 
-            <Box
-              sx={{
-                height: "100%",
-                flex: 3,
-              }}
-            >
-              <SceneComponent />
-            </Box>
-          </Stack>
-        </Stack>
-      </JoyCssVarsProvider>
-    </MaterialCssVarsProvider>
+            <Grid xs={12} sm={6} md={4} lg={3}>
+              <HoverBox>
+                <AddCard
+                  onClick={() => {
+                    // @ts-ignore
+                    addItem();
+                  }}
+                />
+              </HoverBox>
+            </Grid>
+          </>
+        ) : (
+          Array(4)
+            .fill(1)
+            .map((_, index) => (
+              <Grid xs={12} sm={6} md={4} lg={3} key={index}>
+                <BasicCardSkeleton />
+              </Grid>
+            ))
+        )}
+      </Grid>
+    </Stack>
   );
 }

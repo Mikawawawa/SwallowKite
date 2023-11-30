@@ -1,36 +1,37 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Getting Started
+# TL;DR
+This is a simple toy project that let users create textures with traditional Chinese swallow kite concepts.
+The textures can be used on the cheongsam model immediately.
 
-First, run the development server:
+The textures maker is driven by PIXI.js and the 3D scene is made by Babylon.js
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+# Todo List
+[ ] Layer configuration
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+[ ] Localization storage of creation by indexDB
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+[ ] Asset presets
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+[ ] Make a cartoon shader material, it's a popular style these days.
 
-## Learn More
+[ ] Try some approaches to make the model more smooth (cloth simulation ?), any how, at least I should create a normal map
 
-To learn more about Next.js, take a look at the following resources:
+# Progress
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project setup
+![Project setup](./assets/ba5dfdac2a6ac06484a8c75193915996.png)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Concept verfication
 
-## Deploy on Vercel
+Generate a dynamic texture and update it to mesh
+![](assets/dc9a3362f6e61b75e9eb8ff0ab94cf7f.png)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Verify how to generate texture and update the material of meshes.
+![Layers info](./assets/a3a9543b578436e6e2ced9074af55b9b.png)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+![Rendered](./assets/f079a5865f38ca1ec95dbf11fc213822.png)
+
+## UI Enhancement
+I'm pretend to make a sense of working hub
+![](./assets/065CC0E05F927E6482EC4D5382552386.png)

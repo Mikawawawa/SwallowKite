@@ -2,12 +2,16 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
 import "./global.css";
-import { CssBaseline } from "@mui/material";
+import { Theme } from "@/theme";
+import { Stack, Typography } from "@mui/joy";
+import { Skeleton, Toolbar } from "@mui/material";
+import Link from "next/link";
+import DrawerFilters from "@/components/InsetDrawer";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "风筝纹理预览",
+  title: "SwallowKite",
   description: "Developed by Mikawawa",
 };
 
@@ -17,10 +21,53 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="zh-cn">
       <body className={inter.className}>
-        <CssBaseline />
-        {children}
+        <Theme>
+          <Stack
+            direction="column"
+            sx={{
+              height: "100vh",
+              width: "100vw",
+              overflow: "hidden",
+            }}
+          >
+            <Toolbar
+              sx={{
+                backdropFilter: "blur(10px)",
+              }}
+            >
+              <Stack
+                direction="row"
+                justifyContent={"space-between"}
+                sx={{
+                  width: "100%",
+                }}
+              >
+                <Link
+                  href="/"
+                  style={{
+                    textDecoration: "none",
+                  }}
+                >
+                  <Typography
+                    level="title-lg"
+                    component="div"
+                    sx={{
+                      color: "#FFFFFF",
+                    }}
+                  >
+                    Swallow Kite
+                  </Typography>
+                </Link>
+
+                <DrawerFilters />
+              </Stack>
+            </Toolbar>
+
+            {children}
+          </Stack>
+        </Theme>
       </body>
     </html>
   );
