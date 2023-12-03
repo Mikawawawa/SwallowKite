@@ -25,7 +25,6 @@ export const LayerConfig: FunctionComponent<{
     <Box>
       {layer.type === "pattern" && (
         <>
-          <DotLayerPreviewer config={layer.props} />
           <Box
             onClick={(e) => {
               e.stopPropagation();
@@ -37,7 +36,6 @@ export const LayerConfig: FunctionComponent<{
       )}
       {layer.type === "image" && (
         <>
-          <ImageLayerPreviewer config={layer.props} />
           <Box
             onClick={(e) => {
               e.stopPropagation();
@@ -49,7 +47,6 @@ export const LayerConfig: FunctionComponent<{
       )}
       {layer.type === "solid" && (
         <>
-          <ColorLayerPreviewer config={layer.props} />
           <Box
             onClick={(e) => {
               e.stopPropagation();
@@ -57,6 +54,33 @@ export const LayerConfig: FunctionComponent<{
           >
             <ColorLayerConfig config={layer.props} onChange={onChange} />
           </Box>
+        </>
+      )}
+    </Box>
+  );
+};
+
+export const LayerPreview: FunctionComponent<{
+  layer: TextureLayerForRender;
+  onChange: (value: unknown) => void;
+  setType: (type: TextureLayerForRender["type"]) => void;
+  selected: boolean;
+}> = ({ layer, onChange, setType }) => {
+  return (
+    <Box>
+      {layer.type === "pattern" && (
+        <>
+          <DotLayerPreviewer config={layer.props} />
+        </>
+      )}
+      {layer.type === "image" && (
+        <>
+          <ImageLayerPreviewer config={layer.props} />
+        </>
+      )}
+      {layer.type === "solid" && (
+        <>
+          <ColorLayerPreviewer config={layer.props} />
         </>
       )}
       {!layer.type && <TypeSelection onChange={setType} />}

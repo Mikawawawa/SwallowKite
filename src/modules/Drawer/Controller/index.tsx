@@ -1,6 +1,6 @@
-import { Button, Card, Stack, styled } from "@mui/joy";
+import { Button, Card, IconButton, Stack, styled } from "@mui/joy";
 import { throttle } from "lodash";
-import { Box, debounce } from "@mui/material";
+import { Box, Icon, debounce } from "@mui/material";
 import {
   FunctionComponent,
   MouseEventHandler,
@@ -15,8 +15,9 @@ import {
 
 import { Flipper, Flipped } from "react-flip-toolkit";
 
-import { LayerConfig } from "./Config";
+import { LayerConfig, LayerPreview } from "./Config";
 import { Layer } from "./Layer";
+import { ArrowLeft } from "@mui/icons-material";
 
 export const LayerController: FunctionComponent<{
   helper: ReturnType<typeof useLayerManager>;
@@ -31,7 +32,7 @@ export const LayerController: FunctionComponent<{
   const handleUpdate = useCallback(
     (id: string, data: any) => {
       const notify = throttle((value) => {
-        console.log('value',value)
+        console.log("value", value);
         onChange(value?.layers);
       }, 10);
       updateLayer(id, data, notify);
@@ -71,6 +72,28 @@ export const LayerController: FunctionComponent<{
                   ...value,
                 });
               }}
+              configor={
+                <LayerPreview
+                  setType={(type) => {
+                    handleUpdate(item.id, {
+                      ...item,
+                      type,
+                      props: {},
+                    });
+                  }}
+                  selected={selected}
+                  layer={data[index]}
+                  onChange={(value: any) => {
+                    handleUpdate(item.id, {
+                      ...item,
+                      props: {
+                        ...item.props,
+                        ...value,
+                      },
+                    });
+                  }}
+                />
+              }
             >
               <LayerConfig
                 setType={(type) => {
@@ -95,6 +118,13 @@ export const LayerController: FunctionComponent<{
             </Layer>
           );
         })}
+
+        <Flipped flipId={"layers-no-items"}>
+          {Array.isArray(data) && data?.length === 0 && (
+            <Box>Please add new layers firstly</Box>
+          )}
+        </Flipped>
+
         <Flipped flipId={"layers-cta"}>
           {Array.isArray(data) && (
             <Button

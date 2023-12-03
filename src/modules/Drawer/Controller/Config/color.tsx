@@ -1,4 +1,12 @@
-import { AspectRatio, Slider, Stack, Typography, SliderProps } from "@mui/joy";
+import {
+  AspectRatio,
+  Slider,
+  Stack,
+  Typography,
+  SliderProps,
+  Badge,
+  Chip,
+} from "@mui/joy";
 import { Box } from "@mui/material";
 import React, { useEffect, useRef } from "react";
 import { FunctionComponent } from "react";
@@ -14,19 +22,31 @@ export const ColorLayerPreviewer = React.memo(function Previewer({
   config: any;
 }) {
   return (
-    <>
-      <Typography level="title-lg">色彩</Typography>
+    <Stack direction={"row"} spacing={1}>
       <Stack component={Typography} level="body-sm" direction="row" spacing={2}>
-        {config.content}{" "}
         <Box
           sx={{
-            width: "32px",
-            height: "18px",
+            width: "64px",
+            height: "36px",
             backgroundColor: config.content,
+            filter: "drop-shadow(0 4px 4px rgba(154, 137, 145, 0.5))",
           }}
         ></Box>
       </Stack>
-    </>
+      <Stack direction="column" alignItems={"flex-start"}>
+        <Chip >色彩</Chip>
+        <Chip size="sm">
+          <Typography
+            level="body-sm"
+            sx={{
+              color: config.content,
+            }}
+          >
+            {config.content}
+          </Typography>
+        </Chip>
+      </Stack>
+    </Stack>
   );
 });
 

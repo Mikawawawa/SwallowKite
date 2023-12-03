@@ -7,6 +7,7 @@ import { Stack, Typography } from "@mui/joy";
 import { Skeleton, Toolbar } from "@mui/material";
 import Link from "next/link";
 import DrawerFilters from "@/components/InsetDrawer";
+import Head from "next/head";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,6 +23,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="zh-cn">
+      <Head>
+        <link rel="shortcut icon" href="/kite.ico" />
+      </Head>
       <body className={inter.className}>
         <Theme>
           <Stack
@@ -61,7 +65,7 @@ export default function RootLayout({
                   </Typography>
                 </Link>
 
-                <DrawerFilters />
+                {/* <DrawerFilters /> */}
               </Stack>
             </Toolbar>
 

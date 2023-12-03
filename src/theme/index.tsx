@@ -71,10 +71,10 @@ export const Theme: FunctionComponent<PropsWithChildren<any>> = ({
 
   return (
     <MaterialCssVarsProvider
-      defaultMode="system"
+      defaultMode="light"
       theme={{ [MATERIAL_THEME_ID]: materialTheme }}
     >
-      <JoyCssVarsProvider defaultMode="system">
+      <JoyCssVarsProvider defaultMode="light">
         <CssBaseline />
         <motion.main
           variants={variants}

@@ -1,4 +1,11 @@
-import { AspectRatio, Slider, Stack, Typography, SliderProps } from "@mui/joy";
+import {
+  AspectRatio,
+  Slider,
+  Stack,
+  Typography,
+  SliderProps,
+  Chip,
+} from "@mui/joy";
 import { Box } from "@mui/material";
 import React, { useEffect, useRef } from "react";
 import { FunctionComponent } from "react";
@@ -13,9 +20,20 @@ export const DotLayerPreviewer = React.memo(function Previewer({
   config: any;
 }) {
   return (
-    <>
-      <Typography level="title-lg">图案</Typography>
-    </>
+    <Stack direction={"row"} spacing={1}>
+      <img
+        src={config.src ? config.src : "none"}
+        style={{
+          width: "64px",
+          height: "36px",
+          filter: "drop-shadow(0 4px 4px rgba(154, 137, 145, 0.5))",
+          objectFit: "contain",
+        }}
+      />
+      <Typography level="title-lg">
+        <Chip>图案</Chip>
+      </Typography>
+    </Stack>
   );
 });
 

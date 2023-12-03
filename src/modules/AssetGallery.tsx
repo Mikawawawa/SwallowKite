@@ -1,7 +1,14 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  ChangeEventHandler,
+  useCallback,
+  FunctionComponent,
+  PropsWithChildren,
+} from "react";
 import { ImageStorageManager, ImageItem } from "@/service/AssetGallery";
 import {
-  Button,
   TextField,
   Typography,
   ImageList,
@@ -11,8 +18,10 @@ import {
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import { HoverBox } from "@/components/HoverBox";
-import { AspectRatio, Checkbox, Stack } from "@mui/joy";
-import { Delete } from "@mui/icons-material";
+import { AspectRatio, Box, Checkbox, Stack, Button } from "@mui/joy";
+import { Delete, UploadFile } from "@mui/icons-material";
+import { UploadTrigger } from "@/components/UploadTrigger";
+import { EditableText } from "@/components/ClickToEdit";
 
 export const AssetGallery: React.FC<{
   namespace: string;
@@ -59,7 +68,6 @@ export const AssetGallery: React.FC<{
     setImageList(await imageStorage.current.getImageList());
   };
 
-
   return (
     <div>
       {debug && (
@@ -105,7 +113,14 @@ export const AssetGallery: React.FC<{
             </AspectRatio>
 
             <ImageListItemBar
-              title={image.name}
+              title={
+                <EditableText
+                  value={image.name}
+                  onChange={(value) => {
+                    handleUpdateImage(image.key, value);
+                  }}
+                />
+              }
               position="top"
               actionIcon={
                 <Checkbox
@@ -149,6 +164,13 @@ export const AssetGallery: React.FC<{
             />
           </ImageListItem>
         ))}
+
+        <UploadTrigger
+          onChange={async (url, name) => {
+            await imageStorage.current.addImage(url, name || "untiled");
+            setImageList(await imageStorage.current.getImageList());
+          }}
+        />
       </ImageList>
     </div>
   );
