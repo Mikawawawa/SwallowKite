@@ -5,6 +5,7 @@ import {
   Typography,
   SliderProps,
   Chip,
+  FormLabel,
 } from "@mui/joy";
 import { Box } from "@mui/material";
 import React, { useEffect, useRef } from "react";
@@ -66,7 +67,7 @@ export const DotLayerConfig: FunctionComponent<{
     <form>
       <Stack direction="column" sx={{ flex: 1 }}>
         <Stack direction="column">
-          <label>贴图</label>
+          <FormLabel>贴图</FormLabel>
           <Controller
             name="src"
             control={control}
@@ -74,7 +75,7 @@ export const DotLayerConfig: FunctionComponent<{
           />
         </Stack>
         <Stack direction="column">
-          <label>左右间距</label>
+          <FormLabel>左右间距</FormLabel>
           <Controller
             name="columnGap"
             control={control}
@@ -92,7 +93,7 @@ export const DotLayerConfig: FunctionComponent<{
         </Stack>
 
         <Stack direction="column">
-          <label>上下间距</label>
+          <FormLabel>上下间距</FormLabel>
           <Controller
             name="rowGap"
             control={control}
@@ -110,7 +111,7 @@ export const DotLayerConfig: FunctionComponent<{
         </Stack>
 
         <Stack direction="column">
-          <label>缩放</label>
+          <FormLabel>缩放</FormLabel>
           <Controller
             name="zoom"
             control={control}

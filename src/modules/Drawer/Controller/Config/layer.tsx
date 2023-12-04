@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useEffect, useRef } from "react";
 import { ImagePicker } from "./fields/ImagePicker";
-import { AspectRatio, Slider, Stack, Typography, SliderProps } from "@mui/joy";
+import { AspectRatio, Slider, Stack, Typography, SliderProps, FormLabel } from "@mui/joy";
 import { Box } from "@mui/material";
 import { useForm, Controller, useWatch } from "react-hook-form";
 import * as yup from "yup";
@@ -48,7 +48,7 @@ export const LayerBasicConfig: FunctionComponent<{
       <Stack direction="column" sx={{ flex: 1 }}>
         <Stack direction="column">
           <Stack direction="column">
-            <label>偏移X</label>
+            <FormLabel>偏移X</FormLabel>
             <Controller
               name="offset.x"
               control={control}
@@ -56,7 +56,7 @@ export const LayerBasicConfig: FunctionComponent<{
             />
           </Stack>
           <Stack direction="column">
-            <label>偏移Y</label>
+            <FormLabel>偏移Y</FormLabel>
             <Controller
               name="offset.y"
               control={control}
@@ -64,7 +64,7 @@ export const LayerBasicConfig: FunctionComponent<{
             />
           </Stack>
           <Stack direction="column">
-            <label>旋转</label>
+            <FormLabel>旋转</FormLabel>
             <Controller
               name="rotation"
               control={control}
@@ -82,7 +82,7 @@ export const LayerBasicConfig: FunctionComponent<{
             />
           </Stack>
           <Stack direction="column">
-            <label>缩放</label>
+            <FormLabel>缩放</FormLabel>
             <Controller
               name="scale"
               control={control}
@@ -100,7 +100,7 @@ export const LayerBasicConfig: FunctionComponent<{
           </Stack>
 
           <Stack direction="column">
-            <label>透明度</label>
+            <FormLabel>透明度</FormLabel>
             <Controller
               name="opacity"
               control={control}

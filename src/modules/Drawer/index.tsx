@@ -74,6 +74,8 @@ export const DrawerComponent = React.forwardRef(function DrawerComponentInner(
             flexShrink: 0,
             overflowY: "hidden",
             flex: 1,
+            background: "transparent",
+            boxShadow: "none",
           }}
         >
           <LayerController helper={layersHelper} onChange={onChange} />

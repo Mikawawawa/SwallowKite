@@ -45,8 +45,9 @@ export const LayerController: FunctionComponent<{
 
     // }}>
     <Stack
-      component={Flipper}
-      flipKey={focusedLayerIndex}
+      // component={Flipper}
+      // flipKey={focusedLayerIndex}
+      spacing={1}
       sx={{
         width: "320px",
         overflowY: "visible",

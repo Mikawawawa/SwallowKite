@@ -1,16 +1,35 @@
 import React, {
-  FunctionComponent,
-  PropsWithChildren,
-  ReactNode,
   useMemo,
+  useRef,
+  FunctionComponent,
+  MouseEventHandler,
+  PropsWithChildren,
+  useEffect,
+  ReactNode,
   useState,
+  useCallback,
 } from "react";
 import { SelectedLayer } from "./selected";
 import { LayerCard } from "./idle";
-import { Box, IconButton } from "@mui/joy";
-import { TextureLayerForRender } from "@/hooks/useLayerReducer";
+import {
+  Box,
+  BoxProps,
+  Card,
+  IconButton,
+  Stack,
+  Tab,
+  TabList,
+  Tabs,
+  tabClasses,
+} from "@mui/joy";
 import { debounce } from "@mui/material";
-import { ArrowLeft } from "@mui/icons-material";
+
+import { Flipped, spring } from "react-flip-toolkit";
+import { PaperCard } from "./styled";
+import { LayerBasicConfig } from "../Config/layer";
+import { TextureLayerForRender } from "@/hooks/useLayerReducer";
+import { ArrowLeft, ArrowRight } from "@mui/icons-material";
+import { Collapse } from "@mui/material";
 
 // This part should be refactored
 // Layer should just show the least information at first
@@ -25,23 +44,85 @@ export const Layer: FunctionComponent<
     configor: ReactNode;
   }>
 > = ({ index, selected, setSelected, children, onChange, item, configor }) => {
+  const [active, setActive] = useState<"basic" | "props">("props");
+
   return (
-    <Box
+    <Card
       sx={{
-        position: "relative",
+        cursor: "pointer",
       }}
     >
-      <SelectedLayer
-        index={index}
-        item={item}
-        configor={configor}
-        selected={selected}
-        closeSelected={() => setSelected(null)}
-        setSelected={() => setSelected(index)}
-        onChange={onChange}
+      <IconButton
+        onClick={() => {
+          setSelected(selected ? null : index);
+        }}
+        sx={{
+          position: "absolute",
+          top: 1,
+          right: 1,
+        }}
       >
-        {children}
-      </SelectedLayer>
-    </Box>
+        <ArrowRight
+          sx={{
+            transition: "all 0.2s ease-in",
+            transform: `rotate(${selected ? 90 : 0}deg)`,
+          }}
+        />
+      </IconButton>
+
+      {configor}
+
+      <Collapse in={selected}>
+        <>
+          <Tabs
+            aria-label="tabs"
+            value={active}
+            defaultValue={0}
+            onChange={(e, value) => {
+              // @ts-ignore
+              setActive(value);
+            }}
+            sx={{ bgcolor: "transparent" }}
+            size="sm"
+          >
+            <TabList
+              disableUnderline
+              sx={{
+                p: 0.5,
+                gap: 0.5,
+                borderRadius: "xl",
+                bgcolor: "background.level1",
+                [`& .${tabClasses.root}`]: {
+                  flex: 1,
+                },
+                [`& .${tabClasses.root}[aria-selected="true"]`]: {
+                  boxShadow: "sm",
+                  bgcolor: "background.surface",
+                },
+              }}
+            >
+              <Tab disableIndicator value="props">
+                Props
+              </Tab>
+              <Tab disableIndicator value="basic">
+                Basic
+              </Tab>
+            </TabList>
+          </Tabs>
+
+          <Stack direction="column">
+            {active === "props" && children}
+            {active === "basic" && (
+              <LayerBasicConfig
+                config={item}
+                onChange={(newConfig: any) => {
+                  onChange?.(newConfig);
+                }}
+              />
+            )}
+          </Stack>
+        </>
+      </Collapse>
+    </Card>
   );
 };
