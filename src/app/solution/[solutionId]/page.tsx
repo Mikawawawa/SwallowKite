@@ -15,7 +15,10 @@ import { MainScene } from "@/service/Scene";
 import { SolutionManager } from "@/service/SolutionManger";
 
 export default function Home({ params }: any) {
-  const layersHelper = useLayerManager();
+  const layersHelper = useLayerManager((value) => {
+    save(value);
+    drawerRef.current?.updateLayers?.(value);
+  });
   const drawerRef = React.useRef<Drawer>();
   const sceneRef = React.useRef<MainScene>();
 
@@ -51,7 +54,6 @@ export default function Home({ params }: any) {
         ref={drawerRef}
         layersHelper={layersHelper}
         onChange={(value) => {
-          console.log("53", value);
           drawerRef.current?.updateLayers?.(value);
           save(value);
         }}

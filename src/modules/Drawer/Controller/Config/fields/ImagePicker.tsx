@@ -1,22 +1,22 @@
-import { Stack, AspectRatio, Box, Button } from "@mui/joy";
+import { AssetGallery } from "@/modules/AssetGallery";
+import {
+  Stack,
+  AspectRatio,
+  Box,
+  Button,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  Drawer,
+  ModalClose,
+  Sheet,
+  Typography,
+} from "@mui/joy";
 import React, { ChangeEventHandler, useCallback, useRef } from "react";
 
 export const ImagePicker = ({ onChange, value }: any) => {
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  const handleFileChange: ChangeEventHandler<HTMLInputElement> = useCallback(
-    (e) => {
-      const file = e.target.files?.[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          onChange?.(reader.result);
-        };
-        reader.readAsDataURL(file);
-      }
-    },
-    [onChange]
-  );
+  const [open, setOpen] = React.useState(false);
+  const [selected, setSelected] = React.useState<string>();
 
   return (
     <Stack
@@ -25,6 +25,61 @@ export const ImagePicker = ({ onChange, value }: any) => {
         position: "relative",
       }}
     >
+      <Drawer
+        anchor="right"
+        size="lg"
+        variant="plain"
+        open={open}
+        onClose={() => setOpen(false)}
+        slotProps={{
+          content: {
+            sx: {
+              bgcolor: "transparent",
+              p: { md: 3, sm: 0 },
+              boxShadow: "none",
+            },
+          },
+        }}
+      >
+        <Sheet
+          sx={{
+            borderRadius: "md",
+            p: 2,
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
+            height: "100%",
+            overflow: "auto",
+          }}
+        >
+          <DialogTitle>Assets Gallery</DialogTitle>
+
+          <ModalClose />
+          <Divider sx={{ mt: "auto" }} />
+          <DialogContent sx={{ gap: 2 }}>
+            <Typography>
+              This is the demo for image selection component
+            </Typography>
+            <AssetGallery
+              debug={process.env.NODE_ENV === "development"}
+              namespace={"ugc"}
+              onChange={(source) => setSelected(source)}
+            />
+          </DialogContent>
+
+          <Button
+            variant="soft"
+            disabled={!selected}
+            onClick={() => {
+              setOpen(false);
+              onChange?.(selected);
+            }}
+          >
+            Choose
+          </Button>
+        </Sheet>
+      </Drawer>
+
       <Box
         sx={{
           background: "rgba(150, 150, 150, 0.3)",
@@ -41,24 +96,11 @@ export const ImagePicker = ({ onChange, value }: any) => {
             opacity: 1,
           },
         }}
+        onClick={() => {
+          setOpen(true);
+        }}
       >
-        <input
-          type="file"
-          accept="image/*"
-          ref={inputRef}
-          style={{
-            position: "absolute",
-            width: "100%",
-            height: "100%",
-            opacity: 0,
-            zIndex: 1,
-            cursor: "pointer",
-          }}
-          onChange={handleFileChange}
-        />
-        <Button variant="soft" onClick={() => inputRef?.current?.click?.()}>
-          上传图片
-        </Button>
+        <Button variant="soft">选择图片</Button>
       </Box>
 
       <AspectRatio maxHeight={100}>

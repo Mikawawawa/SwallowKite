@@ -17,7 +17,7 @@ export default function MediaCard({
     <Card>
       <Image
         alt="Random image"
-        src="https://source.unsplash.com/random"
+        src="/img/card.jpeg"
         width={640}
         height={480}
         style={{

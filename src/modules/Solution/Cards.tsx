@@ -49,13 +49,10 @@ export function GradientCover({
     >
       <CardCover>
         <img
-          src={
-            texture ||
-            "https://images.unsplash.com/photo-1542773998-9325f0a098d7?auto=format&fit=crop&w=320"
-          }
+          src={texture || "/img/card.jpeg"}
           srcSet={
             texture ||
-            "https://images.unsplash.com/photo-1542773998-9325f0a098d7?auto=format&fit=crop&w=320&dpr=2 2x"
+            "https://images.unsplash.com/photo-1527181152855-fc03fc7949c8?auto=format&w=500&dpr=1"
           }
           loading="lazy"
           alt=""
@@ -97,7 +94,8 @@ export function GradientCover({
         <IconButton
           className="card-cta-delete"
           aria-label="bookmark Bahamas Islands"
-          variant="outlined"
+          variant='soft'
+          color="danger"
           size="sm"
           onClick={(e) => {
             e.stopPropagation();
@@ -106,11 +104,7 @@ export function GradientCover({
           }}
           sx={{ position: "absolute", top: 1, right: 1, zIndex: 1 }}
         >
-          <DeleteOutlineOutlined
-            sx={{
-              color: "white",
-            }}
-          />
+          <DeleteOutlineOutlined />
         </IconButton>
       </Box>
     </Card>
@@ -130,10 +124,10 @@ export function AddCard({ onClick }: any) {
           autoPlay
           loop
           muted
-          poster="https://assets.codepen.io/6093409/river.jpg"
+          poster="/img/river.jpg"
         >
           <source
-            src="https://assets.codepen.io/6093409/river.mp4"
+            src="/img/river.mp4"
             type="video/mp4"
           />
         </video>

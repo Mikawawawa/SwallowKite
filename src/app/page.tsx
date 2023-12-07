@@ -12,6 +12,7 @@ import {
   BasicCardSkeleton,
   AddCard,
 } from "@/modules/Solution/Cards";
+import JoySignInSideTemplate from "@/modules/Demo";
 
 export default function SolutionList() {
   const { inited, data, addItem, removeItem } = useSolutionStorage(
@@ -32,7 +33,11 @@ export default function SolutionList() {
       }}
       spacing={4}
     >
-      <Typography level="title-lg">Gallery</Typography>
+      {/* <JoySignInSideTemplate /> */}
+
+      <Typography level="title-lg" sx={{
+        color: "white",
+      }}>Design Gallery</Typography>
 
       <Grid container spacing={{ xs: 2 }}>
         {inited ? (

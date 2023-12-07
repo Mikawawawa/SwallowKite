@@ -1,4 +1,12 @@
-import { AspectRatio, Slider, Stack, Typography, SliderProps } from "@mui/joy";
+import {
+  AspectRatio,
+  Slider,
+  Stack,
+  Typography,
+  SliderProps,
+  Chip,
+  FormLabel,
+} from "@mui/joy";
 import { Box } from "@mui/material";
 import React, { useEffect, useRef } from "react";
 import { FunctionComponent } from "react";
@@ -13,9 +21,20 @@ export const DotLayerPreviewer = React.memo(function Previewer({
   config: any;
 }) {
   return (
-    <>
-      <Typography level="title-lg">图案</Typography>
-    </>
+    <Stack direction={"row"} spacing={1}>
+      <img
+        src={config.src ? config.src : "none"}
+        style={{
+          width: "64px",
+          height: "36px",
+          filter: "drop-shadow(0 4px 4px rgba(154, 137, 145, 0.5))",
+          objectFit: "contain",
+        }}
+      />
+      <Typography level="title-lg">
+        <Chip>图案</Chip>
+      </Typography>
+    </Stack>
   );
 });
 
@@ -48,7 +67,7 @@ export const DotLayerConfig: FunctionComponent<{
     <form>
       <Stack direction="column" sx={{ flex: 1 }}>
         <Stack direction="column">
-          <label>贴图</label>
+          <FormLabel>贴图</FormLabel>
           <Controller
             name="src"
             control={control}
@@ -56,7 +75,7 @@ export const DotLayerConfig: FunctionComponent<{
           />
         </Stack>
         <Stack direction="column">
-          <label>左右间距</label>
+          <FormLabel>左右间距</FormLabel>
           <Controller
             name="columnGap"
             control={control}
@@ -74,7 +93,7 @@ export const DotLayerConfig: FunctionComponent<{
         </Stack>
 
         <Stack direction="column">
-          <label>上下间距</label>
+          <FormLabel>上下间距</FormLabel>
           <Controller
             name="rowGap"
             control={control}
@@ -92,7 +111,7 @@ export const DotLayerConfig: FunctionComponent<{
         </Stack>
 
         <Stack direction="column">
-          <label>缩放</label>
+          <FormLabel>缩放</FormLabel>
           <Controller
             name="zoom"
             control={control}

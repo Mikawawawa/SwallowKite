@@ -1,53 +1,7 @@
-import { useEffect, useReducer } from "react";
+import { throttle } from "lodash";
+import { useEffect, useMemo, useReducer, useRef } from "react";
 // @ts-ignore
 import { v4 as uuidv4 } from "uuid";
-
-const tempValue = [
-  {
-    type: "solid",
-    props: {
-      content: "#F1C2DE", // 纯色图层
-    },
-    scale: 0.5,
-    offset: { x: 100, y: 100 },
-    // size: { width: 200, height: 150 },
-    rotation: 0.5,
-  },
-  {
-    type: "image",
-    props: {
-      src: "/technicalFabricSmall_normal_256.png",
-    },
-    opacity: 0.5,
-
-    size: { width: 200, height: 150 },
-    rotation: 0,
-  },
-  {
-    type: "image",
-    props: {
-      src: "/technicalFabricSmall_normal_256.png",
-    },
-    opacity: 0.5,
-
-    rotation: 0,
-  },
-  {
-    type: "pattern",
-    props: {
-      src: "/kite.jpeg",
-      rowGap: 200,
-      columnGap: 200,
-      scale: 0.6506709277209668,
-      zoom: -62,
-      leftRightSpacing: 100,
-      topBottomSpacing: 100,
-    },
-    opacity: 0.6,
-    scale: 0.8,
-    rotation: 0,
-  },
-];
 
 // 图层数据类型
 type TextureLayer = {
@@ -117,10 +71,9 @@ const layerReducer = (state: InitialState, action: Action): InitialState => {
         layersMap.set(newId, value);
       });
       return {
-        layers: action.payload,
+        layers: [...action.payload],
         layersMap,
       };
-      break;
     }
     case "ADD_LAYER": {
       // 处理添加新图层的逻辑
@@ -131,7 +84,6 @@ const layerReducer = (state: InitialState, action: Action): InitialState => {
         ...state,
         layers: [...layers, action.payload as TextureLayer],
       };
-      break;
     }
     case "UPDATE_LAYER": {
       // 处理更新图层的逻辑
@@ -143,10 +95,8 @@ const layerReducer = (state: InitialState, action: Action): InitialState => {
 
         const newState = {
           ...state,
-          layers: updatedLayers,
+          layers: [...updatedLayers],
         };
-
-        console.log(newState)
 
         if (action.payload.callback) {
           requestAnimationFrame(() => action.payload.callback?.(newState));
@@ -159,14 +109,17 @@ const layerReducer = (state: InitialState, action: Action): InitialState => {
     case "REMOVE_LAYER": {
       // 处理删除图层的逻辑
       const layerToRemove = layersMap.get(action.payload);
+      console.log(layerToRemove, layersMap, action.payload);
+      debugger;
       if (layerToRemove) {
         layersMap.delete(action.payload);
-        const updatedLayers = layers.filter(
-          (layer) => layer.id !== action.payload
-        );
+        const updatedLayers = layers.filter((layer) => {
+          console.log(layer.id, action.payload);
+          return layer.id !== action.payload;
+        });
         return {
           ...state,
-          layers: updatedLayers,
+          layers: [...updatedLayers],
         };
       }
       break;
@@ -175,43 +128,60 @@ const layerReducer = (state: InitialState, action: Action): InitialState => {
       return state;
     }
   }
-  return { ...state };
+  return state;
 };
 
-export function useLayerManager() {
+export function useLayerManager(
+  callback: (layers: TextureLayerForRender[]) => void
+) {
   const [state, dispatch] = useReducer(layerReducer, {
     layers: [],
     layersMap: new Map<string, TextureLayer>(),
   } as InitialState);
 
+  const layersRef = useRef(state.layers);
+  layersRef.current = state.layers;
+
+  const notify = useMemo(() => {
+    return throttle(() => {
+      callback?.(layersRef.current);
+    }, 16);
+  }, [callback]);
+
   const clear = () => {
     dispatch({ type: "CLEAR" });
+    notify?.();
   };
 
   // 添加新图层
   const addLayer = (newLayer: TextureLayerForRender) => {
     dispatch({ type: "ADD_LAYER", payload: newLayer });
+    notify?.();
   };
 
   // 更新图层
   const updateLayer = (
     id: string,
     updatedLayer: TextureLayer,
-    callback: Function
+    callback?: Function
   ) => {
     dispatch({
       type: "UPDATE_LAYER",
       payload: { id, layer: updatedLayer, callback },
     });
+    notify?.();
   };
 
   // 删除图层
   const removeLayer = (id: string) => {
+    console.log("remove layer", id);
     dispatch({ type: "REMOVE_LAYER", payload: id });
+    notify?.();
   };
 
   const setLayers = (initValue: TextureLayer[]) => {
     dispatch({ type: "SET", payload: initValue });
+    notify?.();
   };
 
   return {
