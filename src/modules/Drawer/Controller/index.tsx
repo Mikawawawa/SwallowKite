@@ -1,11 +1,17 @@
-import { Button, Card, IconButton, Stack, styled } from "@mui/joy";
+import { Alert, Button, Card, IconButton, Stack, styled } from "@mui/joy";
 import { throttle } from "lodash";
 import { Box, Icon, debounce } from "@mui/material";
 import {
+  CSSProperties,
+  ClassAttributes,
   FunctionComponent,
+  HTMLAttributes,
+  JSX,
+  LegacyRef,
   MouseEventHandler,
   PropsWithChildren,
   useCallback,
+  useEffect,
   useState,
 } from "react";
 import {
@@ -13,17 +19,27 @@ import {
   useLayerManager,
 } from "@/hooks/useLayerReducer";
 
-import { Flipper, Flipped } from "react-flip-toolkit";
-
 import { LayerConfig, LayerPreview } from "./Config";
-import { Layer } from "./Layer";
-import { ArrowLeft } from "@mui/icons-material";
+import { Layer, LayerInitializer } from "./Layer";
+import {
+  DndContainer,
+  StrictModeDroppable,
+} from "@/components/DragSortable/Container";
+
+import update from "immutability-helper";
+import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 
 export const LayerController: FunctionComponent<{
   helper: ReturnType<typeof useLayerManager>;
   onChange: Function;
 }> = ({ helper, onChange }) => {
-  const { layers: data, addLayer, updateLayer } = helper;
+  const {
+    layers: data,
+    addLayer,
+    updateLayer,
+    removeLayer,
+    setLayers,
+  } = helper;
 
   const [focusedLayerIndex, setFocusedLayerIndex] = useState<null | number>(
     null
@@ -31,118 +47,141 @@ export const LayerController: FunctionComponent<{
 
   const handleUpdate = useCallback(
     (id: string, data: any) => {
-      const notify = throttle((value) => {
-        console.log("value", value);
-        onChange(value?.layers);
-      }, 10);
-      updateLayer(id, data, notify);
+      updateLayer(id, data);
     },
     [onChange, updateLayer]
   );
 
-  return (
-    // <Flipper flipKey={focusedLayerIndex} className={{
+  const moveCard = useCallback(
+    (dragIndex: number, hoverIndex: number) => {
+      setLayers(
+        update(data, {
+          $splice: [
+            [dragIndex, 1],
+            [hoverIndex, 0, data[dragIndex]],
+          ],
+        })
+      );
+    },
+    [data]
+  );
 
-    // }}>
+  return (
     <Stack
-      // component={Flipper}
-      // flipKey={focusedLayerIndex}
-      spacing={1}
+      direction="column"
       sx={{
         width: "320px",
         overflowY: "visible",
         overflowX: "auto",
-        height: "100%",
-        "--ListItem-radius": "8px",
-        "--List-gap": "4px",
+        minHeight: "100%",
       }}
     >
-      <>
-        {data?.map?.((item, index) => {
-          const selected = focusedLayerIndex === index;
-          return (
-            <Layer
-              key={item.id}
-              item={item}
-              index={index}
-              selected={selected}
-              setSelected={setFocusedLayerIndex}
-              onChange={(value: any) => {
-                handleUpdate(item.id, {
-                  ...item,
-                  ...value,
-                });
-              }}
-              configor={
-                <LayerPreview
-                  setType={(type) => {
-                    handleUpdate(item.id, {
-                      ...item,
-                      type,
-                      props: {},
-                    });
-                  }}
-                  selected={selected}
-                  layer={data[index]}
-                  onChange={(value: any) => {
-                    handleUpdate(item.id, {
-                      ...item,
-                      props: {
-                        ...item.props,
-                        ...value,
-                      },
-                    });
-                  }}
-                />
-              }
-            >
-              <LayerConfig
-                setType={(type) => {
-                  handleUpdate(item.id, {
-                    ...item,
-                    type,
-                    props: {},
-                  });
-                }}
-                selected={selected}
-                layer={data[index]}
-                onChange={(value: any) => {
-                  handleUpdate(item.id, {
-                    ...item,
-                    props: {
-                      ...item.props,
-                      ...value,
-                    },
-                  });
-                }}
-              />
-            </Layer>
-          );
-        })}
-
-        <Flipped flipId={"layers-no-items"}>
-          {Array.isArray(data) && data?.length === 0 && (
-            <Box>Please add new layers firstly</Box>
-          )}
-        </Flipped>
-
-        <Flipped flipId={"layers-cta"}>
-          {Array.isArray(data) && (
-            <Button
-              // @ts-ignore
-              onClick={() => addLayer({})}
-              variant="soft"
+      {Array.isArray(data) && data?.length === 0 && (
+        <Alert variant="soft" color="warning">
+          Please add new layers firstly
+        </Alert>
+      )}
+      <DragDropContext
+        onDragEnd={(result) => {
+          if (!result.destination) {
+            return;
+          }
+          moveCard(result.source.index, result.destination.index);
+        }}
+      >
+        <StrictModeDroppable droppableId="droppable">
+          {(provided, snapshot) => (
+            <Stack
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+              spacing={1}
               sx={{
-                position: "sticky",
-                bottom: 0,
+                width: "320px",
+                minHeight: "100%",
               }}
             >
-              添加新图层
-            </Button>
+              {data?.map?.((item, index) => {
+                const selected = focusedLayerIndex === index;
+
+                return (
+                  <Draggable key={item.id} draggableId={item.id} index={index}>
+                    {(provided, snapshot) => (
+                      <Box
+                        component={"div"}
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        sx={provided.draggableProps.style}
+                      >
+                        {!item.type ? (
+                          <LayerInitializer
+                            key={index}
+                            item={item}
+                            index={index}
+                            onDelete={() => {
+                              removeLayer(item.id);
+                            }}
+                            setType={(type) => {
+                              handleUpdate(item.id, {
+                                ...item,
+                                type,
+                                props: {},
+                              });
+                            }}
+                          />
+                        ) : (
+                          <Layer
+                            key={item.id}
+                            item={item}
+                            index={index}
+                            selected={selected}
+                            setSelected={setFocusedLayerIndex}
+                            onDelete={() => {
+                              removeLayer(item.id);
+                            }}
+                            dragHandlerProps={provided.dragHandleProps}
+                            onChange={(value: any) => {
+                              handleUpdate(item.id, {
+                                ...item,
+                                ...value,
+                              });
+                            }}
+                            configor={<LayerPreview layer={data[index]} />}
+                          >
+                            <LayerConfig
+                              layer={data[index]}
+                              onChange={(value: any) => {
+                                handleUpdate(item.id, {
+                                  ...item,
+                                  props: {
+                                    ...item.props,
+                                    ...value,
+                                  },
+                                });
+                              }}
+                            />
+                          </Layer>
+                        )}
+                      </Box>
+                    )}
+                  </Draggable>
+                );
+              })}
+            </Stack>
           )}
-        </Flipped>
-      </>
+        </StrictModeDroppable>
+      </DragDropContext>
+
+      <Button
+        // @ts-ignore
+        onClick={() => addLayer({})}
+        variant="soft"
+        sx={{
+          position: "sticky",
+          bottom: 0,
+        }}
+      >
+        添加新图层
+      </Button>
     </Stack>
-    // </Flipper>
   );
 };

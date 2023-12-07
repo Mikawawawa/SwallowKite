@@ -4,14 +4,24 @@ import React, {
   useCallback,
   FunctionComponent,
 } from "react";
-import { Box, Button } from "@mui/joy";
+import { Box, Button, Stack, styled } from "@mui/joy";
 import { UploadFile } from "@mui/icons-material";
+
+const VisuallyHiddenInput = styled("input")({
+  clip: "rect(0 0 0 0)",
+  clipPath: "inset(50%)",
+  height: 1,
+  overflow: "hidden",
+  position: "absolute",
+  bottom: 0,
+  left: 0,
+  whiteSpace: "nowrap",
+  width: 1,
+});
 
 export const UploadTrigger: FunctionComponent<{
   onChange: (url: string, name?: string) => void;
 }> = ({ onChange }) => {
-  const inputRef = useRef<HTMLInputElement>(null);
-
   const handleFileChange: ChangeEventHandler<HTMLInputElement> = useCallback(
     (e) => {
       const file = e.target.files?.[0];
@@ -27,42 +37,27 @@ export const UploadTrigger: FunctionComponent<{
   );
 
   return (
-    <Box
-      sx={{
-        background: "rgba(150, 150, 150, 0.3)",
-        opacity: 1,
-        zIndex: 1,
-        display: "flex",
-        position: "relative",
-        justifyContent: "center",
-        alignItems: "center",
-        transition: "opacity 0.3s ease-in-out",
-        "&:hover": {
-          opacity: 1,
-        },
-      }}
-    >
-      <input
-        type="file"
-        accept="image/*"
-        ref={inputRef}
+    <Stack alignItems="stretch" justifyContent="flex-start" direction={"row"}>
+      <Button
+        component="label"
         style={{
           position: "absolute",
+          transition: "all 0.3s ease",
           width: "100%",
           height: "100%",
-          opacity: 0,
-          zIndex: 1,
-          cursor: "pointer",
+          top: 0,
+          left: 0,
         }}
-        onChange={handleFileChange}
-      />
-      <Button
         variant="soft"
-        onClick={() => inputRef?.current?.click?.()}
         startDecorator={<UploadFile />}
       >
+        <VisuallyHiddenInput
+          onChange={handleFileChange}
+          type="file"
+          accept="image/*"
+        />
         Add New Assets
       </Button>
-    </Box>
+    </Stack>
   );
 };

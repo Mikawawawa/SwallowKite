@@ -9,18 +9,18 @@ import {
 import {
   Box,
   Button,
+  Chip,
   FormControl,
   FormLabel,
   Radio,
   RadioGroup,
+  Stack,
 } from "@mui/joy";
 
 export const LayerConfig: FunctionComponent<{
   layer: TextureLayerForRender;
   onChange: (value: unknown) => void;
-  setType: (type: TextureLayerForRender["type"]) => void;
-  selected: boolean;
-}> = ({ layer, onChange, setType }) => {
+}> = ({ layer, onChange }) => {
   return (
     <Box>
       {layer.type === "pattern" && (
@@ -62,10 +62,11 @@ export const LayerConfig: FunctionComponent<{
 
 export const LayerPreview: FunctionComponent<{
   layer: TextureLayerForRender;
-  onChange: (value: unknown) => void;
-  setType: (type: TextureLayerForRender["type"]) => void;
-  selected: boolean;
-}> = ({ layer, onChange, setType }) => {
+  // setType: (type: TextureLayerForRender["type"]) => void;
+}> = ({
+  layer,
+  // setType
+}) => {
   return (
     <Box>
       {layer.type === "pattern" && (
@@ -83,12 +84,12 @@ export const LayerPreview: FunctionComponent<{
           <ColorLayerPreviewer config={layer.props} />
         </>
       )}
-      {!layer.type && <TypeSelection onChange={setType} />}
+      {/* {!layer.type && <TypeSelection onChange={setType} />} */}
     </Box>
   );
 };
 
-const TypeSelection = ({
+export const TypeSelection = ({
   onChange,
 }: {
   onChange: (value: TextureLayerForRender["type"]) => void;
@@ -96,7 +97,7 @@ const TypeSelection = ({
   const [value, setValue] = useState<TextureLayerForRender["type"]>();
 
   return (
-    <Box onClick={(e) => e.stopPropagation()}>
+    <Stack onClick={(e) => e.stopPropagation()}>
       <FormControl>
         <FormLabel>选择类型</FormLabel>
         <RadioGroup
@@ -109,11 +110,14 @@ const TypeSelection = ({
             }
           }}
         >
-          <Radio value="solid" label="色彩" color="primary" />
-          <Radio value="image" label="图片" color="neutral" />
-          <Radio value="pattern" label="图案" color="danger" />
+          <Stack direction={"row"} alignItems={"center"} spacing={2}>
+            <Radio value="solid" label={<Chip>色彩</Chip>} color="primary" />
+            <Radio value="image" label={<Chip>图片</Chip>} color="neutral" />
+            <Radio value="pattern" label={<Chip>图案</Chip>} color="danger" />
+          </Stack>
         </RadioGroup>
       </FormControl>
+
       <Button
         type="submit"
         disabled={!Boolean(value)}
@@ -125,6 +129,6 @@ const TypeSelection = ({
       >
         确认
       </Button>
-    </Box>
+    </Stack>
   );
 };

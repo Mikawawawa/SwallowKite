@@ -85,11 +85,7 @@ export const AssetGallery: React.FC<{
               value={newImageSource}
               onChange={(e) => setNewImageSource(e.target.value)}
             />
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleAddImage}
-            >
+            <Button variant="soft" color="primary" onClick={handleAddImage}>
               Add Image
             </Button>
           </Stack>
@@ -165,12 +161,16 @@ export const AssetGallery: React.FC<{
           </ImageListItem>
         ))}
 
-        <UploadTrigger
-          onChange={async (url, name) => {
-            await imageStorage.current.addImage(url, name || "untiled");
-            setImageList(await imageStorage.current.getImageList());
-          }}
-        />
+        <ImageListItem>
+          <AspectRatio objectFit="contain">
+            <UploadTrigger
+              onChange={async (url, name) => {
+                await imageStorage.current.addImage(url, name || "untiled");
+                setImageList(await imageStorage.current.getImageList());
+              }}
+            />
+          </AspectRatio>
+        </ImageListItem>
       </ImageList>
     </div>
   );

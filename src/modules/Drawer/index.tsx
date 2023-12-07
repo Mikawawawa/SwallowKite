@@ -29,7 +29,6 @@ export const DrawerComponent = React.forwardRef(function DrawerComponentInner(
     },
     exportTexture: () => {
       const res = drawerRef.current?.exportTexture?.();
-      console.log("res", res);
       return res;
     },
   }));
@@ -45,12 +44,6 @@ export const DrawerComponent = React.forwardRef(function DrawerComponentInner(
     // @ts-expect-error 123
     window.drawer = drawer;
   }, []);
-
-  // useEffect(() => {
-  //   // drawerRef.current?.updateLayers(layersHelper.layers);
-  //   // save(layersHelper.layers);
-  //   onChange(layersHelper.layers);
-  // }, [layersHelper.layers]);
 
   return (
     <>
