@@ -100,7 +100,9 @@ export const ImagePicker = ({ onChange, value }: any) => {
           setOpen(true);
         }}
       >
-        <Button variant="soft">选择图片</Button>
+        <Button variant="soft" sx={{
+          transition: 'all 0.3s'
+        }}>选择图片</Button>
       </Box>
 
       <AspectRatio maxHeight={100}>

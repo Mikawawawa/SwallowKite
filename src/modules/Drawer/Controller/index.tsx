@@ -71,16 +71,29 @@ export const LayerController: FunctionComponent<{
       direction="column"
       sx={{
         width: "320px",
-        overflowY: "visible",
-        overflowX: "auto",
-        minHeight: "100%",
+        // overflowY: "visible",
+        // overflowX: "auto",
+        // minHeight: "100%",
       }}
+      spacing={2}
     >
       {Array.isArray(data) && data?.length === 0 && (
         <Alert variant="soft" color="warning">
           Please add new layers firstly
         </Alert>
       )}
+
+      {Array.isArray(data) && <Button
+        // @ts-ignore
+        onClick={() => addLayer({})}
+        variant="soft"
+        sx={{
+          position: "sticky",
+          bottom: 0,
+        }}
+      >
+        添加新图层
+      </Button>}
       <DragDropContext
         onDragEnd={(result) => {
           if (!result.destination) {
@@ -94,10 +107,10 @@ export const LayerController: FunctionComponent<{
             <Stack
               {...provided.droppableProps}
               ref={provided.innerRef}
+              direction={"column-reverse"}
               spacing={1}
               sx={{
                 width: "320px",
-                minHeight: "100%",
               }}
             >
               {data?.map?.((item, index) => {
@@ -171,17 +184,6 @@ export const LayerController: FunctionComponent<{
         </StrictModeDroppable>
       </DragDropContext>
 
-      <Button
-        // @ts-ignore
-        onClick={() => addLayer({})}
-        variant="soft"
-        sx={{
-          position: "sticky",
-          bottom: 0,
-        }}
-      >
-        添加新图层
-      </Button>
     </Stack>
   );
 };
