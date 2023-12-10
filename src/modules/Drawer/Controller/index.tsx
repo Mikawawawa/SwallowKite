@@ -54,11 +54,14 @@ export const LayerController: FunctionComponent<{
 
   const moveCard = useCallback(
     (dragIndex: number, hoverIndex: number) => {
+      const dragAt = data.length - dragIndex
+      const hoverAt = data.length - hoverIndex
+      
       setLayers(
         update(data, {
           $splice: [
-            [dragIndex, 1],
-            [hoverIndex, 0, data[dragIndex]],
+            [dragAt, 1],
+            [hoverAt, 0, data[dragAt]],
           ],
         })
       );
@@ -90,6 +93,8 @@ export const LayerController: FunctionComponent<{
         sx={{
           position: "sticky",
           bottom: 0,
+          padding: 2,
+          transition: 'all 0.3s'
         }}
       >
         添加新图层
@@ -117,7 +122,7 @@ export const LayerController: FunctionComponent<{
                 const selected = focusedLayerIndex === index;
 
                 return (
-                  <Draggable key={item.id} draggableId={item.id} index={index}>
+                  <Draggable key={item.id} draggableId={item.id} index={data.length - index}>
                     {(provided, snapshot) => (
                       <Box
                         component={"div"}
@@ -143,7 +148,7 @@ export const LayerController: FunctionComponent<{
                           />
                         ) : (
                           <Layer
-                            key={item.id}
+                            key={`${item.id}-${index}`}
                             item={item}
                             index={index}
                             selected={selected}

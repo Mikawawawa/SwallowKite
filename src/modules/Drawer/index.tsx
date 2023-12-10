@@ -51,33 +51,6 @@ export const DrawerComponent = React.forwardRef(function DrawerComponentInner(
         direction={"column"}
         spacing={2}
         sx={{
-          height: "100%",
-        }}
-      >
-        <Typography
-          level="title-lg"
-          sx={{
-            color: "white",
-          }}
-        >
-          图层
-        </Typography>
-        <Surface
-          sx={{
-            flexShrink: 0,
-            flex: 1,
-            background: "transparent",
-            boxShadow: "none",
-          }}
-        >
-          <LayerController helper={layersHelper} onChange={onChange} />
-        </Surface>
-      </Stack>
-
-      <Stack
-        direction={"column"}
-        spacing={2}
-        sx={{
           flex: 5,
           height: "100%",
         }}
@@ -108,6 +81,35 @@ export const DrawerComponent = React.forwardRef(function DrawerComponentInner(
           />
         </Surface>
       </Stack>
+
+      <Stack
+        direction={"column"}
+        spacing={2}
+        sx={{
+          height: "100%",
+        }}
+      >
+        <Typography
+          level="title-lg"
+          sx={{
+            color: "white",
+          }}
+        >
+          图层
+        </Typography>
+        <Surface
+          sx={{
+            flexShrink: 0,
+            flex: 1,
+            background: "transparent",
+            boxShadow: "none",
+          }}
+        >
+          <LayerController helper={layersHelper} onChange={onChange} />
+        </Surface>
+      </Stack>
+
+
     </>
   );
 });

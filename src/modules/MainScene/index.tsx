@@ -41,6 +41,7 @@ export const SceneComponent = forwardRef(
         spacing={2}
         sx={{
           height: "100%",
+          minWidth: '700px'
         }}
       >
         <Stack direction="row" spacing={2} alignItems={"center"}>
@@ -53,21 +54,6 @@ export const SceneComponent = forwardRef(
             场景
           </Typography>
 
-          {/* {afterDraw && (
-            <Button
-              variant="soft"
-              color="neutral"
-              // @ts-ignore
-              size="small"
-              onClick={() => {
-                if (scene.current) {
-                  scene.current?.updateMaterial("main");
-                }
-              }}
-            >
-              更新贴图
-            </Button>
-          )} */}
         </Stack>
 
         <Surface
