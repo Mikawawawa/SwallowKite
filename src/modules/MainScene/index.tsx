@@ -9,10 +9,9 @@ import React, {
   useState,
 } from "react";
 import { Surface } from "../../components/Surface";
+import { DrawerColumn } from "@/components/DrawerColumn";
 
 const BabylonContainer = "renderCanvas";
-
-
 
 export const SceneComponent = forwardRef(
   function SceneComponentInner(props, ref) {
@@ -36,43 +35,22 @@ export const SceneComponent = forwardRef(
     }, []);
 
     return (
-      <Stack
-        direction={"column"}
-        spacing={2}
+      <DrawerColumn
+        title="场景"
         sx={{
-          height: "100%",
-          minWidth: '700px'
+          minWidth: "700px",
         }}
       >
-        <Stack direction="row" spacing={2} alignItems={"center"}>
-          <Typography
-            level="title-lg"
-            sx={{
-              color: "white",
-            }}
-          >
-            场景
-          </Typography>
-
-        </Stack>
-
-        <Surface
-          sx={{
-            flex: 1,
-            padding: 4,
+        <canvas
+          tabIndex={-1}
+          id={BabylonContainer}
+          style={{
+            outline: "none",
+            height: "100%",
+            width: "100%",
           }}
-        >
-          <canvas
-            tabIndex={-1}
-            id={BabylonContainer}
-            style={{
-              outline: "none",
-              height: "100%",
-              width: "100%",
-            }}
-          />
-        </Surface>
-      </Stack>
+        />
+      </DrawerColumn>
     );
   }
 );

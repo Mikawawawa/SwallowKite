@@ -1,19 +1,6 @@
-import { Alert, Button, Card, IconButton, Stack, styled } from "@mui/joy";
-import { throttle } from "lodash";
-import { Box, Icon, debounce } from "@mui/material";
-import {
-  CSSProperties,
-  ClassAttributes,
-  FunctionComponent,
-  HTMLAttributes,
-  JSX,
-  LegacyRef,
-  MouseEventHandler,
-  PropsWithChildren,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import { Alert, Button, Stack } from "@mui/joy";
+import { Box } from "@mui/material";
+import { FunctionComponent, useCallback, useState } from "react";
 import {
   TextureLayerForRender,
   useLayerManager,
@@ -21,17 +8,14 @@ import {
 
 import { LayerConfig, LayerPreview } from "./Config";
 import { Layer, LayerInitializer } from "./Layer";
-import {
-  DndContainer,
-  StrictModeDroppable,
-} from "@/components/DragSortable/Container";
+import { StrictModeDroppable } from "@/components/DragSortable/Container";
 
 import update from "immutability-helper";
-import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import { DragDropContext, Draggable } from "@hello-pangea/dnd";
 
 export const LayerController: FunctionComponent<{
   helper: ReturnType<typeof useLayerManager>;
-  onChange: Function;
+  onChange: (value: TextureLayerForRender[]) => void;
 }> = ({ helper, onChange }) => {
   const {
     layers: data,
@@ -54,9 +38,9 @@ export const LayerController: FunctionComponent<{
 
   const moveCard = useCallback(
     (dragIndex: number, hoverIndex: number) => {
-      const dragAt = data.length - dragIndex
-      const hoverAt = data.length - hoverIndex
-      
+      const dragAt = data.length - dragIndex;
+      const hoverAt = data.length - hoverIndex;
+
       setLayers(
         update(data, {
           $splice: [
@@ -74,6 +58,9 @@ export const LayerController: FunctionComponent<{
       direction="column"
       sx={{
         width: "320px",
+        "::webkit-scroll": {
+          display: "none",
+        },
         // overflowY: "visible",
         // overflowX: "auto",
         // minHeight: "100%",
@@ -86,19 +73,21 @@ export const LayerController: FunctionComponent<{
         </Alert>
       )}
 
-      {Array.isArray(data) && <Button
-        // @ts-ignore
-        onClick={() => addLayer({})}
-        variant="soft"
-        sx={{
-          position: "sticky",
-          bottom: 0,
-          padding: 2,
-          transition: 'all 0.3s'
-        }}
-      >
-        添加新图层
-      </Button>}
+      {Array.isArray(data) && (
+        <Button
+          // @ts-ignore
+          onClick={() => addLayer({})}
+          variant="soft"
+          sx={{
+            position: "sticky",
+            bottom: 0,
+            padding: 2,
+            transition: "all 0.3s",
+          }}
+        >
+          添加新图层
+        </Button>
+      )}
       <DragDropContext
         onDragEnd={(result) => {
           if (!result.destination) {
@@ -122,7 +111,11 @@ export const LayerController: FunctionComponent<{
                 const selected = focusedLayerIndex === index;
 
                 return (
-                  <Draggable key={item.id} draggableId={item.id} index={data.length - index}>
+                  <Draggable
+                    key={item.id}
+                    draggableId={item.id}
+                    index={data.length - index}
+                  >
                     {(provided, snapshot) => (
                       <Box
                         component={"div"}
@@ -188,7 +181,6 @@ export const LayerController: FunctionComponent<{
           )}
         </StrictModeDroppable>
       </DragDropContext>
-
     </Stack>
   );
 };

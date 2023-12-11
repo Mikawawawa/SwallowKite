@@ -2,6 +2,7 @@
 import localforage from "localforage";
 import { useEffect, useState } from "react";
 import { StorageService } from "./Storage";
+import { throttle } from "lodash";
 
 export interface ObjectItem {
   key: string;
@@ -92,6 +93,8 @@ export class SolutionManager extends StorageService {
       console.error("Error saving JSON data to IndexedDB:", error);
     }
   };
+
+  static throttleSave = throttle(this.save, 1000)
 
   // 从 IndexedDB 中获取保存的 JSON 数据
   static get = async (key: string) => {

@@ -10,7 +10,7 @@ import {
   DroppableProps,
   Draggable,
   OnDragEndResponder,
-} from "react-beautiful-dnd";
+} from "@hello-pangea/dnd";
 
 export const DndContainer: FunctionComponent<
   PropsWithChildren<{

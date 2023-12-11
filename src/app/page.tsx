@@ -12,7 +12,6 @@ import {
   BasicCardSkeleton,
   AddCard,
 } from "@/modules/Solution/Cards";
-import JoySignInSideTemplate from "@/modules/Demo";
 
 export default function SolutionList() {
   const { inited, data, addItem, removeItem } = useSolutionStorage(

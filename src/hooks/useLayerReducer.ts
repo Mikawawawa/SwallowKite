@@ -110,8 +110,8 @@ const layerReducer = (state: InitialState, action: Action): InitialState => {
       // 处理删除图层的逻辑
       const layerToRemove = layersMap.get(action.payload);
       console.log(layerToRemove, layersMap, action.payload);
-      debugger;
       if (layerToRemove) {
+        debugger;
         layersMap.delete(action.payload);
         const updatedLayers = layers.filter((layer) => {
           console.log(layer.id, action.payload);
@@ -174,8 +174,10 @@ export function useLayerManager(
 
   // 删除图层
   const removeLayer = (id: string) => {
-    console.log("remove layer", id);
-    dispatch({ type: "REMOVE_LAYER", payload: id });
+    dispatch({
+      type: "SET",
+      payload: state.layers.filter((item) => item.id !== id),
+    });
     notify?.();
   };
 

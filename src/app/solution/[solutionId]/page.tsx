@@ -14,28 +14,46 @@ import { MainScene } from "@/service/Scene";
 import { SolutionManager, useSolutionStorage } from "@/service/SolutionManger";
 import { EditableText } from "@/components/ClickToEdit";
 import { IconButton, Typography } from "@mui/joy";
-import { Save } from "@mui/icons-material";
+import {
+  ArrowBack,
+  ArrowBackSharp,
+  BackHand,
+  Backup,
+  Save,
+} from "@mui/icons-material";
 import { useRouter } from "next/navigation";
 
-const useSolutionName = (solutionId: string): [string, (newName: string) => void] => {
-  const { inited, data, updateItem } = useSolutionStorage("swallow-kite-solutions")
+const useSolutionName = (
+  solutionId: string
+): [string, (newName: string) => void] => {
+  const { inited, data, updateItem } = useSolutionStorage(
+    "swallow-kite-solutions"
+  );
 
   const info = useMemo(() => {
     if (!inited) {
-      return 'Loading'
+      return "Loading";
     }
-    return data.find?.(item => solutionId === item.key)?.name || "Untitled"
-  }, [solutionId, data])
+    return data.find?.((item) => solutionId === item.key)?.name || "Untitled";
+  }, [solutionId, data]);
 
-  const updateName = useCallback((newName: string) => {
-    updateItem(solutionId, newName)
-  }, [solutionId, updateItem])
+  const updateName = useCallback(
+    (newName: string) => {
+      updateItem(solutionId, newName);
+    },
+    [solutionId, updateItem]
+  );
 
-  return [info, updateName]
-}
+  return [info, updateName];
+};
 
 export default function Home({ params }: any) {
-  const [title, setTitle] = useSolutionName(params.solutionId)
+  const [title, setTitle] = useSolutionName(params.solutionId);
+  const save = useCallback((value: Record<string, any>) => {
+    const texture = drawerRef.current?.exportTexture?.() as string;
+    SolutionManager.throttleSave(params.solutionId, { value, texture });
+    sceneRef.current?.updateMaterial?.("main", texture);
+  }, []);
   const layersHelper = useLayerManager((value) => {
     save(value);
     drawerRef.current?.updateLayers?.(value);
@@ -43,14 +61,7 @@ export default function Home({ params }: any) {
   const drawerRef = useRef<Drawer>();
   const sceneRef = useRef<MainScene>();
 
-  const router = useRouter()
-
-  const save = useThrottle((value: Record<string, any>) => {
-    const texture = drawerRef.current?.exportTexture?.() as string;
-    SolutionManager.save(params.solutionId, { value, texture });
-
-    sceneRef.current?.updateMaterial?.("main", texture);
-  }, 1000);
+  const router = useRouter();
 
   useEffect(() => {
     SolutionManager.get(params.solutionId).then((result: any) => {
@@ -73,23 +84,29 @@ export default function Home({ params }: any) {
       >
         <Typography
           level="h3"
+          component={"div"}
           sx={{
             color: "#FFFFFF",
           }}
         >
-          <EditableText
-            value={title}
-            onChange={setTitle}
-          />
+          <EditableText value={title} onChange={setTitle} />
         </Typography>
 
-        <IconButton size="sm" variant="soft" onClick={() => {
-          save()
-          setTimeout(() => {
-            router.push('/')
-          }, 1000)
-        }}>
-          <Save />
+        <IconButton
+          size="sm"
+          variant="soft"
+          onClick={() => {
+            const texture = drawerRef.current?.exportTexture?.() as string;
+
+            SolutionManager.save(params.solutionId, {
+              value: layersHelper.layers,
+              texture,
+            }).then(() => {
+              router.push("/");
+            });
+          }}
+        >
+          <ArrowBackSharp />
         </IconButton>
       </Stack>
       <Stack
@@ -103,15 +120,8 @@ export default function Home({ params }: any) {
         }}
         spacing={2}
       >
-
         <SceneComponent ref={sceneRef} />
 
-        {/* <Box
-          sx={{
-            height: "100%",
-            flex: 3,
-          }}
-        > */}
         <DrawerComponent
           ref={drawerRef}
           layersHelper={layersHelper}
@@ -120,12 +130,7 @@ export default function Home({ params }: any) {
             save(value);
           }}
         />
-        {/* </Box> */}
-
-
       </Stack>
     </>
-
-
   );
 }

@@ -37,6 +37,7 @@ export const ColorLayerPreviewer = React.memo(function Previewer({
         <Chip >色彩</Chip>
         <Chip size="sm">
           <Typography
+            component="div"
             level="body-sm"
             sx={{
               color: config.content,

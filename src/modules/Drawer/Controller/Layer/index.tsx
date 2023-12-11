@@ -1,40 +1,25 @@
 import React, {
-  useMemo,
-  useRef,
   FunctionComponent,
-  MouseEventHandler,
   PropsWithChildren,
-  useEffect,
   ReactNode,
   useState,
-  useCallback,
 } from "react";
-import { LayerCard } from "./idle";
 import {
   Box,
-  BoxProps,
   Card,
-  CardActions,
   Stack,
   Tab,
   TabList,
   Tabs,
-  styled,
   tabClasses,
   IconButton,
 } from "@mui/joy";
-import { debounce } from "@mui/material";
 
 import { LayerBasicConfig } from "../Config/layer";
 import { TextureLayerForRender } from "@/hooks/useLayerReducer";
-import { ArrowLeft, ArrowRight, Delete, DragHandle } from "@mui/icons-material";
+import { ArrowRight, Delete, DragHandle } from "@mui/icons-material";
 import { Collapse } from "@mui/material";
 
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import ShareIcon from "@mui/icons-material/Share";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { DndItem } from "@/components/DragSortable/Item";
 import { TypeSelection } from "../Config";
 
 // This part should be refactored

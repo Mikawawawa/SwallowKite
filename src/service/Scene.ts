@@ -4,6 +4,7 @@ import { Drawer } from "@/service/Drawer";
 import "babylonjs-loaders";
 import * as BABYLON from "babylonjs";
 import * as Materials from "babylonjs-materials";
+import { throttle } from "lodash";
 
 export class MainScene {
   public engine: BABYLON.Engine;
@@ -378,15 +379,18 @@ export class MainScene {
     texture.vScale = -1;
     texture.uScale = -1;
 
-    const normalMapTexture = new BABYLON.Texture("/technicalFabricSmall_normal_256.png", this.scene);
+    const normalMapTexture = new BABYLON.Texture(
+      "/technicalFabricSmall_normal_256.png",
+      this.scene
+    );
 
     const mat0 = new BABYLON.PBRMaterial("mat0", this.scene);
 
-    mat0.ambientTexture = texture
-    mat0.ambientTextureStrength = 1.3
+    mat0.ambientTexture = texture;
+    mat0.ambientTextureStrength = 1.3;
     mat0.sheen.isEnabled = true;
     mat0.sheen.roughness = 0.3;
-    mat0.sheen.texture = texture
+    mat0.sheen.texture = texture;
 
     mat0.directIntensity = 0.3; // 根据需要调整值
     mat0.environmentIntensity = 1.0; // 根据需要调整值
@@ -395,27 +399,32 @@ export class MainScene {
     // 调整法线贴图的强度
     mat0.bumpTexture.level = 0.3; // 根据需要调整值
 
-
     mat0.metallic = 0.0;
     mat0.roughness = 1;
 
-    mat0.backFaceCulling = true
-    return mat0
+    mat0.backFaceCulling = true;
+    return mat0;
   }
 
-  updateMaterial(name: string, src: string) {
-    const model = this.scene.getMeshByName(name); // 替换为你的模型名称
-    if (!model || !src) {
-      return;
+  updateMaterial = throttle(
+    (name: string, src: string) => {
+      const model = this.scene.getMeshByName(name); // 替换为你的模型名称
+      if (!model || !src) {
+        return;
+      }
+
+      const nextMaterial = this.getNextMaterial(src);
+      // 获取纹理对象
+
+      // 模型还没有材质，直接赋值 nextMaterial
+      model.material = nextMaterial;
+    },
+    1000,
+    {
+      leading: true,
+      trailing: true,
     }
-
-    const nextMaterial = this.getNextMaterial(src);
-    // 获取纹理对象
-
-    // 模型还没有材质，直接赋值 nextMaterial
-    model.material = nextMaterial;
-
-  }
+  );
 
   setSkyBox() {
     const scene = this.scene;
