@@ -70,7 +70,7 @@ export const AssetGallery: React.FC<{
 
   return (
     <div>
-      {debug && (
+      {/* {debug && (
         <>
           <Stack direction="row" spacing={2}>
             <TextField
@@ -90,7 +90,7 @@ export const AssetGallery: React.FC<{
             </Button>
           </Stack>
         </>
-      )}
+      )} */}
 
       <ImageList sx={{ width: "100%" }} cols={4}>
         {imageList.map((image) => (

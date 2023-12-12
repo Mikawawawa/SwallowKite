@@ -56,10 +56,26 @@ export const ImagePicker = ({ onChange, value }: any) => {
 
           <ModalClose />
           <Divider sx={{ mt: "auto" }} />
+
+
           <DialogContent sx={{ gap: 2 }}>
+            <Button
+              variant="soft"
+              disabled={!selected}
+              onClick={() => {
+                setOpen(false);
+                onChange?.(selected);
+              }}
+            >
+              Choose
+            </Button>
+
             <Typography>
               This is the demo for image selection component
             </Typography>
+
+
+
             <AssetGallery
               debug={process.env.NODE_ENV === "development"}
               namespace={"ugc"}

@@ -1,19 +1,12 @@
-import React, { FunctionComponent, useEffect, useRef } from "react";
+import React, { FunctionComponent, useCallback, useEffect, useRef } from "react";
 import { ImagePicker } from "./fields/ImagePicker";
 import {
-  AspectRatio,
-  Slider,
   Stack,
   Typography,
-  SliderProps,
   Chip,
 } from "@mui/joy";
-import { Box } from "@mui/material";
 import { useForm, Controller, useWatch } from "react-hook-form";
-import * as yup from "yup";
-import { LayerConfigSlider } from "./fields/Slider";
-import { RgbColorPicker } from "react-colorful";
-import { ColorPicker } from "./fields/ColorPicker";
+import { throttle } from "lodash";
 
 export const ImageLayerPreviewer = React.memo(function Previewer({
   config,
@@ -44,18 +37,19 @@ export const ImageLayerConfig: FunctionComponent<{
 }> = React.memo(function Configure({ config, onChange }) {
   const onChangeRef = useRef(onChange);
   onChangeRef.current = onChange;
-  const { control } = useForm({
+  const { control, getValues } = useForm({
     defaultValues: {
       ...config,
     },
   });
-  const value = useWatch({ control });
 
-  useEffect(() => {
+  const handleChange = useCallback(throttle(() => {
+    const value = getValues()
+    console.log('value', value)
     onChangeRef.current({
       ...value,
     });
-  }, [value]);
+  }, 20), [getValues])
 
   return (
     <form>
@@ -64,7 +58,16 @@ export const ImageLayerConfig: FunctionComponent<{
           <Controller
             name="src"
             control={control}
-            render={({ field }) => <ImagePicker {...field} />}
+            render={({ field }) =>
+              <ImagePicker
+                {...field}
+                onChange={(value: any) => {
+                  field.onChange(value)
+
+                  handleChange()
+                }}
+              />
+            }
           />
         </Stack>
       </Stack>

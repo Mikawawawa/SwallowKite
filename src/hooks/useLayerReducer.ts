@@ -38,13 +38,13 @@ type Action =
   | { type: "SET"; payload: TextureLayer[] }
   | { type: "ADD_LAYER"; payload: TextureLayerForRender }
   | {
-      type: "UPDATE_LAYER";
-      payload: {
-        callback: any;
-        id: string;
-        layer: TextureLayer;
-      };
-    }
+    type: "UPDATE_LAYER";
+    payload: {
+      callback: any;
+      id: string;
+      layer: TextureLayer;
+    };
+  }
   | { type: "REMOVE_LAYER"; payload: string } // payload 是图层的唯一标识符
   | { type: "CLEAR" };
 
@@ -70,6 +70,7 @@ const layerReducer = (state: InitialState, action: Action): InitialState => {
         }
         layersMap.set(newId, value);
       });
+      console.log('layers', action.payload)
       return {
         layers: [...action.payload],
         layersMap,
@@ -98,9 +99,7 @@ const layerReducer = (state: InitialState, action: Action): InitialState => {
           layers: [...updatedLayers],
         };
 
-        if (action.payload.callback) {
-          requestAnimationFrame(() => action.payload.callback?.(newState));
-        }
+        console.log("newState", newState.layers)
 
         return newState;
       }
@@ -163,11 +162,12 @@ export function useLayerManager(
   const updateLayer = (
     id: string,
     updatedLayer: TextureLayer,
-    callback?: Function
   ) => {
     dispatch({
-      type: "UPDATE_LAYER",
-      payload: { id, layer: updatedLayer, callback },
+      type: "SET",
+      payload: state.layers.map((item) => {
+        return item.id === id ? updatedLayer : item
+      }),
     });
     notify?.();
   };
@@ -185,6 +185,8 @@ export function useLayerManager(
     dispatch({ type: "SET", payload: initValue });
     notify?.();
   };
+
+  console.log("layers 189", state.layers)
 
   return {
     layers: state.layers,

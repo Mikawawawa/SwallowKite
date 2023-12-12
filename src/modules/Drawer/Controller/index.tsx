@@ -31,6 +31,7 @@ export const LayerController: FunctionComponent<{
 
   const handleUpdate = useCallback(
     (id: string, data: any) => {
+      console.log('handleUpdate', data)
       updateLayer(id, data);
     },
     [onChange, updateLayer]
@@ -161,6 +162,7 @@ export const LayerController: FunctionComponent<{
                             <LayerConfig
                               layer={data[index]}
                               onChange={(value: any) => {
+                                console.log("value", { ...value })
                                 handleUpdate(item.id, {
                                   ...item,
                                   props: {

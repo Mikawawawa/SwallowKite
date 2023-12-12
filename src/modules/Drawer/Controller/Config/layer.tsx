@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect, useRef } from "react";
+import React, { FunctionComponent, useCallback, useEffect, useRef } from "react";
 import { ImagePicker } from "./fields/ImagePicker";
 import { AspectRatio, Slider, Stack, Typography, SliderProps, FormLabel } from "@mui/joy";
 import { Box } from "@mui/material";
@@ -8,6 +8,8 @@ import { LayerConfigSlider } from "./fields/Slider";
 import { RgbColorPicker } from "react-colorful";
 import { ColorPicker } from "./fields/ColorPicker";
 import { TextureLayerForRender } from "@/hooks/useLayerReducer";
+import { fields } from "@hookform/resolvers/ajv/src/__tests__/__fixtures__/data.js";
+import { throttle } from "lodash";
 
 export const LayerBasicConfig: FunctionComponent<{
   config: Partial<TextureLayerForRender>;
@@ -15,7 +17,7 @@ export const LayerBasicConfig: FunctionComponent<{
 }> = React.memo(function Configure({ config, onChange }) {
   const onChangeRef = useRef(onChange);
   onChangeRef.current = onChange;
-  const { control } = useForm({
+  const { control, getValues } = useForm({
     defaultValues: {
       scale: 1,
       opacity: 1,
@@ -30,14 +32,18 @@ export const LayerBasicConfig: FunctionComponent<{
   });
   const value = useWatch({ control });
 
-  useEffect(() => {
+  const handleChange = useCallback(throttle(() => {
+
+    const value = getValues()
+    console.log('value', { ...value })
     onChangeRef.current({
       ...value,
       scale: Math.pow(2, (value.scale || 0) / 100),
       // rowGap: value.rowGap / 100,
       // columnGap: value.columnGap / 100,
     });
-  }, [value]);
+
+  }, 16), [getValues])
 
   return (
     <form
@@ -52,7 +58,14 @@ export const LayerBasicConfig: FunctionComponent<{
             <Controller
               name="offset.x"
               control={control}
-              render={({ field }) => <LayerConfigSlider {...field} />}
+              render={({ field }) =>
+                <LayerConfigSlider
+                  {...field}
+                  onChange={(value) => {
+                    field.onChange(value)
+                    handleChange()
+                  }}
+                />}
             />
           </Stack>
           <Stack direction="column">
@@ -60,7 +73,14 @@ export const LayerBasicConfig: FunctionComponent<{
             <Controller
               name="offset.y"
               control={control}
-              render={({ field }) => <LayerConfigSlider {...field} />}
+              render={({ field }) =>
+                <LayerConfigSlider
+                  {...field}
+                  onChange={(value) => {
+                    field.onChange(value)
+                    handleChange()
+                  }}
+                />}
             />
           </Stack>
           <Stack direction="column">
@@ -77,6 +97,10 @@ export const LayerBasicConfig: FunctionComponent<{
                     return `${(value / 100).toFixed(2)} %`;
                   }}
                   {...field}
+                  onChange={(value) => {
+                    field.onChange(value)
+                    handleChange()
+                  }}
                 />
               )}
             />
@@ -93,6 +117,10 @@ export const LayerBasicConfig: FunctionComponent<{
                   max={100}
                   valueLabelFormat={(value) => {
                     return `${Math.pow(2, value / 100).toFixed(2)} x`;
+                  }}
+                  onChange={(value) => {
+                    field.onChange(value)
+                    handleChange()
                   }}
                 />
               )}
@@ -112,6 +140,10 @@ export const LayerBasicConfig: FunctionComponent<{
                   step={0.01}
                   valueLabelFormat={(value) => {
                     return `${(value * 100).toFixed(2)} %`;
+                  }}
+                  onChange={(value) => {
+                    field.onChange(value)
+                    handleChange()
                   }}
                 />
               )}

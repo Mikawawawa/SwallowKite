@@ -64,6 +64,7 @@ export class Drawer {
           break;
         }
         case "image": {
+          console.log('here', props.src)
           layerSprite = PIXI.Sprite.from(props.src || "/kite.jpeg");
           break;
         }
@@ -121,6 +122,7 @@ export class Drawer {
   };
 
   updateLayers = (layers: TextureLayerForRender[]) => {
+    console.log("this.updateLayers", layers)
     this.layers = layers;
   };
 }

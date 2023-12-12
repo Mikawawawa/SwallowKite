@@ -49,11 +49,13 @@ const useSolutionName = (
 
 export default function Home({ params }: any) {
   const [title, setTitle] = useSolutionName(params.solutionId);
+  
   const save = useCallback((value: Record<string, any>) => {
     const texture = drawerRef.current?.exportTexture?.() as string;
     SolutionManager.throttleSave(params.solutionId, { value, texture });
     sceneRef.current?.updateMaterial?.("main", texture);
   }, []);
+
   const layersHelper = useLayerManager((value) => {
     save(value);
     drawerRef.current?.updateLayers?.(value);

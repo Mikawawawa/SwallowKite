@@ -1,19 +1,12 @@
 import {
-  AspectRatio,
-  Slider,
   Stack,
   Typography,
-  SliderProps,
-  Badge,
   Chip,
 } from "@mui/joy";
 import { Box } from "@mui/material";
 import React, { useEffect, useRef } from "react";
 import { FunctionComponent } from "react";
 import { useForm, Controller, useWatch } from "react-hook-form";
-import * as yup from "yup";
-import { LayerConfigSlider } from "./fields/Slider";
-import { RgbColorPicker } from "react-colorful";
 import { ColorPicker } from "./fields/ColorPicker";
 
 export const ColorLayerPreviewer = React.memo(function Previewer({
