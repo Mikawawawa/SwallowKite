@@ -30,7 +30,7 @@ const useSolutionName = (
       return "Loading";
     }
     return data.find?.((item) => solutionId === item.key)?.name || "Untitled";
-  }, [solutionId, data]);
+  }, [solutionId, data, inited]);
 
   const updateName = useCallback(
     (newName: string) => {
@@ -81,16 +81,6 @@ export default function Home({ params }: any) {
           px: 3,
         }}
       >
-        <Typography
-          level="h3"
-          component={"div"}
-          sx={{
-            color: "#FFFFFF",
-          }}
-        >
-          <EditableText value={title} onChange={setTitle} />
-        </Typography>
-
         <IconButton
           size="sm"
           variant="soft"
@@ -108,6 +98,15 @@ export default function Home({ params }: any) {
         >
           <ArrowBackSharp />
         </IconButton>
+        <Typography
+          level="h3"
+          component={"div"}
+          sx={{
+            color: "#FFFFFF",
+          }}
+        >
+          <EditableText value={title} onChange={setTitle} />
+        </Typography>
       </Stack>
       <Stack
         direction="row"
