@@ -31,7 +31,7 @@ export const DotLayerPreviewer = React.memo(function Previewer({
           objectFit: "contain",
         }}
       />
-      <Typography level="title-lg">
+      <Typography level="title-lg" component="div">
         <Chip>图案</Chip>
       </Typography>
     </Stack>

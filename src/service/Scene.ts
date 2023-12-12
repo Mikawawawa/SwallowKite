@@ -4,6 +4,7 @@ import { Drawer } from "@/service/Drawer";
 import "babylonjs-loaders";
 import * as BABYLON from "babylonjs";
 import * as Materials from "babylonjs-materials";
+import { throttle } from "lodash";
 
 export class MainScene {
   public engine: BABYLON.Engine;
@@ -374,58 +375,55 @@ export class MainScene {
   }
 
   getNextMaterial(src: string) {
-    // const textureSize = 256; // 贴图大小
-    // @ts-expect-error
-    const drawer = window.drawer as Drawer;
-
     const texture = new BABYLON.Texture(src, this.scene); // drawer.exportTexture()是dataURL格式的图片数据
+    texture.vScale = -1;
+    texture.uScale = -1;
 
-    return texture;
-    // const color = new BABYLON.Color3(1, 1, 0.92); // 米白色
+    const normalMapTexture = new BABYLON.Texture(
+      "/technicalFabricSmall_normal_256.png",
+      this.scene
+    );
 
-    // const dynamicTexture = new BABYLON.DynamicTexture(
-    //   "dynamicTexture",
-    //   textureSize,
-    //   this.scene,
-    //   false
-    // );
+    const mat0 = new BABYLON.PBRMaterial("mat0", this.scene);
 
-    // dynamicTexture.drawText(
-    //   "Hello, World!",
-    //   null,
-    //   null,
-    //   "40px Arial",
-    //   `white`,
-    //   `rgba(255,255,238.0.5)`,
-    //   true
-    // );
+    mat0.ambientTexture = texture;
+    mat0.ambientTextureStrength = 1.3;
+    mat0.sheen.isEnabled = true;
+    mat0.sheen.roughness = 0.3;
+    mat0.sheen.texture = texture;
 
-    // return dynamicTexture;
+    mat0.directIntensity = 0.3; // 根据需要调整值
+    mat0.environmentIntensity = 1.0; // 根据需要调整值
+
+    mat0.bumpTexture = normalMapTexture;
+    // 调整法线贴图的强度
+    mat0.bumpTexture.level = 0.3; // 根据需要调整值
+
+    mat0.metallic = 0.0;
+    mat0.roughness = 1;
+
+    mat0.backFaceCulling = true;
+    return mat0;
   }
 
-  updateMaterial(name: string, src: string) {
-    const model = this.scene.getMeshByName(name); // 替换为你的模型名称
-    console.log("model, src", model, src);
-    if (!model || !src) {
-      return;
+  updateMaterial = throttle(
+    (name: string, src: string) => {
+      const model = this.scene.getMeshByName(name); // 替换为你的模型名称
+      if (!model || !src) {
+        return;
+      }
+
+      const nextMaterial = this.getNextMaterial(src);
+      // 获取纹理对象
+
+      // 模型还没有材质，直接赋值 nextMaterial
+      model.material = nextMaterial;
+    },
+    200,
+    {
+      trailing: true,
     }
-
-    // 找到材质
-    const material = model.material; // 假设你要更新材质的纹理
-
-    if (!material) {
-      return;
-    }
-
-    // 获取纹理对象
-    const nextTexture = this.getNextMaterial(src);
-
-    // @ts-expect-error unknown
-    this.texture = nextTexture;
-    // @ts-expect-error unknown
-    material.albedoTexture = nextTexture; // 也可能叫diffuseTexture
-    // 将新的基本颜色贴图分配给材质
-  }
+  );
 
   setSkyBox() {
     const scene = this.scene;
@@ -468,7 +466,7 @@ export class MainScene {
       scene.beginDirectAnimation(skybox, [animation], 0, 100, false, 1);
     };
 
-    const setDayConfig = () => {
+    const setDay = () => {
       // setSkyConfig("material.inclination", skyboxMaterial.inclination, 0); // 1
       setSkyConfig("material.inclination", skyboxMaterial.inclination, -0.5); // 2
 
@@ -478,15 +476,16 @@ export class MainScene {
       setSkyConfig("material.turbidity", skyboxMaterial.turbidity, 40); // 5
       // setSkyConfig("material.turbidity", skyboxMaterial.turbidity, 5); // 6
 
-      setSkyConfig(
-        "material.cameraOffset.y",
-        skyboxMaterial.cameraOffset.y,
-        50
-      ); // 7
-      // setSkyConfig("material.cameraOffset.y", skyboxMaterial.cameraOffset.y, 0);  // 8
+      // setSkyConfig(
+      //   "material.cameraOffset.y",
+      //   skyboxMaterial.cameraOffset.y,
+      //   50
+      // ); // 7
+      // setSkyConfig("material.cameraOffset.y", skyboxMaterial.cameraOffset.y, 50);  // 8
     };
 
     // Set to Day
     setSkyConfig("material.inclination", skyboxMaterial.inclination, 0);
+    // setDay()
   }
 }

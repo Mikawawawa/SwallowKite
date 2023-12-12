@@ -5,6 +5,7 @@ export class Drawer {
   public canvas: HTMLDivElement;
   private app: PIXI.Application;
   private stage: PIXI.Container;
+  private needUpdate: boolean = false;
 
   layers: Array<TextureLayerForRender> = [];
 
@@ -38,8 +39,18 @@ export class Drawer {
   }
 
   exportTexture() {
-    console.log('here')
-    return this.app.view.toDataURL?.("image/png");
+    return new Promise((resolve) => {
+      const handler = () => {
+        if (!this.needUpdate) {
+          resolve(this.app.view.toDataURL?.("image/png"));
+        } else {
+          requestAnimationFrame(handler);
+        }
+      };
+      requestAnimationFrame(() => {
+        handler();
+      });
+    });
   }
 
   render() {
@@ -64,14 +75,17 @@ export class Drawer {
           break;
         }
         case "image": {
-          layerSprite = PIXI.Sprite.from(props.src || "/kite.jpeg");
-          break;
+          if (!props.src) {
+            return;
+          }
+
+          layerSprite = PIXI.Sprite.from(props.src);
         }
         case "pattern": {
           layerSprite = new PIXI.Container();
 
           if (!layer?.props?.src) {
-            break;
+            return;
           }
           const { rowGap = 1, columnGap = 1, scale = 1 } = layer?.props || {};
 
@@ -108,6 +122,8 @@ export class Drawer {
 
       this.stage.addChild(layerSprite);
     });
+
+    this.needUpdate = false;
   }
 
   animate = () => {
@@ -121,6 +137,7 @@ export class Drawer {
   };
 
   updateLayers = (layers: TextureLayerForRender[]) => {
+    this.needUpdate = true;
     this.layers = layers;
   };
 }

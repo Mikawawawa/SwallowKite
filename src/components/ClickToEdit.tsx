@@ -6,13 +6,14 @@ import {
   ImageList,
   ImageListItem,
   ImageListItemBar,
-  IconButton,
+
   InputBase,
   ClickAwayListener,
   Stack,
+  ButtonBase,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import { Input } from "@mui/joy";
+import { Input, Box, } from "@mui/joy";
 import { Cancel } from "@mui/icons-material";
 
 export const EditableText: React.FC<{
@@ -52,16 +53,18 @@ export const EditableText: React.FC<{
               onBlur={handleFinishEditing}
               autoFocus
             />
-            <IconButton onClick={handleFinishEditing} size="small">
-              <Cancel />
-            </IconButton>
+            <ButtonBase onClick={handleFinishEditing} disableRipple>
+              <Cancel sx={{
+                color: 'white'
+              }} />
+            </ButtonBase>
           </>
         </ClickAwayListener>
       ) : (
         <>
-          <Typography onClick={handleStartEditing} sx={{ cursor: "pointer" }}>
+          <Box onClick={handleStartEditing} sx={{ cursor: "pointer" }}>
             {value}
-          </Typography>
+          </Box>
         </>
       )}
     </Stack>

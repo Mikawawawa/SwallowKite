@@ -1,33 +1,66 @@
 "use client";
 
 import { SceneComponent } from "@/modules/MainScene";
-import * as React from "react";
 
 import Stack from "@mui/material/Stack";
 import { DrawerComponent } from "@/modules/Drawer";
-import { Box, Toolbar } from "@mui/material";
-import { useLayerManager } from "@/hooks/useLayerReducer";
-import { useEffect } from "react";
+import {
+  TextureLayerForRender,
+  useLayerManager,
+} from "@/hooks/useLayerReducer";
+import { useEffect, useRef, useMemo, useCallback } from "react";
 
-import { useThrottle } from "@/hooks/useThrottle";
 import { Drawer } from "@/service/Drawer";
 import { MainScene } from "@/service/Scene";
-import { SolutionManager } from "@/service/SolutionManger";
+import { SolutionManager, useSolutionStorage } from "@/service/SolutionManger";
+import { EditableText } from "@/components/ClickToEdit";
+import { IconButton, Typography } from "@mui/joy";
+import { ArrowBackSharp } from "@mui/icons-material";
+import { useRouter } from "next/navigation";
+
+const useSolutionName = (
+  solutionId: string
+): [string, (newName: string) => void] => {
+  const { inited, data, updateItem } = useSolutionStorage(
+    "swallow-kite-solutions"
+  );
+
+  const info = useMemo(() => {
+    if (!inited) {
+      return "Loading";
+    }
+    return data.find?.((item) => solutionId === item.key)?.name || "Untitled";
+  }, [solutionId, data, inited]);
+
+  const updateName = useCallback(
+    (newName: string) => {
+      updateItem(solutionId, newName);
+    },
+    [solutionId, updateItem]
+  );
+
+  return [info, updateName];
+};
 
 export default function Home({ params }: any) {
+  const [title, setTitle] = useSolutionName(params.solutionId);
+
+  const save = useCallback(async (value: TextureLayerForRender[]) => {
+    drawerRef.current?.updateLayers?.(value);
+    const texture = (await drawerRef.current?.exportTexture?.()) as string;
+
+    SolutionManager.throttleSave(params.solutionId, { value, texture });
+    sceneRef.current?.updateMaterial?.("main", texture);
+  }, []);
+
   const layersHelper = useLayerManager((value) => {
     save(value);
-    drawerRef.current?.updateLayers?.(value);
   });
-  const drawerRef = React.useRef<Drawer>();
-  const sceneRef = React.useRef<MainScene>();
 
-  const save = useThrottle((value: Record<string, any>) => {
-    const texture = drawerRef.current?.exportTexture?.() as string;
-    SolutionManager.save(params.solutionId, { value, texture });
+  const drawerRef = useRef<Drawer>();
+  const sceneRef = useRef<MainScene>();
 
-    sceneRef.current?.updateMaterial?.("main", texture);
-  }, 1000);
+  const router = useRouter();
 
   useEffect(() => {
     SolutionManager.get(params.solutionId).then((result: any) => {
@@ -39,34 +72,64 @@ export default function Home({ params }: any) {
   }, []);
 
   return (
-    <Stack
-      direction="row"
-      component={"main"}
-      sx={{
-        flex: 1,
-        flexWrap: "nowrap",
-        padding: 3,
-        overflow: "hidden",
-      }}
-      spacing={2}
-    >
-      <DrawerComponent
-        ref={drawerRef}
-        layersHelper={layersHelper}
-        onChange={(value) => {
-          drawerRef.current?.updateLayers?.(value);
-          save(value);
-        }}
-      />
-
-      <Box
+    <>
+      <Stack
+        direction={"row"}
+        spacing={2}
         sx={{
-          height: "100%",
-          flex: 3,
+          backdropFilter: "blur(10px)",
+          px: 3,
         }}
       >
+        <IconButton
+          size="sm"
+          variant="soft"
+          onClick={async () => {
+            const texture =
+              (await drawerRef.current?.exportTexture?.()) as string;
+
+            await SolutionManager.save(params.solutionId, {
+              value: layersHelper.layers,
+              texture,
+            });
+
+            router.push("/");
+          }}
+        >
+          <ArrowBackSharp />
+        </IconButton>
+        <Typography
+          level="h3"
+          component={"div"}
+          sx={{
+            color: "#FFFFFF",
+          }}
+        >
+          <EditableText value={title} onChange={setTitle} />
+        </Typography>
+      </Stack>
+      <Stack
+        direction="row"
+        component={"main"}
+        sx={{
+          flex: 1,
+          flexWrap: "nowrap",
+          padding: 3,
+          overflow: "hidden",
+        }}
+        spacing={2}
+      >
         <SceneComponent ref={sceneRef} />
-      </Box>
-    </Stack>
+
+        <DrawerComponent
+          ref={drawerRef}
+          layersHelper={layersHelper}
+          onChange={(id, value) => {
+            // @ts-ignore
+            layersHelper.updateLayer(id, value);
+          }}
+        />
+      </Stack>
+    </>
   );
 }

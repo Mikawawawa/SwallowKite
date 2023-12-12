@@ -1,5 +1,5 @@
 import { throttle } from "lodash";
-import { useEffect, useMemo, useReducer, useRef } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useRef } from "react";
 // @ts-ignore
 import { v4 as uuidv4 } from "uuid";
 
@@ -59,7 +59,6 @@ const layerReducer = (state: InitialState, action: Action): InitialState => {
         layers: [],
         layersMap: layersMap,
       };
-      break;
     }
     case "SET": {
       layersMap.clear();
@@ -98,10 +97,6 @@ const layerReducer = (state: InitialState, action: Action): InitialState => {
           layers: [...updatedLayers],
         };
 
-        if (action.payload.callback) {
-          requestAnimationFrame(() => action.payload.callback?.(newState));
-        }
-
         return newState;
       }
       break;
@@ -109,12 +104,10 @@ const layerReducer = (state: InitialState, action: Action): InitialState => {
     case "REMOVE_LAYER": {
       // 处理删除图层的逻辑
       const layerToRemove = layersMap.get(action.payload);
-      console.log(layerToRemove, layersMap, action.payload);
-      debugger;
       if (layerToRemove) {
+        debugger;
         layersMap.delete(action.payload);
         const updatedLayers = layers.filter((layer) => {
-          console.log(layer.id, action.payload);
           return layer.id !== action.payload;
         });
         return {
@@ -142,46 +135,52 @@ export function useLayerManager(
   const layersRef = useRef(state.layers);
   layersRef.current = state.layers;
 
-  const notify = useMemo(() => {
-    return throttle(() => {
-      callback?.(layersRef.current);
-    }, 16);
-  }, [callback]);
+  const needNotify = useRef<boolean>(false);
+  useEffect(() => {
+    if (needNotify.current) {
+      needNotify.current = true;
+      callback?.(state.layers);
+    }
+  }, [state.layers, callback]);
+
+  const notify = useCallback(() => {
+    needNotify.current = true;
+  }, []);
 
   const clear = () => {
+    notify();
     dispatch({ type: "CLEAR" });
-    notify?.();
   };
 
   // 添加新图层
   const addLayer = (newLayer: TextureLayerForRender) => {
+    notify();
     dispatch({ type: "ADD_LAYER", payload: newLayer });
-    notify?.();
   };
 
   // 更新图层
-  const updateLayer = (
-    id: string,
-    updatedLayer: TextureLayer,
-    callback?: Function
-  ) => {
+  const updateLayer = (id: string, updatedLayer: TextureLayer) => {
+    notify();
     dispatch({
-      type: "UPDATE_LAYER",
-      payload: { id, layer: updatedLayer, callback },
+      type: "SET",
+      payload: state.layers.map((item) => {
+        return item.id === id ? updatedLayer : item;
+      }),
     });
-    notify?.();
   };
 
   // 删除图层
   const removeLayer = (id: string) => {
-    console.log("remove layer", id);
-    dispatch({ type: "REMOVE_LAYER", payload: id });
     notify?.();
+    dispatch({
+      type: "SET",
+      payload: state.layers.filter((item) => item.id !== id),
+    });
   };
 
   const setLayers = (initValue: TextureLayer[]) => {
-    dispatch({ type: "SET", payload: initValue });
     notify?.();
+    dispatch({ type: "SET", payload: initValue });
   };
 
   return {

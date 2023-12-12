@@ -1,19 +1,6 @@
-import { Alert, Button, Card, IconButton, Stack, styled } from "@mui/joy";
-import { throttle } from "lodash";
-import { Box, Icon, debounce } from "@mui/material";
-import {
-  CSSProperties,
-  ClassAttributes,
-  FunctionComponent,
-  HTMLAttributes,
-  JSX,
-  LegacyRef,
-  MouseEventHandler,
-  PropsWithChildren,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import { Alert, Button, Stack } from "@mui/joy";
+import { Box } from "@mui/material";
+import { FunctionComponent, useCallback, useState } from "react";
 import {
   TextureLayerForRender,
   useLayerManager,
@@ -21,25 +8,16 @@ import {
 
 import { LayerConfig, LayerPreview } from "./Config";
 import { Layer, LayerInitializer } from "./Layer";
-import {
-  DndContainer,
-  StrictModeDroppable,
-} from "@/components/DragSortable/Container";
+import { StrictModeDroppable } from "@/components/DragSortable/Container";
 
 import update from "immutability-helper";
-import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import { DragDropContext, Draggable } from "@hello-pangea/dnd";
 
 export const LayerController: FunctionComponent<{
   helper: ReturnType<typeof useLayerManager>;
-  onChange: Function;
+  onChange: (id: string, value: TextureLayerForRender) => void;
 }> = ({ helper, onChange }) => {
-  const {
-    layers: data,
-    addLayer,
-    updateLayer,
-    removeLayer,
-    setLayers,
-  } = helper;
+  const { layers: data, addLayer, removeLayer, setLayers } = helper;
 
   const [focusedLayerIndex, setFocusedLayerIndex] = useState<null | number>(
     null
@@ -47,18 +25,21 @@ export const LayerController: FunctionComponent<{
 
   const handleUpdate = useCallback(
     (id: string, data: any) => {
-      updateLayer(id, data);
+      onChange(id, data);
     },
-    [onChange, updateLayer]
+    [onChange]
   );
 
   const moveCard = useCallback(
     (dragIndex: number, hoverIndex: number) => {
+      const dragAt = data.length - dragIndex;
+      const hoverAt = data.length - hoverIndex;
+
       setLayers(
         update(data, {
           $splice: [
-            [dragIndex, 1],
-            [hoverIndex, 0, data[dragIndex]],
+            [dragAt, 1],
+            [hoverAt, 0, data[dragAt]],
           ],
         })
       );
@@ -71,15 +52,35 @@ export const LayerController: FunctionComponent<{
       direction="column"
       sx={{
         width: "320px",
-        overflowY: "visible",
-        overflowX: "auto",
-        minHeight: "100%",
+        "::webkit-scroll": {
+          display: "none",
+        },
+        // overflowY: "visible",
+        // overflowX: "auto",
+        // minHeight: "100%",
       }}
+      spacing={2}
     >
       {Array.isArray(data) && data?.length === 0 && (
         <Alert variant="soft" color="warning">
           Please add new layers firstly
         </Alert>
+      )}
+
+      {Array.isArray(data) && (
+        <Button
+          // @ts-ignore
+          onClick={() => addLayer({})}
+          variant="soft"
+          sx={{
+            position: "sticky",
+            bottom: 0,
+            padding: 2,
+            transition: "all 0.3s",
+          }}
+        >
+          添加新图层
+        </Button>
       )}
       <DragDropContext
         onDragEnd={(result) => {
@@ -94,17 +95,21 @@ export const LayerController: FunctionComponent<{
             <Stack
               {...provided.droppableProps}
               ref={provided.innerRef}
+              direction={"column-reverse"}
               spacing={1}
               sx={{
                 width: "320px",
-                minHeight: "100%",
               }}
             >
               {data?.map?.((item, index) => {
                 const selected = focusedLayerIndex === index;
 
                 return (
-                  <Draggable key={item.id} draggableId={item.id} index={index}>
+                  <Draggable
+                    key={item.id}
+                    draggableId={item.id}
+                    index={data.length - index}
+                  >
                     {(provided, snapshot) => (
                       <Box
                         component={"div"}
@@ -130,7 +135,7 @@ export const LayerController: FunctionComponent<{
                           />
                         ) : (
                           <Layer
-                            key={item.id}
+                            key={`${item.id}-${index}`}
                             item={item}
                             index={index}
                             selected={selected}
@@ -170,18 +175,6 @@ export const LayerController: FunctionComponent<{
           )}
         </StrictModeDroppable>
       </DragDropContext>
-
-      <Button
-        // @ts-ignore
-        onClick={() => addLayer({})}
-        variant="soft"
-        sx={{
-          position: "sticky",
-          bottom: 0,
-        }}
-      >
-        添加新图层
-      </Button>
     </Stack>
   );
 };

@@ -104,7 +104,6 @@ export const TypeSelection = ({
           defaultValue="medium"
           name="radio-buttons-group"
           onChange={(e) => {
-            console.log(e.target.value);
             if (e?.target?.value) {
               setValue(e.target.value as TextureLayerForRender["type"]);
             }

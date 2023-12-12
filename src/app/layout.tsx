@@ -4,9 +4,8 @@ import { Inter } from "next/font/google";
 import "./global.css";
 import { Theme } from "@/theme";
 import { Stack, Typography } from "@mui/joy";
-import { Skeleton, Toolbar } from "@mui/material";
+import { Toolbar } from "@mui/material";
 import Link from "next/link";
-import DrawerFilters from "@/components/InsetDrawer";
 import Head from "next/head";
 
 const inter = Inter({ subsets: ["latin"] });
