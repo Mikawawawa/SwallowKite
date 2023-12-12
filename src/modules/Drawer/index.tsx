@@ -17,7 +17,7 @@ export const DrawerComponent = React.forwardRef(function DrawerComponentInner(
     layersHelper,
     onChange,
   }: {
-    onChange: (value: TextureLayerForRender[]) => void;
+    onChange: (id: string, value: TextureLayerForRender) => void;
     layersHelper: ReturnType<typeof useLayerManager>;
   },
   ref
@@ -75,11 +75,11 @@ export const DrawerComponent = React.forwardRef(function DrawerComponentInner(
       >
         <LayerController
           helper={layersHelper}
-          onChange={(value) => {
+          onChange={(id, value) => {
             if (!hasInit.current) {
               return;
             }
-            onChange(value);
+            onChange(id, value);
           }}
         />
       </DrawerColumn>

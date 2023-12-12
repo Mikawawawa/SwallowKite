@@ -37,7 +37,6 @@ export class SolutionManager extends StorageService {
             };
           })
         )) as ObjectItem[];
-        console.log("this.data", this.data);
       }
     } catch (error) {
       console.error("Error fetching data from local storage:", error);

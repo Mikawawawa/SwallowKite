@@ -15,15 +15,9 @@ import { DragDropContext, Draggable } from "@hello-pangea/dnd";
 
 export const LayerController: FunctionComponent<{
   helper: ReturnType<typeof useLayerManager>;
-  onChange: (value: TextureLayerForRender[]) => void;
+  onChange: (id: string, value: TextureLayerForRender) => void;
 }> = ({ helper, onChange }) => {
-  const {
-    layers: data,
-    addLayer,
-    updateLayer,
-    removeLayer,
-    setLayers,
-  } = helper;
+  const { layers: data, addLayer, removeLayer, setLayers } = helper;
 
   const [focusedLayerIndex, setFocusedLayerIndex] = useState<null | number>(
     null
@@ -31,10 +25,9 @@ export const LayerController: FunctionComponent<{
 
   const handleUpdate = useCallback(
     (id: string, data: any) => {
-      console.log('handleUpdate', data)
-      updateLayer(id, data);
+      onChange(id, data);
     },
-    [onChange, updateLayer]
+    [onChange]
   );
 
   const moveCard = useCallback(
@@ -162,7 +155,6 @@ export const LayerController: FunctionComponent<{
                             <LayerConfig
                               layer={data[index]}
                               onChange={(value: any) => {
-                                console.log("value", { ...value })
                                 handleUpdate(item.id, {
                                   ...item,
                                   props: {

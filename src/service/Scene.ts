@@ -419,9 +419,8 @@ export class MainScene {
       // 模型还没有材质，直接赋值 nextMaterial
       model.material = nextMaterial;
     },
-    1000,
+    200,
     {
-      leading: true,
       trailing: true,
     }
   );

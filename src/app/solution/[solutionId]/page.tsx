@@ -4,23 +4,18 @@ import { SceneComponent } from "@/modules/MainScene";
 
 import Stack from "@mui/material/Stack";
 import { DrawerComponent } from "@/modules/Drawer";
-import { Box, Toolbar } from "@mui/material";
-import { useLayerManager } from "@/hooks/useLayerReducer";
-import { useEffect, useState, useRef, useMemo, useCallback } from "react";
+import {
+  TextureLayerForRender,
+  useLayerManager,
+} from "@/hooks/useLayerReducer";
+import { useEffect, useRef, useMemo, useCallback } from "react";
 
-import { useThrottle } from "@/hooks/useThrottle";
 import { Drawer } from "@/service/Drawer";
 import { MainScene } from "@/service/Scene";
 import { SolutionManager, useSolutionStorage } from "@/service/SolutionManger";
 import { EditableText } from "@/components/ClickToEdit";
 import { IconButton, Typography } from "@mui/joy";
-import {
-  ArrowBack,
-  ArrowBackSharp,
-  BackHand,
-  Backup,
-  Save,
-} from "@mui/icons-material";
+import { ArrowBackSharp } from "@mui/icons-material";
 import { useRouter } from "next/navigation";
 
 const useSolutionName = (
@@ -49,17 +44,19 @@ const useSolutionName = (
 
 export default function Home({ params }: any) {
   const [title, setTitle] = useSolutionName(params.solutionId);
-  
-  const save = useCallback((value: Record<string, any>) => {
-    const texture = drawerRef.current?.exportTexture?.() as string;
+
+  const save = useCallback(async (value: TextureLayerForRender[]) => {
+    drawerRef.current?.updateLayers?.(value);
+    const texture = (await drawerRef.current?.exportTexture?.()) as string;
+
     SolutionManager.throttleSave(params.solutionId, { value, texture });
     sceneRef.current?.updateMaterial?.("main", texture);
   }, []);
 
   const layersHelper = useLayerManager((value) => {
     save(value);
-    drawerRef.current?.updateLayers?.(value);
   });
+
   const drawerRef = useRef<Drawer>();
   const sceneRef = useRef<MainScene>();
 
@@ -97,15 +94,16 @@ export default function Home({ params }: any) {
         <IconButton
           size="sm"
           variant="soft"
-          onClick={() => {
-            const texture = drawerRef.current?.exportTexture?.() as string;
+          onClick={async () => {
+            const texture =
+              (await drawerRef.current?.exportTexture?.()) as string;
 
-            SolutionManager.save(params.solutionId, {
+            await SolutionManager.save(params.solutionId, {
               value: layersHelper.layers,
               texture,
-            }).then(() => {
-              router.push("/");
             });
+
+            router.push("/");
           }}
         >
           <ArrowBackSharp />
@@ -127,9 +125,9 @@ export default function Home({ params }: any) {
         <DrawerComponent
           ref={drawerRef}
           layersHelper={layersHelper}
-          onChange={(value) => {
-            drawerRef.current?.updateLayers?.(value);
-            save(value);
+          onChange={(id, value) => {
+            // @ts-ignore
+            layersHelper.updateLayer(id, value);
           }}
         />
       </Stack>

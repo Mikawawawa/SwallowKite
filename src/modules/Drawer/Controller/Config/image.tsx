@@ -1,10 +1,11 @@
-import React, { FunctionComponent, useCallback, useEffect, useRef } from "react";
+import React, {
+  FunctionComponent,
+  useCallback,
+  useEffect,
+  useRef,
+} from "react";
 import { ImagePicker } from "./fields/ImagePicker";
-import {
-  Stack,
-  Typography,
-  Chip,
-} from "@mui/joy";
+import { Stack, Typography, Chip } from "@mui/joy";
 import { useForm, Controller, useWatch } from "react-hook-form";
 import { throttle } from "lodash";
 
@@ -43,13 +44,15 @@ export const ImageLayerConfig: FunctionComponent<{
     },
   });
 
-  const handleChange = useCallback(throttle(() => {
-    const value = getValues()
-    console.log('value', value)
-    onChangeRef.current({
-      ...value,
-    });
-  }, 20), [getValues])
+  const handleChange = useCallback(
+    throttle(() => {
+      const value = getValues();
+      onChangeRef.current({
+        ...value,
+      });
+    }, 20),
+    [getValues]
+  );
 
   return (
     <form>
@@ -58,16 +61,16 @@ export const ImageLayerConfig: FunctionComponent<{
           <Controller
             name="src"
             control={control}
-            render={({ field }) =>
+            render={({ field }) => (
               <ImagePicker
                 {...field}
                 onChange={(value: any) => {
-                  field.onChange(value)
+                  field.onChange(value);
 
-                  handleChange()
+                  handleChange();
                 }}
               />
-            }
+            )}
           />
         </Stack>
       </Stack>

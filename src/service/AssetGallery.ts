@@ -17,7 +17,6 @@ export class ImageStorageManager extends StorageService {
 
   async addImage(source: string, name?: string): Promise<string> {
     const key = this.generateUniqueKey();
-    console.log("key", key);
     if (!key) {
       throw Error("Get empty key");
     }
