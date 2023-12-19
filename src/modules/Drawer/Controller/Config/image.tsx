@@ -8,6 +8,7 @@ import { ImagePicker } from "./fields/ImagePicker";
 import { Stack, Typography, Chip } from "@mui/joy";
 import { useForm, Controller, useWatch } from "react-hook-form";
 import { throttle } from "lodash";
+import { emptyImage } from "@/service/AssetGallery";
 
 export const ImageLayerPreviewer = React.memo(function Previewer({
   config,
@@ -17,7 +18,7 @@ export const ImageLayerPreviewer = React.memo(function Previewer({
   return (
     <Stack direction={"row"} spacing={1}>
       <img
-        src={config.src ? config.src : "none"}
+        src={Boolean(config.src) ? config.src : emptyImage}
         style={{
           width: "64px",
           height: "36px",
