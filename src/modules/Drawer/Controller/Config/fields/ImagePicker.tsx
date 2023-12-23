@@ -1,4 +1,6 @@
-import { AssetGallery } from "@/modules/AssetGallery";
+import { Gallery } from "@/modules/Gallery/Pure";
+import { useLocalAssetsHelper } from "@/modules/Gallery/withLocal";
+import { usePresetAssetsHelper } from "@/modules/Gallery/withPresets";
 import {
   Stack,
   AspectRatio,
@@ -11,8 +13,98 @@ import {
   ModalClose,
   Sheet,
   Typography,
+  Tabs,
+  TabList,
+  Tab,
+  TabPanel,
 } from "@mui/joy";
-import React, { ChangeEventHandler, useCallback, useRef } from "react";
+import React, {
+  ChangeEventHandler,
+  PropsWithChildren,
+  useCallback,
+  useRef,
+  useState,
+} from "react";
+
+const PickerDrawer = ({
+  open,
+  onClose,
+  children,
+}: PropsWithChildren<{
+  open: boolean;
+  onClose: () => void;
+}>) => {
+  return (
+    <Drawer
+      anchor="right"
+      size="lg"
+      variant="plain"
+      open={open}
+      onClose={onClose}
+      slotProps={{
+        content: {
+          sx: {
+            bgcolor: "transparent",
+            p: { md: 3, sm: 0 },
+            boxShadow: "none",
+          },
+        },
+      }}
+    >
+      <Sheet
+        sx={{
+          borderRadius: "md",
+          p: 2,
+          display: "flex",
+          flexDirection: "column",
+          gap: 2,
+          height: "100%",
+          overflow: "auto",
+        }}
+      >
+        <DialogTitle>Assets Gallery</DialogTitle>
+
+        <ModalClose />
+        <Divider sx={{ mt: "auto" }} />
+
+        <DialogContent sx={{ gap: 2 }}>{children}</DialogContent>
+      </Sheet>
+    </Drawer>
+  );
+};
+
+enum GalleryType {
+  Local = "local",
+  Preset = "preset",
+}
+
+const FullImageGallery = ({ onChange }: { onChange: any }) => {
+  const localHelper = useLocalAssetsHelper("ugc");
+  const presetsHelper = usePresetAssetsHelper();
+
+  const helperMap = {
+    [GalleryType.Local]: localHelper,
+    [GalleryType.Preset]: presetsHelper,
+  };
+
+  const [type, setType] = useState<GalleryType>(GalleryType.Local);
+  console.log("type", type);
+  return (
+    <Tabs value={type} onChange={(_, value) => setType(value as GalleryType)}>
+      <TabList>
+        <Tab variant="plain" color="neutral" value={GalleryType.Local}>
+          用户素材
+        </Tab>
+
+        <Tab variant="plain" color="neutral" value={GalleryType.Preset}>
+          系统素材
+        </Tab>
+      </TabList>
+
+      <Gallery {...helperMap[type]} onChange={onChange} />
+    </Tabs>
+  );
+};
 
 export const ImagePicker = ({ onChange, value }: any) => {
   const [open, setOpen] = React.useState(false);
@@ -25,77 +117,6 @@ export const ImagePicker = ({ onChange, value }: any) => {
         position: "relative",
       }}
     >
-      <Drawer
-        anchor="right"
-        size="lg"
-        variant="plain"
-        open={open}
-        onClose={() => setOpen(false)}
-        slotProps={{
-          content: {
-            sx: {
-              bgcolor: "transparent",
-              p: { md: 3, sm: 0 },
-              boxShadow: "none",
-            },
-          },
-        }}
-      >
-        <Sheet
-          sx={{
-            borderRadius: "md",
-            p: 2,
-            display: "flex",
-            flexDirection: "column",
-            gap: 2,
-            height: "100%",
-            overflow: "auto",
-          }}
-        >
-          <DialogTitle>Assets Gallery</DialogTitle>
-
-          <ModalClose />
-          <Divider sx={{ mt: "auto" }} />
-
-
-          <DialogContent sx={{ gap: 2 }}>
-            <Button
-              variant="soft"
-              disabled={!selected}
-              onClick={() => {
-                setOpen(false);
-                onChange?.(selected);
-              }}
-            >
-              Choose
-            </Button>
-
-            <Typography>
-              This is the demo for image selection component
-            </Typography>
-
-
-
-            <AssetGallery
-              debug={process.env.NODE_ENV === "development"}
-              namespace={"ugc"}
-              onChange={(source) => setSelected(source)}
-            />
-          </DialogContent>
-
-          <Button
-            variant="soft"
-            disabled={!selected}
-            onClick={() => {
-              setOpen(false);
-              onChange?.(selected);
-            }}
-          >
-            Choose
-          </Button>
-        </Sheet>
-      </Drawer>
-
       <Box
         sx={{
           background: "rgba(150, 150, 150, 0.3)",
@@ -116,9 +137,14 @@ export const ImagePicker = ({ onChange, value }: any) => {
           setOpen(true);
         }}
       >
-        <Button variant="soft" sx={{
-          transition: 'all 0.3s'
-        }}>选择图片</Button>
+        <Button
+          variant="soft"
+          sx={{
+            transition: "all 0.3s",
+          }}
+        >
+          选择图片
+        </Button>
       </Box>
 
       <AspectRatio maxHeight={100}>
@@ -133,6 +159,19 @@ export const ImagePicker = ({ onChange, value }: any) => {
           }}
         />
       </AspectRatio>
+
+      <PickerDrawer open={open} onClose={() => setOpen(false)}>
+        <Button
+          disabled={!selected}
+          onClick={() => {
+            setOpen(false);
+            onChange?.(selected);
+          }}
+        >
+          Choose
+        </Button>
+        <FullImageGallery onChange={(source) => setSelected(source)}/>
+      </PickerDrawer>
     </Stack>
   );
 };
