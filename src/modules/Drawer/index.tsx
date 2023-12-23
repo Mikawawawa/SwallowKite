@@ -40,8 +40,6 @@ export const DrawerComponent = React.forwardRef(function DrawerComponentInner(
 
     const drawer = new Drawer(DrawerContainer);
     drawerRef.current = drawer;
-    // @ts-expect-error 123
-    window.drawer = drawer;
   }, []);
 
   return (

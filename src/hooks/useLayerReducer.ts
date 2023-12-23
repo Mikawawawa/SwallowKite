@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useReducer, useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 // 图层数据类型
-type TextureLayer = {
+export type TextureLayer = {
   id: string; // 唯一标识符
   type: "pattern" | "image" | "solid";
   opacity?: number;
