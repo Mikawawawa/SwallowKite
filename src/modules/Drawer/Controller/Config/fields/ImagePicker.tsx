@@ -78,7 +78,11 @@ enum GalleryType {
   Preset = "preset",
 }
 
-const FullImageGallery = ({ onChange }: { onChange: any }) => {
+const FullImageGallery = ({
+  onChange,
+}: {
+  onChange: (src?: string) => void;
+}) => {
   const localHelper = useLocalAssetsHelper("ugc");
   const presetsHelper = usePresetAssetsHelper();
 
@@ -170,7 +174,7 @@ export const ImagePicker = ({ onChange, value }: any) => {
         >
           Choose
         </Button>
-        <FullImageGallery onChange={(source) => setSelected(source)}/>
+        <FullImageGallery onChange={(source) => setSelected(source)} />
       </PickerDrawer>
     </Stack>
   );

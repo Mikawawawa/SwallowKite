@@ -9,13 +9,14 @@ import LocationOnRoundedIcon from "@mui/icons-material/LocationOnRounded";
 import { AspectRatio, Box, IconButton, Skeleton } from "@mui/joy";
 
 import { DeleteOutlineOutlined } from "@mui/icons-material";
+import Image from "next/image";
 
 export function BasicCardSkeleton() {
   return (
     <Card sx={{ minHeight: "280px", width: "100%" }} variant="soft">
       <AspectRatio ratio="21/9">
         <Skeleton variant="overlay">
-          <img
+          <Image
             alt=""
             src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="
           />
