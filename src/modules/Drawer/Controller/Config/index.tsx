@@ -68,7 +68,11 @@ export const LayerPreview: FunctionComponent<{
   // setType
 }) => {
   return (
-    <Box>
+    <Box
+      sx={{
+        pointerEvents: "none",
+      }}
+    >
       {layer.type === "pattern" && (
         <>
           <DotLayerPreviewer config={layer.props} />

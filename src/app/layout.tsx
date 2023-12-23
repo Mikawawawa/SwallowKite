@@ -7,6 +7,7 @@ import { Stack, Typography } from "@mui/joy";
 import { Toolbar } from "@mui/material";
 import Link from "next/link";
 import Head from "next/head";
+import { Compositor } from "@/modules/Composition";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -64,7 +65,7 @@ export default function RootLayout({
                   </Typography>
                 </Link>
 
-                {/* <DrawerFilters /> */}
+                <Compositor />
               </Stack>
             </Toolbar>
 

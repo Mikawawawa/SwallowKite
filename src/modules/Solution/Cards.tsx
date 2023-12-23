@@ -9,6 +9,7 @@ import LocationOnRoundedIcon from "@mui/icons-material/LocationOnRounded";
 import { AspectRatio, Box, IconButton, Skeleton } from "@mui/joy";
 
 import { DeleteOutlineOutlined } from "@mui/icons-material";
+import Image from "next/image";
 
 export function BasicCardSkeleton() {
   return (
