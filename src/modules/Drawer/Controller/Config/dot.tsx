@@ -14,6 +14,7 @@ import { useForm, Controller, useWatch } from "react-hook-form";
 import * as yup from "yup";
 import { LayerConfigSlider } from "./fields/Slider";
 import { ImagePicker } from "./fields/ImagePicker";
+import { emptyImage } from "@/service/AssetGallery";
 
 export const DotLayerPreviewer = React.memo(function Previewer({
   config,
@@ -23,7 +24,7 @@ export const DotLayerPreviewer = React.memo(function Previewer({
   return (
     <Stack direction={"row"} spacing={1}>
       <img
-        src={config.src ? config.src : "none"}
+        src={config.src ? config.src : emptyImage}
         style={{
           width: "64px",
           height: "36px",
