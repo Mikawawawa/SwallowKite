@@ -18,6 +18,7 @@ import { CssBaseline } from "@mui/joy";
 import React from "react";
 
 import { motion } from "framer-motion";
+import { CompositeAssetsProvider } from "@/modules/Gallery/withLocal";
 
 const variants = {
   hidden: { opacity: 0, x: 0, y: -200 },
@@ -82,7 +83,7 @@ export const Theme: FunctionComponent<PropsWithChildren<any>> = ({
           animate="enter"
           transition={{ type: "linear" }}
         >
-          {children}
+          <CompositeAssetsProvider>{children}</CompositeAssetsProvider>
         </motion.main>
       </JoyCssVarsProvider>
     </MaterialCssVarsProvider>

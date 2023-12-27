@@ -143,7 +143,7 @@ export function AddCard({ onClick }: any) {
             bottom: 0,
           }}
         >
-          Add One
+          创建一个新场景
         </Typography>
       </CardContent>
     </Card>

@@ -1,16 +1,7 @@
 "use client";
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  useCallback,
-  useLayoutEffect,
-} from "react";
-import { ImageStorageManager, ImageItem } from "@/service/AssetGallery";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 
 import {
-  AspectRatio,
-  Checkbox,
   DialogContent,
   DialogTitle,
   Divider,
@@ -20,18 +11,11 @@ import {
   ModalClose,
   Sheet,
 } from "@mui/joy";
-import { Delete, Draw } from "@mui/icons-material";
-import { UploadTrigger } from "@/components/UploadTrigger";
-import { EditableText } from "@/components/ClickToEdit";
-import { Form } from "react-hook-form";
 import { ImagePicker } from "../Drawer/Controller/Config/fields/ImagePicker";
-import { DrawerComponent } from "../Drawer";
-import {
-  TextureLayer,
-  TextureLayerForRender,
-  useLayerManager,
-} from "@/hooks/useLayerReducer";
+import { TextureLayer, useLayerManager } from "@/hooks/useLayerReducer";
 import { Drawer as DrawerService } from "@/service/Drawer";
+import { useCompositeAssetsHelper } from "../Gallery/withLocal";
+import DynamicFeedIcon from "@mui/icons-material/DynamicFeed";
 
 const CompositeContainer = "composite-container";
 
@@ -41,16 +25,23 @@ const defaultLayers = [
   { type: "image", id: "3", props: {} },
 ] as TextureLayer[];
 
-const layersName = ["前景", "中景", "背景"];
+const layersName = ["背景", "中景", "前景"];
 
 export const Compositor: React.FC<{}> = ({}) => {
   const inited = useRef<boolean>(false);
   const drawerRef = useRef<DrawerService>();
   const layersHelper = useLayerManager((value) => {
-    console.log("value", value);
     drawerRef.current?.updateLayers(value);
   });
   const [open, setOpen] = useState(false);
+
+  const { handleAddImage } = useCompositeAssetsHelper();
+
+  const save = useCallback(async () => {
+    const texture = (await drawerRef.current?.exportTexture?.()) as string;
+    await handleAddImage?.(texture);
+    setOpen(false);
+  }, [handleAddImage]);
 
   useEffect(() => {
     if (open) {
@@ -66,7 +57,9 @@ export const Compositor: React.FC<{}> = ({}) => {
 
   return (
     <>
-      <Button onClick={() => setOpen(true)}>Texture Compoistion</Button>
+      <Button onClick={() => setOpen(true)} variant="soft">
+        <DynamicFeedIcon />
+      </Button>
 
       <Drawer
         anchor="right"
@@ -96,7 +89,7 @@ export const Compositor: React.FC<{}> = ({}) => {
             overflow: "auto",
           }}
         >
-          <DialogTitle>Assets Gallery</DialogTitle>
+          <DialogTitle>自定义风筝</DialogTitle>
 
           <ModalClose />
           <Divider sx={{ mt: "auto" }} />
@@ -147,6 +140,7 @@ export const Compositor: React.FC<{}> = ({}) => {
               />
 
               <Button
+                onClick={save}
                 sx={{
                   width: "100%",
                 }}

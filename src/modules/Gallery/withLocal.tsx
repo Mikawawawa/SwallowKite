@@ -3,7 +3,10 @@ import React, {
   useEffect,
   useRef,
   useCallback,
-  ComponentType,
+  createContext,
+  useContext,
+  FunctionComponent,
+  PropsWithChildren,
 } from "react";
 import { ImageStorageManager, ImageItem } from "@/service/AssetGallery";
 
@@ -41,4 +44,28 @@ export const useLocalAssetsHelper = (namespace: string) => {
     handleUpdateImage,
     handleRemoveImage,
   };
+};
+
+// 创建一个 Context
+const CompositeAssetsContext = createContext<
+  Partial<ReturnType<typeof useLocalAssetsHelper>>
+>({
+  imageList: [],
+});
+
+export const CompositeAssetsProvider: FunctionComponent<
+  PropsWithChildren<{}>
+> = ({ children }) => {
+  // 将需要共享的数据放入 Context.Provider 的 value 中
+  const contextValue = useLocalAssetsHelper("composite");
+
+  return (
+    <CompositeAssetsContext.Provider value={contextValue}>
+      {children}
+    </CompositeAssetsContext.Provider>
+  );
+};
+
+export const useCompositeAssetsHelper = () => {
+  return useContext(CompositeAssetsContext);
 };

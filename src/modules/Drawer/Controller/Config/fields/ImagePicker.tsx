@@ -1,5 +1,5 @@
 import { Gallery } from "@/modules/Gallery/Pure";
-import { useLocalAssetsHelper } from "@/modules/Gallery/withLocal";
+import { useCompositeAssetsHelper, useLocalAssetsHelper } from "@/modules/Gallery/withLocal";
 import { usePresetAssetsHelper } from "@/modules/Gallery/withPresets";
 import {
   Stack,
@@ -75,34 +75,44 @@ const PickerDrawer = ({
 
 enum GalleryType {
   Local = "local",
+  Composite = "composite",
   Preset = "preset",
 }
 
+const GalleryNames = {
+  [GalleryType.Local]: "自定义素材",
+  [GalleryType.Composite]: "合成素材",
+  [GalleryType.Preset]: "系统素材",
+};
+
 const FullImageGallery = ({
   onChange,
+  categories = [GalleryType.Preset, GalleryType.Local, GalleryType.Composite],
 }: {
   onChange: (src?: string) => void;
+  categories?: GalleryType[];
 }) => {
   const localHelper = useLocalAssetsHelper("ugc");
   const presetsHelper = usePresetAssetsHelper();
+  const compositeHelper = useCompositeAssetsHelper();
 
   const helperMap = {
     [GalleryType.Local]: localHelper,
     [GalleryType.Preset]: presetsHelper,
+    [GalleryType.Composite]: compositeHelper,
   };
 
+  console.log("compositeHelper", compositeHelper)
+
   const [type, setType] = useState<GalleryType>(GalleryType.Local);
-  console.log("type", type);
   return (
     <Tabs value={type} onChange={(_, value) => setType(value as GalleryType)}>
       <TabList>
-        <Tab variant="plain" color="neutral" value={GalleryType.Local}>
-          用户素材
-        </Tab>
-
-        <Tab variant="plain" color="neutral" value={GalleryType.Preset}>
-          系统素材
-        </Tab>
+        {categories.map((cat) => (
+          <Tab variant="plain" color="neutral" value={cat}>
+            {GalleryNames[cat]}
+          </Tab>
+        ))}
       </TabList>
 
       <Gallery {...helperMap[type]} onChange={onChange} />
