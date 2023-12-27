@@ -1,5 +1,8 @@
 import { Gallery } from "@/modules/Gallery/Pure";
-import { useCompositeAssetsHelper, useLocalAssetsHelper } from "@/modules/Gallery/withLocal";
+import {
+  useCompositeAssetsHelper,
+  useLocalAssetsHelper,
+} from "@/modules/Gallery/withLocal";
 import { usePresetAssetsHelper } from "@/modules/Gallery/withPresets";
 import {
   Stack,
@@ -102,14 +105,14 @@ const FullImageGallery = ({
     [GalleryType.Composite]: compositeHelper,
   };
 
-  console.log("compositeHelper", compositeHelper)
+  console.log("compositeHelper", compositeHelper);
 
   const [type, setType] = useState<GalleryType>(GalleryType.Local);
   return (
     <Tabs value={type} onChange={(_, value) => setType(value as GalleryType)}>
       <TabList>
         {categories.map((cat) => (
-          <Tab variant="plain" color="neutral" value={cat}>
+          <Tab variant="plain" color="neutral" value={cat} key={cat}>
             {GalleryNames[cat]}
           </Tab>
         ))}

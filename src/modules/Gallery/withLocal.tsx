@@ -48,9 +48,12 @@ export const useLocalAssetsHelper = (namespace: string) => {
 
 // 创建一个 Context
 const CompositeAssetsContext = createContext<
-  Partial<ReturnType<typeof useLocalAssetsHelper>>
+  ReturnType<typeof useLocalAssetsHelper>
 >({
   imageList: [],
+  handleAddImage: async () => {},
+  handleUpdateImage: async () => {},
+  handleRemoveImage: async () => {},
 });
 
 export const CompositeAssetsProvider: FunctionComponent<
