@@ -16,7 +16,7 @@ export function BasicCardSkeleton() {
     <Card sx={{ minHeight: "280px", width: "100%" }} variant="soft">
       <AspectRatio ratio="21/9">
         <Skeleton variant="overlay">
-          <Image
+          <img
             alt=""
             src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="
           />

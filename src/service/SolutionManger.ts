@@ -93,7 +93,7 @@ export class SolutionManager extends StorageService {
     }
   };
 
-  static throttleSave = throttle(this.save, 1000)
+  static throttleSave = throttle(this.save, 1000);
 
   // 从 IndexedDB 中获取保存的 JSON 数据
   static get = async (key: string) => {
@@ -115,12 +115,10 @@ export const useSolutionStorage = (storageKey: string) => {
   const [inited, setInited] = useState(false);
 
   useEffect(() => {
-    const updateData = () => {
-      setData(solutionManager.getData());
+    solutionManager.load().then(() => {
       setInited(true);
-    };
-
-    solutionManager.load().then(updateData);
+      setData(solutionManager.getData());
+    });
 
     return () => {
       // Cleanup
