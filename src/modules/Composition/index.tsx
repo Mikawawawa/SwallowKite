@@ -20,17 +20,10 @@ import {
   ModalClose,
   Sheet,
 } from "@mui/joy";
-import { Delete, Draw } from "@mui/icons-material";
-import { UploadTrigger } from "@/components/UploadTrigger";
-import { EditableText } from "@/components/ClickToEdit";
-import { Form } from "react-hook-form";
-import { ImagePicker } from "../Drawer/Controller/Config/fields/ImagePicker";
-import { DrawerComponent } from "../Drawer";
 import {
-  TextureLayer,
-  TextureLayerForRender,
-  useLayerManager,
-} from "@/hooks/useLayerReducer";
+  CompossiteImagePicker,
+} from "../Drawer/Controller/Config/fields/CompositePicker";
+import { TextureLayer, useLayerManager } from "@/hooks/useLayerReducer";
 import { Drawer as DrawerService } from "@/service/Drawer";
 
 const CompositeContainer = "composite-container";
@@ -39,9 +32,19 @@ const defaultLayers = [
   { type: "image", id: "1", props: {} },
   { type: "image", id: "2", props: {} },
   { type: "image", id: "3", props: {} },
+  { type: "image", id: "4", props: {} },
+  { type: "image", id: "5", props: {} },
+  { type: "image", id: "6", props: {} },
 ] as TextureLayer[];
 
-const layersName = ["前景", "中景", "背景"];
+const layersName = [
+  "底面纹样",
+  "翅膀纹样",
+  "头部纹样",
+  "胸部纹样",
+  "尾部纹样",
+  "腰栓纹样",
+];
 
 export const Compositor: React.FC<{}> = ({}) => {
   const inited = useRef<boolean>(false);
@@ -66,7 +69,7 @@ export const Compositor: React.FC<{}> = ({}) => {
 
   return (
     <>
-      <Button onClick={() => setOpen(true)}>Texture Compoistion</Button>
+      <Button onClick={() => setOpen(true)}>合成贴图</Button>
 
       <Drawer
         anchor="right"
@@ -107,8 +110,10 @@ export const Compositor: React.FC<{}> = ({}) => {
                 direction={"row"}
                 sx={{
                   width: "100%",
-                  justifyContent: "space-around",
                 }}
+                flexWrap={"wrap"}
+                useFlexGap
+                justifyContent={"flex-start"}
                 spacing={2}
               >
                 {layersHelper?.layers?.map?.((layer, index) => {
@@ -117,10 +122,12 @@ export const Compositor: React.FC<{}> = ({}) => {
                       key={layer.id}
                       sx={{
                         flex: 1,
+                        minWidth: "30%",
+                        flexShrink: 0,
                       }}
                     >
                       {layersName[index]}
-                      <ImagePicker
+                      <CompossiteImagePicker
                         value={layer?.props?.src}
                         onChange={(value: string) => {
                           layersHelper.updateLayer(layer.id, {
@@ -143,6 +150,7 @@ export const Compositor: React.FC<{}> = ({}) => {
                   outline: "none",
                   height: "25vw",
                   width: "25vw",
+                  background: "#ddd",
                 }}
               />
 
@@ -151,7 +159,7 @@ export const Compositor: React.FC<{}> = ({}) => {
                   width: "100%",
                 }}
               >
-                Save
+                保存
               </Button>
             </Stack>
           </DialogContent>

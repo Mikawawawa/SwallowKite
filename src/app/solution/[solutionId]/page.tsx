@@ -29,7 +29,7 @@ const useSolutionName = (
     if (!inited) {
       return "Loading";
     }
-    return data.find?.((item) => solutionId === item.key)?.name || "Untitled";
+    return data.find?.((item) => solutionId === item.key)?.name || "未命名";
   }, [solutionId, data, inited]);
 
   const updateName = useCallback(

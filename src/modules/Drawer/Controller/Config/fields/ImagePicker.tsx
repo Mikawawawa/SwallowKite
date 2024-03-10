@@ -76,6 +76,7 @@ const PickerDrawer = ({
 enum GalleryType {
   Local = "local",
   Preset = "preset",
+  Composite = "composite",
 }
 
 const FullImageGallery = ({
@@ -85,10 +86,12 @@ const FullImageGallery = ({
 }) => {
   const localHelper = useLocalAssetsHelper("ugc");
   const presetsHelper = usePresetAssetsHelper();
+  const compositeHelper = useLocalAssetsHelper('composite')
 
   const helperMap = {
     [GalleryType.Local]: localHelper,
     [GalleryType.Preset]: presetsHelper,
+    [GalleryType.Composite]: compositeHelper
   };
 
   const [type, setType] = useState<GalleryType>(GalleryType.Local);
@@ -98,6 +101,10 @@ const FullImageGallery = ({
       <TabList>
         <Tab variant="plain" color="neutral" value={GalleryType.Local}>
           用户素材
+        </Tab>
+
+        <Tab variant="plain" color="neutral" value={GalleryType.Composite}>
+          已合成图片
         </Tab>
 
         <Tab variant="plain" color="neutral" value={GalleryType.Preset}>
@@ -172,7 +179,7 @@ export const ImagePicker = ({ onChange, value }: any) => {
             onChange?.(selected);
           }}
         >
-          Choose
+          选择
         </Button>
         <FullImageGallery onChange={(source) => setSelected(source)} />
       </PickerDrawer>

@@ -1,13 +1,12 @@
 "use client";
 import { Drawer } from "@/service/Drawer";
-import { Stack, Typography } from "@mui/joy";
 import React, { useEffect, useImperativeHandle, useRef } from "react";
 import { LayerController } from "./Controller";
 import {
   TextureLayerForRender,
   useLayerManager,
 } from "@/hooks/useLayerReducer";
-import { Surface } from "../../components/Surface";
+
 import { DrawerColumn } from "@/components/DrawerColumn";
 
 const DrawerContainer = "renderDrawerContainer";
@@ -57,8 +56,18 @@ export const DrawerComponent = React.forwardRef(function DrawerComponentInner(
             outline: "none",
             height: "100%",
             width: "100%",
+            background: '#ddd'
           }}
         />
+        {/* <canvas
+          tabIndex={-1}
+          id={DrawerContainer}
+          style={{
+            outline: "none",
+            height: "100%",
+            width: "100%",
+          }}
+        /> */}
       </DrawerColumn>
 
       <DrawerColumn

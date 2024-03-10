@@ -1,6 +1,3 @@
-// BabylonScene.js
-import { Drawer } from "@/service/Drawer";
-
 import "babylonjs-loaders";
 import * as BABYLON from "babylonjs";
 import * as Materials from "babylonjs-materials";
@@ -24,7 +21,7 @@ export class MainScene {
     this.camera = this.initCamera();
     this.light = this.initLight();
 
-    // this.engine.hideLoadingUI(); // 隐藏加载界面
+    this.engine.hideLoadingUI();
 
     this.setSkyBox();
     // this.scene.debugLayer.show({ embedMode: false, handleResize: false });
@@ -186,6 +183,8 @@ export class MainScene {
 
     scene.clearColor = BABYLON.Color4.FromInts(180, 180, 180, 255);
 
+    this.engine.hideLoadingUI();
+
     // Load assets
     // promises.push(
     //   BABYLON.SceneLoader.AppendAsync(
@@ -194,16 +193,16 @@ export class MainScene {
     //   )
     // );
 
-    const ground = BABYLON.Mesh.CreateGroundFromHeightMap(
-      "ground",
+    const ground = BABYLON.MeshBuilder.CreateGroundFromHeightMap(
+      "gdhm",
       "heightMap.png",
-      100,
-      100,
-      100,
-      0,
-      10,
-      scene,
-      false
+      {
+        width: 20,
+        height: 20,
+        subdivisions: 250,
+        maxHeight: 10,
+        minHeight: 2,
+      }
     );
     const groundMaterial = new BABYLON.StandardMaterial("ground", scene);
     groundMaterial.diffuseTexture = new BABYLON.Texture(

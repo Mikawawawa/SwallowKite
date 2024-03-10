@@ -14,7 +14,6 @@ export const usePresetAssetsHelper = () => {
 
     // @ts-ignore
     window.SwallowPresetsLoaded?.then((res) => {
-      console.log("usePresetAssetsHelper", res);
       setImageList(res);
     });
   }, []);
