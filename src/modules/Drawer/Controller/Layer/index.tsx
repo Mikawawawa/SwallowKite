@@ -151,10 +151,10 @@ export const Layer: FunctionComponent<
                 }}
               >
                 <Tab disableIndicator value="props">
-                  Props
+                  图层属性
                 </Tab>
                 <Tab disableIndicator value="basic">
-                  Basic
+                  定位参数
                 </Tab>
               </TabList>
             </Tabs>

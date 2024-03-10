@@ -1,26 +1,8 @@
-import React, {
-  FunctionComponent,
-  useCallback,
-  useEffect,
-  useRef,
-} from "react";
-import { ImagePicker } from "./fields/ImagePicker";
-import {
-  AspectRatio,
-  Slider,
-  Stack,
-  Typography,
-  SliderProps,
-  FormLabel,
-} from "@mui/joy";
-import { Box } from "@mui/material";
+import React, { FunctionComponent, useCallback, useRef } from "react";
+import { Stack, FormLabel } from "@mui/joy";
 import { useForm, Controller, useWatch } from "react-hook-form";
-import * as yup from "yup";
 import { LayerConfigSlider } from "./fields/Slider";
-import { RgbColorPicker } from "react-colorful";
-import { ColorPicker } from "./fields/ColorPicker";
 import { TextureLayerForRender } from "@/hooks/useLayerReducer";
-import { fields } from "@hookform/resolvers/ajv/src/__tests__/__fixtures__/data.js";
 import { throttle } from "lodash";
 
 export const LayerBasicConfig: FunctionComponent<{
@@ -42,7 +24,6 @@ export const LayerBasicConfig: FunctionComponent<{
       ...config,
     },
   });
-  const value = useWatch({ control });
 
   const handleChange = useCallback(
     throttle(() => {

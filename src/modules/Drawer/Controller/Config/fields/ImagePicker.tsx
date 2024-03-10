@@ -1,5 +1,8 @@
 import { Gallery } from "@/modules/Gallery/Pure";
-import { useLocalAssetsHelper } from "@/modules/Gallery/withLocal";
+import {
+  useCompositeAssetsHelper,
+  useLocalAssetsHelper,
+} from "@/modules/Gallery/withLocal";
 import { usePresetAssetsHelper } from "@/modules/Gallery/withPresets";
 import {
   Stack,
@@ -79,10 +82,18 @@ enum GalleryType {
   Composite = "composite",
 }
 
+const GalleryNames = {
+  [GalleryType.Local]: "自定义素材",
+  [GalleryType.Composite]: "合成素材",
+  [GalleryType.Preset]: "系统素材",
+};
+
 const FullImageGallery = ({
   onChange,
+  categories = [GalleryType.Preset, GalleryType.Local, GalleryType.Composite],
 }: {
   onChange: (src?: string) => void;
+  categories?: GalleryType[];
 }) => {
   const localHelper = useLocalAssetsHelper("ugc");
   const presetsHelper = usePresetAssetsHelper();
@@ -94,8 +105,9 @@ const FullImageGallery = ({
     [GalleryType.Composite]: compositeHelper
   };
 
+  console.log("compositeHelper", compositeHelper);
+
   const [type, setType] = useState<GalleryType>(GalleryType.Local);
-  console.log("type", type);
   return (
     <Tabs value={type} onChange={(_, value) => setType(value as GalleryType)}>
       <TabList>

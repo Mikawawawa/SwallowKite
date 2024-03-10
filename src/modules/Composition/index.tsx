@@ -23,8 +23,10 @@ import {
 import {
   CompossiteImagePicker,
 } from "../Drawer/Controller/Config/fields/CompositePicker";
-import { TextureLayer, useLayerManager } from "@/hooks/useLayerReducer";
 import { Drawer as DrawerService } from "@/service/Drawer";
+import { useCompositeAssetsHelper } from "../Gallery/withLocal";
+import DynamicFeedIcon from "@mui/icons-material/DynamicFeed";
+import { TextureLayer, useLayerManager } from "@/hooks/useLayerReducer";
 
 const CompositeContainer = "composite-container";
 
@@ -50,10 +52,17 @@ export const Compositor: React.FC<{}> = ({}) => {
   const inited = useRef<boolean>(false);
   const drawerRef = useRef<DrawerService>();
   const layersHelper = useLayerManager((value) => {
-    console.log("value", value);
     drawerRef.current?.updateLayers(value);
   });
   const [open, setOpen] = useState(false);
+
+  const { handleAddImage } = useCompositeAssetsHelper();
+
+  const save = useCallback(async () => {
+    const texture = (await drawerRef.current?.exportTexture?.()) as string;
+    await handleAddImage?.(texture);
+    setOpen(false);
+  }, [handleAddImage]);
 
   useEffect(() => {
     if (open) {
@@ -69,7 +78,9 @@ export const Compositor: React.FC<{}> = ({}) => {
 
   return (
     <>
-      <Button onClick={() => setOpen(true)}>合成贴图</Button>
+      <Button onClick={() => setOpen(true)} variant="soft">
+        <DynamicFeedIcon />
+      </Button>
 
       <Drawer
         anchor="right"
@@ -99,7 +110,7 @@ export const Compositor: React.FC<{}> = ({}) => {
             overflow: "auto",
           }}
         >
-          <DialogTitle>Assets Gallery</DialogTitle>
+          <DialogTitle>自定义风筝</DialogTitle>
 
           <ModalClose />
           <Divider sx={{ mt: "auto" }} />
