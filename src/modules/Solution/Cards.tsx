@@ -67,7 +67,7 @@ export function GradientCover({
       />
       <CardContent sx={{ justifyContent: "flex-end" }}>
         <Typography level="title-lg" textColor="#fff">
-          {name || "Untitled"}
+          {name || "未命名"}
         </Typography>
         <Typography
           startDecorator={<LocationOnRoundedIcon />}
@@ -143,7 +143,7 @@ export function AddCard({ onClick }: any) {
             bottom: 0,
           }}
         >
-          创建一个新场景
+          创建新设计
         </Typography>
       </CardContent>
     </Card>

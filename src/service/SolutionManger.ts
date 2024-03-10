@@ -55,7 +55,7 @@ export class SolutionManager extends StorageService {
     // Generate a unique key if not provided
     const newItem: ObjectItem = {
       key: item?.key || this.generateUniqueKey(),
-      name: item?.name || `Untitled`,
+      name: item?.name || `未命名`,
       createdAt: Date.now(),
       updatedAt: Date.now(),
     };

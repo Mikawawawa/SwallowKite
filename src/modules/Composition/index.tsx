@@ -1,7 +1,16 @@
 "use client";
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useLayoutEffect,
+} from "react";
+import { ImageStorageManager, ImageItem } from "@/service/AssetGallery";
 
 import {
+  AspectRatio,
+  Checkbox,
   DialogContent,
   DialogTitle,
   Divider,
@@ -11,11 +20,13 @@ import {
   ModalClose,
   Sheet,
 } from "@mui/joy";
-import { ImagePicker } from "../Drawer/Controller/Config/fields/ImagePicker";
-import { TextureLayer, useLayerManager } from "@/hooks/useLayerReducer";
+import {
+  CompossiteImagePicker,
+} from "../Drawer/Controller/Config/fields/CompositePicker";
 import { Drawer as DrawerService } from "@/service/Drawer";
 import { useCompositeAssetsHelper } from "../Gallery/withLocal";
 import DynamicFeedIcon from "@mui/icons-material/DynamicFeed";
+import { TextureLayer, useLayerManager } from "@/hooks/useLayerReducer";
 
 const CompositeContainer = "composite-container";
 
@@ -23,9 +34,19 @@ const defaultLayers = [
   { type: "image", id: "1", props: {} },
   { type: "image", id: "2", props: {} },
   { type: "image", id: "3", props: {} },
+  { type: "image", id: "4", props: {} },
+  { type: "image", id: "5", props: {} },
+  { type: "image", id: "6", props: {} },
 ] as TextureLayer[];
 
-const layersName = ["背景", "中景", "前景"];
+const layersName = [
+  "底面纹样",
+  "翅膀纹样",
+  "头部纹样",
+  "胸部纹样",
+  "尾部纹样",
+  "腰栓纹样",
+];
 
 export const Compositor: React.FC<{}> = ({}) => {
   const inited = useRef<boolean>(false);
@@ -100,8 +121,10 @@ export const Compositor: React.FC<{}> = ({}) => {
                 direction={"row"}
                 sx={{
                   width: "100%",
-                  justifyContent: "space-around",
                 }}
+                flexWrap={"wrap"}
+                useFlexGap
+                justifyContent={"flex-start"}
                 spacing={2}
               >
                 {layersHelper?.layers?.map?.((layer, index) => {
@@ -110,10 +133,12 @@ export const Compositor: React.FC<{}> = ({}) => {
                       key={layer.id}
                       sx={{
                         flex: 1,
+                        minWidth: "30%",
+                        flexShrink: 0,
                       }}
                     >
                       {layersName[index]}
-                      <ImagePicker
+                      <CompossiteImagePicker
                         value={layer?.props?.src}
                         onChange={(value: string) => {
                           layersHelper.updateLayer(layer.id, {
@@ -136,16 +161,16 @@ export const Compositor: React.FC<{}> = ({}) => {
                   outline: "none",
                   height: "25vw",
                   width: "25vw",
+                  background: "#ddd",
                 }}
               />
 
               <Button
-                onClick={save}
                 sx={{
                   width: "100%",
                 }}
               >
-                Save
+                保存
               </Button>
             </Stack>
           </DialogContent>

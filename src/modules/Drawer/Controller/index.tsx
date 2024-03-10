@@ -63,7 +63,7 @@ export const LayerController: FunctionComponent<{
     >
       {Array.isArray(data) && data?.length === 0 && (
         <Alert variant="soft" color="warning">
-          创建一个新图层吧
+          从添加一个图层开始设计吧
         </Alert>
       )}
 

@@ -36,7 +36,7 @@ export default function SolutionList() {
 
       <Typography level="title-lg" sx={{
         color: "white",
-      }}>Design Gallery</Typography>
+      }}>一览</Typography>
 
       <Grid container spacing={{ xs: 2 }}>
         {inited ? (

@@ -14,9 +14,10 @@ export class Drawer {
 
     const app = new PIXI.Application({
       resizeTo: this.canvas,
-      backgroundColor: 0x00000000,
+      backgroundAlpha: 0,
       preserveDrawingBuffer: true,
       antialias: true,
+      background: "transparent",
     });
 
     // @ts-expect-error 12

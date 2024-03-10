@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone',
+  output: "standalone",
   reactStrictMode: true,
   modularizeImports: {
     "@mui/icons-material": {
@@ -16,6 +16,13 @@ const nextConfig = {
         pathname: "/random",
       },
     ],
+  },
+  webpack: (config) => {
+    config.externals.push({
+      sharp: "commonjs sharp",
+      canvas: "commonjs canvas",
+    });
+    return config;
   },
 };
 module.exports = nextConfig;
