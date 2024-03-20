@@ -9,17 +9,17 @@ export class MainScene {
   public scene: BABYLON.Scene;
   public camera: BABYLON.Camera;
 
-  private light: BABYLON.Light;
-
   private texture: BABYLON.DynamicTexture | undefined;
 
   constructor(containerId: string) {
     this.canvas = document.getElementById(containerId) as HTMLCanvasElement;
     this.engine = new BABYLON.Engine(this.canvas, true, {}, false);
 
+    this.engine.hideLoadingUI();
+
     this.scene = new BABYLON.Scene(this.engine);
     this.camera = this.initCamera();
-    this.light = this.initLight();
+    this.initLight();
 
     this.engine.hideLoadingUI();
 
@@ -44,39 +44,18 @@ export class MainScene {
   }
 
   initLight() {
-    const light = new BABYLON.PointLight(
+    const scene = this.scene;
+
+    const _light = new BABYLON.PointLight(
       "light",
-      new BABYLON.Vector3(3, -14, 10),
-      this.scene
-    );
-    const light2 = new BABYLON.PointLight(
-      "light2",
-      new BABYLON.Vector3(-3, -20, -10),
+      new BABYLON.Vector3(14, 14, 0),
       this.scene
     );
 
-    const light3 = new BABYLON.HemisphericLight(
-      "light",
-      new BABYLON.Vector3(0, 1, 0),
-      this.scene
-    );
+    _light.intensity = 1; // 可根据需求调整
+    _light.diffuse = new BABYLON.Color3(0.92, 0.88, 0.9); // 修改光照颜色为白色
 
-    light.intensity = 3; // 可根据需求调整
-    light.diffuse = new BABYLON.Color3(1, 1, 1); // 修改光照颜色为白色
-
-    light.shadowMinZ = 0.1;
-    light.shadowMaxZ = 1200;
-
-    let i = 1;
-    this.scene.registerBeforeRender(() => {
-      // pimon.morphTargetManager.getTarget(0).influence =
-      //   Math.sin(i * 5) * 0.5 + 0.5; //wink L
-      // pimon.morphTargetManager.getTarget(1).influence =
-      //   Math.sin(i * 5) * 0.5 + 0.5; //wink R
-      light2.position.x = Math.cos(i) * 40;
-      light2.position.z = Math.sin(i) * 40;
-      i += 0.01;
-    });
+    scene.addLight(_light);
 
     const areaLight = BABYLON.CubeTexture.CreateFromPrefilteredData(
       "/singleSourceAreaLight.env",
@@ -87,12 +66,12 @@ export class MainScene {
 
     this.scene.environmentIntensity = 2;
     this.scene.environmentTexture = areaLight;
-    // // @ts-ignore
-    // this.scene.environmentTexture.setReflectionTextureMatrix(
-    //   BABYLON.Matrix.RotationY(BABYLON.Tools.ToRadians(190))
-    // );
+    // @ts-ignore
+    this.scene.environmentTexture.setReflectionTextureMatrix(
+      BABYLON.Matrix.RotationY(BABYLON.Tools.ToRadians(190))
+    );
 
-    return light;
+    // return light;
   }
 
   initCamera() {
@@ -181,7 +160,7 @@ export class MainScene {
     const scene = this.scene;
     var promises = [];
 
-    scene.clearColor = BABYLON.Color4.FromInts(180, 180, 180, 255);
+    // scene.clearColor = BABYLON.Color4.FromInts(180, 180, 180, 255);
 
     this.engine.hideLoadingUI();
 

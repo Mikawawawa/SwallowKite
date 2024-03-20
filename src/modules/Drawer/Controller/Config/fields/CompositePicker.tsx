@@ -87,8 +87,8 @@ const GalleryNames = {
   [GalleryType.wing]: "翅膀纹样",
   [GalleryType.head]: "头部纹样",
   [GalleryType.tile]: "尾部纹样",
-  [GalleryType.waist]: "胸部纹样",
-  [GalleryType.body]: "腰栓纹样",
+  [GalleryType.waist]: "腰栓纹样",
+  [GalleryType.body]: "胸部纹样",
 };
 
 const CompositeGallery = ({

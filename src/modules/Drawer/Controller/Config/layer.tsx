@@ -54,6 +54,9 @@ export const LayerBasicConfig: FunctionComponent<{
               render={({ field }) => (
                 <LayerConfigSlider
                   {...field}
+                  min={-1}
+                  max={1}
+                  step={0.01}
                   onChange={(value) => {
                     field.onChange(value);
                     handleChange();
@@ -70,6 +73,9 @@ export const LayerBasicConfig: FunctionComponent<{
               render={({ field }) => (
                 <LayerConfigSlider
                   {...field}
+                  min={-1}
+                  max={1}
+                  step={0.01}
                   onChange={(value) => {
                     field.onChange(value);
                     handleChange();

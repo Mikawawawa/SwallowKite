@@ -9,8 +9,6 @@ export async function GET() {
 
   const children = fs.readdirSync(publicDirectory);
 
-  console.log('children:', children)
-
   const result = children.reduce((prev, child) => {
     return {
       ...prev,

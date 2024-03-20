@@ -105,8 +105,6 @@ const FullImageGallery = ({
     [GalleryType.Composite]: compositeHelper
   };
 
-  console.log("compositeHelper", compositeHelper);
-
   const [type, setType] = useState<GalleryType>(GalleryType.Local);
   return (
     <Tabs value={type} onChange={(_, value) => setType(value as GalleryType)}>

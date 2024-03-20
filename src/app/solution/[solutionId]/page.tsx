@@ -27,7 +27,7 @@ const useSolutionName = (
 
   const info = useMemo(() => {
     if (!inited) {
-      return "Loading";
+      return "加载中...";
     }
     return data.find?.((item) => solutionId === item.key)?.name || "未命名";
   }, [solutionId, data, inited]);
