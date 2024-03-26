@@ -50,7 +50,7 @@ export default function Home({ params }: any) {
     const texture = (await drawerRef.current?.exportTexture?.()) as string;
 
     SolutionManager.throttleSave(params.solutionId, { value, texture });
-    sceneRef.current?.updateMaterial?.("main", texture);
+    sceneRef.current?.updateMaterial?.("qipao_main", texture);
   }, []);
 
   const layersHelper = useLayerManager((value) => {
