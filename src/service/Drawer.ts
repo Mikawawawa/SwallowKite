@@ -55,6 +55,11 @@ export class Drawer {
   }
 
   render() {
+    // if (!this.needUpdate) {
+    //   return;
+    // }
+    // this.stage.removeChildren();
+
     this.layers?.forEach?.((layer) => {
       const { type, props, opacity, offset, size, rotation, scale } = layer;
 
@@ -120,7 +125,12 @@ export class Drawer {
       layerSprite.height = height;
       layerSprite.rotation = (rotation || 0) * Math.PI * 2;
 
-      layerSprite.scale = { x: scale || 1, y: scale || 1 };
+      const extraScale = scale || 1;
+
+      layerSprite.scale = {
+        x: layerSprite.scale.x * extraScale,
+        y: layerSprite.scale.y * extraScale,
+      };
 
       this.stage.addChild(layerSprite);
     });
@@ -130,7 +140,6 @@ export class Drawer {
 
   animate = () => {
     this.stage.removeChildren();
-
     // 重新渲染图层
     this.render();
 
