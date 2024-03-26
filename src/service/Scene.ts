@@ -1,3 +1,4 @@
+// @ts-nocheck
 import "babylonjs-loaders";
 import * as BABYLON from "babylonjs";
 import * as Materials from "babylonjs-materials";
@@ -9,21 +10,25 @@ export class MainScene {
   public scene: BABYLON.Scene;
   public camera: BABYLON.Camera;
 
-  private light: BABYLON.Light;
-
   private texture: BABYLON.DynamicTexture | undefined;
+
+  private env: Record<string, any> = {};
+
+  private lights: Record<string, any> = {};
 
   constructor(containerId: string) {
     this.canvas = document.getElementById(containerId) as HTMLCanvasElement;
     this.engine = new BABYLON.Engine(this.canvas, true, {}, false);
 
-    this.scene = new BABYLON.Scene(this.engine);
-    this.camera = this.initCamera();
-    this.light = this.initLight();
-
     this.engine.hideLoadingUI();
 
-    this.setSkyBox();
+    this.scene = new BABYLON.Scene(this.engine);
+    this.camera = this.initCamera();
+    this.initLight();
+    this.initBackground();
+    this.engine.hideLoadingUI();
+
+    // this.setSkyBox();
     // this.scene.debugLayer.show({ embedMode: false, handleResize: false });
 
     window.addEventListener("resize", () => {
@@ -44,55 +49,70 @@ export class MainScene {
   }
 
   initLight() {
-    const light = new BABYLON.PointLight(
-      "light",
-      new BABYLON.Vector3(3, -14, 10),
-      this.scene
-    );
-    const light2 = new BABYLON.PointLight(
-      "light2",
-      new BABYLON.Vector3(-3, -20, -10),
-      this.scene
-    );
+    const scene = this.scene;
 
-    const light3 = new BABYLON.HemisphericLight(
-      "light",
-      new BABYLON.Vector3(0, 1, 0),
-      this.scene
-    );
+    // const _light = new BABYLON.PointLight(
+    //   "light",
+    //   new BABYLON.Vector3(14, 14, 0),
+    //   this.scene
+    // );
 
-    light.intensity = 3; // 可根据需求调整
-    light.diffuse = new BABYLON.Color3(1, 1, 1); // 修改光照颜色为白色
+    // _light.intensity = 1; // 可根据需求调整
+    // _light.diffuse = new BABYLON.Color3(0.92, 0.88, 0.9); // 修改光照颜色为白色
 
-    light.shadowMinZ = 0.1;
-    light.shadowMaxZ = 1200;
+    // scene.addLight(_light);
 
-    let i = 1;
-    this.scene.registerBeforeRender(() => {
-      // pimon.morphTargetManager.getTarget(0).influence =
-      //   Math.sin(i * 5) * 0.5 + 0.5; //wink L
-      // pimon.morphTargetManager.getTarget(1).influence =
-      //   Math.sin(i * 5) * 0.5 + 0.5; //wink R
-      light2.position.x = Math.cos(i) * 40;
-      light2.position.z = Math.sin(i) * 40;
-      i += 0.01;
-    });
+    // const areaLight = BABYLON.CubeTexture.CreateFromPrefilteredData(
+    //   "/singleSourceAreaLight.env",
+    //   this.scene
+    // );
+    // areaLight.name = "areaLight";
+    // areaLight.gammaSpace = true;
 
-    const areaLight = BABYLON.CubeTexture.CreateFromPrefilteredData(
-      "/singleSourceAreaLight.env",
-      this.scene
-    );
-    areaLight.name = "areaLight";
-    areaLight.gammaSpace = true;
-
-    this.scene.environmentIntensity = 2;
-    this.scene.environmentTexture = areaLight;
+    // this.scene.environmentIntensity = 2;
+    // this.scene.environmentTexture = areaLight;
     // // @ts-ignore
     // this.scene.environmentTexture.setReflectionTextureMatrix(
     //   BABYLON.Matrix.RotationY(BABYLON.Tools.ToRadians(190))
     // );
+    const env = this.env;
+    env.lighting = BABYLON.CubeTexture.CreateFromPrefilteredData(
+      "https://patrickryanms.github.io/BabylonJStextures/Demos/sodaBottle/assets/env/hamburg_hbf.env",
+      scene
+    );
+    env.lighting.name = "hamburg_hbf";
+    env.lighting.gammaSpace = false;
+    env.lighting.rotationY = BABYLON.Tools.ToRadians(0);
+    scene.environmentTexture = env.lighting;
 
-    return light;
+    env.skybox = BABYLON.MeshBuilder.CreateBox(
+      "skyBox",
+      { size: 1000.0 },
+      scene
+    );
+    env.skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
+    env.skyboxMaterial.backFaceCulling = false;
+    env.skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture(
+      "https://patrickryanms.github.io/BabylonJStextures/Demos/sodaBottle/assets/skybox/hamburg",
+      scene
+    );
+    env.skyboxMaterial.reflectionTexture.coordinatesMode =
+      BABYLON.Texture.SKYBOX_MODE;
+    env.skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
+    env.skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+    env.skybox.material = env.skyboxMaterial;
+
+    const lights = this.lights;
+    lights.dirLight = new BABYLON.DirectionalLight(
+      "dirLight",
+      new BABYLON.Vector3(0.6, -0.7, 0.63),
+      scene
+    );
+    lights.dirLight.position = new BABYLON.Vector3(-0.05, 0.35, -0.05);
+    lights.dirLight.shadowMaxZ = 0.45;
+    lights.dirLight.intensity = 10;
+
+    // return light;
   }
 
   initCamera() {
@@ -121,22 +141,39 @@ export class MainScene {
 
     // return camera;
 
+    // const camera = new BABYLON.ArcRotateCamera(
+    //   "Camera",
+    //   0,
+    //   0,
+    //   0,
+    //   // new BABYLON.Vector3(10, 5, 10),
+    //   new BABYLON.Vector3(0, 10, 0),
+    //   this.scene
+    // );
+
+    // camera.setPosition(new BABYLON.Vector3(-300, -250, -300));
+    // camera.fov = 0.25;
+    // camera.attachControl(this.canvas, true);
+    // camera.wheelPrecision = 20;
+    // camera.minZ = 0.1;
+    // camera.lowerRadiusLimit = 0;
+
     const camera = new BABYLON.ArcRotateCamera(
-      "Camera",
-      0,
-      0,
-      0,
-      // new BABYLON.Vector3(10, 5, 10),
-      new BABYLON.Vector3(0, 10, 0),
+      "camera",
+      BABYLON.Tools.ToRadians(40),
+      BABYLON.Tools.ToRadians(80),
+      0.5,
+      new BABYLON.Vector3(0.0, 0.1, 0.0),
       this.scene
     );
-
-    camera.setPosition(new BABYLON.Vector3(-50, 20, -50));
-    camera.fov = 0.25;
+    camera.minZ = 0.01;
+    camera.wheelDeltaPercentage = 0.01;
+    camera.upperRadiusLimit = 0.5;
+    camera.lowerRadiusLimit = 0.25;
+    camera.upperBetaLimit = 1.575;
+    camera.lowerBetaLimit = 0;
+    camera.panningAxis = new BABYLON.Vector3(0, 0, 0);
     camera.attachControl(this.canvas, true);
-    camera.wheelPrecision = 20;
-    camera.minZ = 0.1;
-    camera.lowerRadiusLimit = 0;
 
     // const camera = new BABYLON.ArcRotateCamera(
     //   "Camera",
@@ -177,200 +214,272 @@ export class MainScene {
   //   return camera;
   // }
 
-  initScene() {
+  async initBackground() {
+    const bottle: Record<string, any> = {};
+    const table: Record<string, any> = {};
+    const lights = this.lights;
+
     const scene = this.scene;
-    var promises = [];
+    async function loadMeshes() {
+      // bottle.file = await BABYLON.SceneLoader.AppendAsync(
+      //   "https://patrickryanms.github.io/BabylonJStextures/Demos/sodaBottle/assets/gltf/sodaBottle.gltf"
+      // );
+      // bottle.glass = scene.getMeshByName("sodaBottle_low");
+      // bottle.liquid = scene.getMeshByName("soda_low");
+      // bottle.root = bottle.glass.parent;
+      // bottle.glass.alphaIndex = 2;
+      // bottle.liquid.alphaIndex = 1;
+      // bottle.glassLabels = bottle.glass.clone("glassLabels");
+      // bottle.glassLabels.alphaIndex = 0;
+      table.file = await BABYLON.SceneLoader.AppendAsync(
+        "https://patrickryanms.github.io/BabylonJStextures/Demos/sodaBottle/assets/gltf/table.gltf"
+      );
+      table.mesh = scene.getMeshByName("table_low");
+      // bottle.root.position = new BABYLON.Vector3(-0.09, 0.0, -0.09);
+      // bottle.root.rotation = new BABYLON.Vector3(0.0, 4.0, 0.0);
+      // bottle.root.scaling = new BABYLON.Vector3(0.5, 0.5, 0.5);
+      lights.dirLight.includedOnlyMeshes.push(table.mesh);
+    }
 
-    scene.clearColor = BABYLON.Color4.FromInts(180, 180, 180, 255);
+    let loadTexturesAsync = async function () {
+      let textures: BABYLON.Texture[] = [];
+      return new Promise((resolve, reject) => {
+        let textureUrls = [
+          "https://patrickryanms.github.io/BabylonJStextures/Demos/sodaBottle/assets/gltf/sodaBottleMat_thickness.png",
+          "https://patrickryanms.github.io/BabylonJStextures/Demos/sodaBottle/assets/gltf/sodaMat_thickness.png",
+          "https://patrickryanms.github.io/BabylonJStextures/Demos/sodaBottle/assets/gltf/sodaBottleMat_translucency.png",
+        ];
 
-    this.engine.hideLoadingUI();
+        for (let url of textureUrls) {
+          textures.push(new BABYLON.Texture(url, scene, false, false));
+        }
 
-    // Load assets
-    // promises.push(
-    //   BABYLON.SceneLoader.AppendAsync(
-    //     // "https://patrickryanms.github.io/BabylonJStextures/Demos/sheen/SheenCloth.gltf"
-    //     "/SheenCloth.gltf"
-    //   )
-    // );
+        whenAllReady(textures, () => resolve(textures));
+      }).then(() => {
+        assignTextures(textures);
+      });
+    };
 
-    const ground = BABYLON.MeshBuilder.CreateGroundFromHeightMap(
-      "gdhm",
-      "heightMap.png",
-      {
-        width: 20,
-        height: 20,
-        subdivisions: 250,
-        maxHeight: 10,
-        minHeight: 2,
-      }
-    );
-    const groundMaterial = new BABYLON.StandardMaterial("ground", scene);
-    groundMaterial.diffuseTexture = new BABYLON.Texture(
-      "/img/background.jpg",
-      scene
-    );
-    // @ts-ignore
-    groundMaterial.diffuseTexture.uScale = 6;
-    // @ts-ignore
-    groundMaterial.diffuseTexture.vScale = 6;
-    groundMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
-    ground.position.y = -2.05;
-    ground.material = groundMaterial;
-
-    promises.push(
-      BABYLON.SceneLoader.AppendAsync(
-        // "https://patrickryanms.github.io/BabylonJStextures/Demos/sheen/SheenCloth.gltf"
-        "/qipao.gltf"
-        // "pimon.glb"
-      )
-    );
-
-    // Callback when assets are loaded
-    return Promise.all(promises).then(() => {
-      const root = scene.getMeshByName("__root__");
-      if (!root) {
+    // test if a texture is loaded
+    let whenAllReady = function (
+      textures: BABYLON.Texture[],
+      resolve: Function
+    ) {
+      let numRemaining = textures.length;
+      if (numRemaining == 0) {
+        resolve();
         return;
       }
 
-      root.position = new BABYLON.Vector3(0, -2, 0);
-      root.scaling = new BABYLON.Vector3(10, 10, 10);
+      for (let i = 0; i < textures.length; i++) {
+        let texture = textures[i];
+        if (texture.isReady()) {
+          if (--numRemaining === 0) {
+            resolve();
+            return;
+          }
+        } else {
+          let onLoadObservable = texture.onLoadObservable;
+          if (onLoadObservable) {
+            onLoadObservable.addOnce(() => {
+              if (--numRemaining === 0) {
+                resolve();
+              }
+            });
+          }
+        }
+      }
+    };
 
-      // var pimon = scene.getMeshByName("pimon");
-      // var pimonOutline = scene.getMeshByName("outline");
+    let retrieveTexture = function (
+      meshMat: string,
+      channel: string,
+      textures: BABYLON.Texture[]
+    ) {
+      let texture;
+      for (let file of textures) {
+        let segment = file.name.split("/");
+        if (segment[segment.length - 1].split("_")[0] === meshMat) {
+          if (segment[segment.length - 1].split("_")[1] === channel + ".png") {
+            texture = file;
+            return texture;
+          }
+        }
+      }
+    };
 
-      // var pimonWink_L = pimon.morphTargetManager.getTarget(0);
-      // var pimonWink_R = pimon.morphTargetManager.getTarget(1);
+    const sodaMats: Record<string, any> = {};
+    const bottleTex: Record<string, any> = {};
+    const liquidTex: Record<string, any> = {};
+    function assignTextures(textures: BABYLON.Texture[]) {
+      bottleTex.baseColor = bottle.glass.material.albedoTexture;
+      bottleTex.orm = bottle.glass.material.metallicTexture;
+      bottleTex.normal = bottle.glass.material.bumpTexture;
+      bottleTex.thickness = retrieveTexture(
+        "sodaBottleMat",
+        "thickness",
+        textures
+      );
+      bottleTex.translucency = retrieveTexture(
+        "sodaBottleMat",
+        "translucency",
+        textures
+      );
+      liquidTex.baseColor = bottle.liquid.material.albedoTexture;
+      liquidTex.orm = bottle.liquid.material.metallicTexture;
+      liquidTex.normal = bottle.liquid.material.bumpTexture;
+      liquidTex.thickness = retrieveTexture("sodaMat", "thickness", textures);
 
-      // var powl = pimonOutline.morphTargetManager.getTarget(0);
-      // var powr = pimonOutline.morphTargetManager.getTarget(1);
+      bottle.glass.material.dispose();
+      bottle.liquid.material.dispose();
+    }
 
-      // var animation1 = new BABYLON.Animation(
-      //   "pimonWink_L",
-      //   "influence",
-      //   60,
-      //   BABYLON.Animation.ANIMATIONTYPE_FLOAT,
-      //   BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE
-      // );
+    BABYLON.NodeMaterial.IgnoreTexturesAtLoadTime = true;
+    const bottleParameters: Record<string, any> = {};
+    const liquidParameters: Record<string, any> = {};
+    async function createMaterials() {
+      sodaMats.bottle = new BABYLON.NodeMaterial("sodaBottleMat", scene, {
+        emitComments: false,
+      });
+      await sodaMats.bottle.loadAsync(
+        "https://patrickryanms.github.io/BabylonJStextures/Demos/sodaBottle/assets/shaders/glassShader.json"
+      );
+      sodaMats.bottle.build(false);
 
-      // // Animation keys
-      // var keys = [];
+      sodaMats.liquid = new BABYLON.NodeMaterial("sodaMat", scene, {
+        emitComments: false,
+      });
+      await sodaMats.liquid.loadAsync(
+        "https://patrickryanms.github.io/BabylonJStextures/Demos/sodaBottle/assets/shaders/sodaShader.json"
+      );
+      sodaMats.liquid.build(false);
 
-      // keys.push({
-      //   frame: 0,
-      //   value: 0,
-      // });
+      sodaMats.glassLabels = sodaMats.bottle.clone("glassLabelsMat");
 
-      // keys.push({
-      //   frame: 20,
-      //   value: 1,
-      // });
+      // get shader parameters
+      bottleParameters.baseColor =
+        sodaMats.bottle.getBlockByName("baseColorTex");
+      bottleParameters.orm = sodaMats.bottle.getBlockByName("orm");
+      bottleParameters.normal = sodaMats.bottle.getBlockByName("normalTex");
+      bottleParameters.thickness =
+        sodaMats.bottle.getBlockByName("thicknessTex");
+      bottleParameters.maxThickness =
+        sodaMats.bottle.getBlockByName("maxThickness");
+      bottleParameters.glassTint = sodaMats.bottle.getBlockByName("glassTint");
+      bottleParameters.fresnelColor =
+        sodaMats.bottle.getBlockByName("fresnelColor");
+      bottleParameters.translucency =
+        sodaMats.bottle.getBlockByName("refractionInt");
+      bottleParameters.glassAlphaSwitch =
+        sodaMats.bottle.getBlockByName("alphaSwitch");
+      bottleParameters.pbr = sodaMats.bottle.getBlockByName(
+        "PBRMetallicRoughness"
+      );
 
-      // keys.push({
-      //   frame: 60,
-      //   value: 0,
-      // });
+      bottleParameters.labelBaseColor =
+        sodaMats.glassLabels.getBlockByName("baseColorTex");
+      bottleParameters.labelOrm = sodaMats.glassLabels.getBlockByName("orm");
+      bottleParameters.labelNormal =
+        sodaMats.glassLabels.getBlockByName("normalTex");
+      bottleParameters.labelThickness =
+        sodaMats.glassLabels.getBlockByName("thicknessTex");
+      bottleParameters.labelMaxThickness =
+        sodaMats.glassLabels.getBlockByName("maxThickness");
+      bottleParameters.labelGlassTint =
+        sodaMats.glassLabels.getBlockByName("glassTint");
+      bottleParameters.labelFresnelColor =
+        sodaMats.glassLabels.getBlockByName("fresnelColor");
+      bottleParameters.labelTranslucency =
+        sodaMats.glassLabels.getBlockByName("refractionInt");
+      bottleParameters.labelGlassAlphaSwitch =
+        sodaMats.glassLabels.getBlockByName("alphaSwitch");
+      bottleParameters.labelPbr = sodaMats.glassLabels.getBlockByName(
+        "PBRMetallicRoughness"
+      );
 
-      // keys.push({
-      //   frame: 150,
-      //   value: 0,
-      // });
+      liquidParameters.maxThickness =
+        sodaMats.liquid.getBlockByName("maxThickness");
 
-      // animation1.setKeys(keys);
+      // set up glass rendering parameters
+      sodaMats.bottle.getAlphaTestTexture = () => bottleTex.baseColor;
+      sodaMats.liquid.getAlphaTestTexture = () => liquidTex.baseColor;
+      sodaMats.bottle.needDepthPrePass = true;
+      sodaMats.bottle.backFaceCulling = false;
+      sodaMats.glassLabels.forceDepthWrite = true;
 
-      // var animation2 = new BABYLON.Animation(
-      //   "pimonWink_R",
-      //   "influence",
-      //   60,
-      //   BABYLON.Animation.ANIMATIONTYPE_FLOAT,
-      //   BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE
-      // );
+      // assign textures and baseline shader parameters
+      bottle.glass.material = sodaMats.bottle;
+      bottle.glassLabels.material = sodaMats.glassLabels;
+      bottleParameters.baseColor.texture =
+        bottleParameters.labelBaseColor.texture = bottleTex.baseColor;
+      bottleParameters.orm.texture = bottleParameters.labelOrm.texture =
+        bottleTex.orm;
+      bottleParameters.normal.texture = bottleParameters.labelNormal.texture =
+        bottleTex.normal;
+      bottleParameters.thickness.texture =
+        bottleParameters.labelThickness.texture = bottleTex.thickness;
+      bottleParameters.translucency.texture =
+        bottleParameters.labelTranslucency.texture = bottleTex.translucency;
+      bottleParameters.pbr.alphaTestCutoff = 0.0;
+      bottleParameters.labelPbr.alphaTestCutoff = 0.999;
+      bottleParameters.glassAlphaSwitch.value = 0.0;
+      bottleParameters.labelGlassAlphaSwitch.value = 1.0;
+      bottleParameters.maxThickness.value =
+        bottleParameters.labelMaxThickness.value = 5.0;
+      bottleParameters.glassTint.value = bottleParameters.labelGlassTint.value =
+        BABYLON.Color3.FromHexString("#aaaaaa");
 
-      // keys = [];
+      // set up baseline shader parameters for liquid material
+      bottle.liquid.material = sodaMats.liquid;
+      liquidParameters.maxThickness.value = 1.5;
+    }
 
-      // keys.push({
-      //   frame: 0,
-      //   value: 0,
-      // });
+    const shadows: Record<string, any> = {};
+    function generateShadows() {
+      shadows.shadowGenerator = new BABYLON.ShadowGenerator(
+        1024,
+        lights.dirLight
+      );
+      shadows.shadowGenerator.useBlurExponentialShadowMap = true;
+      shadows.shadowGenerator.blurBoxOffset = 2;
+      shadows.shadowGenerator.depthScale = 0;
 
-      // keys.push({
-      //   frame: 20,
-      //   value: 1,
-      // });
+      // shadows.shadowGenerator.addShadowCaster(bottle.glass);
+      // shadows.shadowGenerator.addShadowCaster(bottle.liquid);
 
-      // keys.push({
-      //   frame: 60,
-      //   value: 0,
-      // });
+      shadows.shadowGenerator.enableSoftTransparentShadow = true;
+      shadows.shadowGenerator.transparencyShadow = true;
 
-      // keys.push({
-      //   frame: 150,
-      //   value: 0,
-      // });
+      table.mesh.receiveShadows = true;
+      table.mesh.material.environmentIntensity = 0.2;
+    }
 
-      // animation2.setKeys(keys);
+    await loadMeshes();
+    // await loadTexturesAsync();
+    // await createMaterials();
+    // generateShadows();
+  }
 
-      // var animationGroup = new BABYLON.AnimationGroup("my group");
+  async initScene() {
+    const scene = this.scene;
+    this.engine.hideLoadingUI();
 
-      // animationGroup.addTargetedAnimation(animation1, pimonWink_L);
-      // animationGroup.addTargetedAnimation(animation2, pimonWink_R);
+    await BABYLON.SceneLoader.AppendAsync(
+      // "https://patrickryanms.github.io/BabylonJStextures/Demos/sheen/SheenCloth.gltf"
+      "/qipao.gltf"
+      // "pimon.glb"
+    );
 
-      // animationGroup.addTargetedAnimation(animation1, powl);
-      // animationGroup.addTargetedAnimation(animation2, powr);
+    const root = scene.getMeshByName("qipao_main")?.parent;
+    if (!root) {
+      return;
+    }
 
-      // animationGroup.play(true);
+    root.position = new BABYLON.Vector3(0, -0.1, -0.03);
+    root.scaling = new BABYLON.Vector3(0.2, 0.2, 0.2);
+    root.rotation = new BABYLON.Vector3(0.0, -6.0, 0.0);
 
-      // BABYLON.NodeMaterial.ParseFromSnippetAsync("#4AWEWY#82", scene).then(
-      //   (pimonMat) => {
-      //     // @ts-expect-error unknown
-      //     console.log("pimonMat", pimonMat);
-
-      //     pimonMat.getInputBlockByPredicate(
-      //       (b) => b.name === "diffuseCut"
-      //     ).value = 0.21;
-      //     pimonMat.getInputBlockByPredicate(
-      //       (b) => b.name === "shadowItensity"
-      //     ).value = 0.87;
-      //     pimonMat.getInputBlockByPredicate(
-      //       (b) => b.name === "rimIntensity"
-      //     ).value = 0.08;
-
-      //     // if (this.texture) {
-      //     //   pimonMat.albedoTexture = this.texture; // 也可能叫diffuseTexture
-      //     //   pimonMat.diffuseTexture = this.texture; // 也可能叫diffuseTexture
-      //     // }
-
-      //     // node.getInputBlockByPredicate((b) => b.name === "Texture").value = pimon.material.albedoTexture
-      //     scene.meshes.forEach((m) => {
-      //       if (
-      //         m.name.indexOf("pimon") !== 1 &&
-      //         m.name.indexOf("outline") !== 0
-      //       ) {
-      //         m.material = pimonMat;
-      //       }
-      //     });
-      //   }
-      // );
-
-      // var gl = new BABYLON.GlowLayer("gl", scene, {
-      //   mainTextureFixedSize: 1024, //????
-      //   blurKernelSize: 64, //????
-      // });
-      // gl.intensity = 1.5;
-
-      //gl.addExcludedMesh(pep)
-
-      // var hl = new BABYLON.HighlightLayer("hl", scene, {
-      //   mainTextureFixedSize: 2048,
-      //   blurHorizontalSize: 30,
-      //   blurVerticalSize: 30,
-      //   isStroke: true,
-      //   alphaBlendingMode: 2,
-      // });
-      // hl.addMesh(pimon, new BABYLON.Color3(1, 0, 0));
-
-      // hl.innerGlow = false;
-      // hl.renderingGroupId = 2;
-    });
+    // Callback when assets are loaded
   }
 
   getNextMaterial(src: string) {

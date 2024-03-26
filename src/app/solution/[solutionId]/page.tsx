@@ -27,7 +27,7 @@ const useSolutionName = (
 
   const info = useMemo(() => {
     if (!inited) {
-      return "Loading";
+      return "加载中...";
     }
     return data.find?.((item) => solutionId === item.key)?.name || "未命名";
   }, [solutionId, data, inited]);
@@ -50,7 +50,7 @@ export default function Home({ params }: any) {
     const texture = (await drawerRef.current?.exportTexture?.()) as string;
 
     SolutionManager.throttleSave(params.solutionId, { value, texture });
-    sceneRef.current?.updateMaterial?.("main", texture);
+    sceneRef.current?.updateMaterial?.("qipao_main", texture);
   }, []);
 
   const layersHelper = useLayerManager((value) => {

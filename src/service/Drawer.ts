@@ -112,14 +112,15 @@ export class Drawer {
       }
 
       layerSprite.alpha = opacity || 1;
-      layerSprite.position.set(offset?.x || 0, offset?.y || 0);
+      layerSprite.position.set(
+        (offset?.x || 0) * this.app.view.width,
+        (offset?.y || 0) * this.app.view.height
+      );
       layerSprite.width = width;
       layerSprite.height = height;
-      layerSprite.rotation = rotation || 0;
+      layerSprite.rotation = (rotation || 0) * Math.PI * 2;
 
-      if (scale) {
-        layerSprite.scale = { x: scale, y: scale };
-      }
+      layerSprite.scale = { x: scale || 1, y: scale || 1 };
 
       this.stage.addChild(layerSprite);
     });
