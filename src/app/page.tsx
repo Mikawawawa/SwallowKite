@@ -21,7 +21,7 @@ export default function SolutionList() {
   return (
     <Stack
       sx={{
-        minHeight: "90vh",
+        height: "90vh",
         marginLeft: 3,
         marginRight: 3,
         marginTop: 0,
@@ -29,14 +29,23 @@ export default function SolutionList() {
         backdropFilter: "blur(50px)",
         backgroundColor: "rgba(255, 255, 255, 0.3)",
         borderRadius: "16px",
+        overflow: "auto",
+        "&::-webkit-scrollbar": {
+          display: "none",
+        },
       }}
       spacing={4}
     >
       {/* <JoySignInSideTemplate /> */}
 
-      <Typography level="title-lg" sx={{
-        color: "white",
-      }}>一览</Typography>
+      <Typography
+        level="title-lg"
+        sx={{
+          color: "white",
+        }}
+      >
+        一览
+      </Typography>
 
       <Grid container spacing={{ xs: 2 }}>
         {inited ? (
