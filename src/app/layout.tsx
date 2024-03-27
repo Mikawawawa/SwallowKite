@@ -34,6 +34,7 @@ export default function RootLayout({
               height: "100vh",
               width: "100vw",
               overflow: "hidden",
+              backdropFilter: "blur(3px)"
             }}
           >
             <Toolbar
