@@ -65,7 +65,7 @@ const PickerDrawer = ({
           overflow: "auto",
         }}
       >
-        <DialogTitle>Assets Gallery</DialogTitle>
+        <DialogTitle>素材库</DialogTitle>
 
         <ModalClose />
         <Divider sx={{ mt: "auto" }} />

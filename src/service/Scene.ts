@@ -10,11 +10,12 @@ export class MainScene {
   public scene: BABYLON.Scene;
   public camera: BABYLON.Camera;
 
-  private texture: BABYLON.DynamicTexture | undefined;
+  private material: BABYLON.PBRMaterial | undefined;
 
   private env: Record<string, any> = {};
 
   private lights: Record<string, any> = {};
+  public model: string;
 
   constructor(containerId: string) {
     this.canvas = document.getElementById(containerId) as HTMLCanvasElement;
@@ -29,7 +30,7 @@ export class MainScene {
     this.engine.hideLoadingUI();
 
     // this.setSkyBox();
-    // this.scene.debugLayer.show({ embedMode: false, handleResize: false });
+    this.scene.debugLayer.show({ embedMode: false, handleResize: false });
 
     window.addEventListener("resize", () => {
       this.engine.resize();
@@ -51,30 +52,6 @@ export class MainScene {
   initLight() {
     const scene = this.scene;
 
-    // const _light = new BABYLON.PointLight(
-    //   "light",
-    //   new BABYLON.Vector3(14, 14, 0),
-    //   this.scene
-    // );
-
-    // _light.intensity = 1; // 可根据需求调整
-    // _light.diffuse = new BABYLON.Color3(0.92, 0.88, 0.9); // 修改光照颜色为白色
-
-    // scene.addLight(_light);
-
-    // const areaLight = BABYLON.CubeTexture.CreateFromPrefilteredData(
-    //   "/singleSourceAreaLight.env",
-    //   this.scene
-    // );
-    // areaLight.name = "areaLight";
-    // areaLight.gammaSpace = true;
-
-    // this.scene.environmentIntensity = 2;
-    // this.scene.environmentTexture = areaLight;
-    // // @ts-ignore
-    // this.scene.environmentTexture.setReflectionTextureMatrix(
-    //   BABYLON.Matrix.RotationY(BABYLON.Tools.ToRadians(190))
-    // );
     const env = this.env;
     env.lighting = BABYLON.CubeTexture.CreateFromPrefilteredData(
       "https://patrickryanms.github.io/BabylonJStextures/Demos/sodaBottle/assets/env/hamburg_hbf.env",
@@ -102,62 +79,18 @@ export class MainScene {
     env.skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
     env.skybox.material = env.skyboxMaterial;
 
-    const lights = this.lights;
-    lights.dirLight = new BABYLON.DirectionalLight(
-      "dirLight",
-      new BABYLON.Vector3(0.6, -0.7, 0.63),
-      scene
-    );
-    lights.dirLight.position = new BABYLON.Vector3(-0.05, 0.35, -0.05);
-    lights.dirLight.shadowMaxZ = 0.45;
-    lights.dirLight.intensity = 10;
-
-    // return light;
+    // const lights = this.lights;
+    // lights.dirLight = new BABYLON.DirectionalLight(
+    //   "dirLight",
+    //   new BABYLON.Vector3(0.6, -0.7, 0.63),
+    //   scene
+    // );
+    // lights.dirLight.position = new BABYLON.Vector3(-0.05, 0.35, -0.05);
+    // lights.dirLight.shadowMaxZ = 0.45;
+    // lights.dirLight.intensity = 1;
   }
 
   initCamera() {
-    // const camera = new BABYLON.UniversalCamera(
-    //   "UniversalCamera",
-    //   new BABYLON.Vector3(0, 1, -2),
-    //   this.scene
-    // );
-
-    // camera.speed = 0.1; // 控制相机移动速度
-    // camera.angularSensibility = 4000; // 控制相机旋转灵敏度
-
-    // // 将相机附加到画布
-    // camera.attachControl(this.canvas, true);
-
-    // camera.keysUp.push(87); // W键
-    // camera.keysDown.push(83); // S键
-    // camera.keysLeft.push(65); // A键
-    // camera.keysRight.push(68); // D键
-
-    // camera.minZ = 0.01; // 最小缩放距离
-    // // @ts-ignore
-    // camera.lowerRadiusLimit = 0.05; // 缩放限制的最小值
-    // // @ts-ignore
-    // camera.upperRadiusLimit = 10; // 缩放限制的最大值
-
-    // return camera;
-
-    // const camera = new BABYLON.ArcRotateCamera(
-    //   "Camera",
-    //   0,
-    //   0,
-    //   0,
-    //   // new BABYLON.Vector3(10, 5, 10),
-    //   new BABYLON.Vector3(0, 10, 0),
-    //   this.scene
-    // );
-
-    // camera.setPosition(new BABYLON.Vector3(-300, -250, -300));
-    // camera.fov = 0.25;
-    // camera.attachControl(this.canvas, true);
-    // camera.wheelPrecision = 20;
-    // camera.minZ = 0.1;
-    // camera.lowerRadiusLimit = 0;
-
     const camera = new BABYLON.ArcRotateCamera(
       "camera",
       BABYLON.Tools.ToRadians(40),
@@ -175,44 +108,8 @@ export class MainScene {
     camera.panningAxis = new BABYLON.Vector3(0, 0, 0);
     camera.attachControl(this.canvas, true);
 
-    // const camera = new BABYLON.ArcRotateCamera(
-    //   "Camera",
-    //   0,
-    //   0,
-    //   1,
-    //   new BABYLON.Vector3(0, 1, 0),
-    //   this.scene
-    // );
-
-    // camera.setPosition(new BABYLON.Vector3(0, 0, 10));
-    // // camera.fov = 0.25;
-    // camera.fov = 1;
-    // camera.attachControl(this.canvas, true);
-    // camera.wheelPrecision = 20;
-    // camera.minZ = 0.001;
-
     return camera;
   }
-
-  // initCamera() {
-  //   const camera = new BABYLON.ArcRotateCamera(
-  //     "ArcRotateCamera",
-  //     BABYLON.Tools.ToRadians(-90),
-  //     BABYLON.Tools.ToRadians(90),
-  //     1.6,
-  //     new BABYLON.Vector3(0, 1, -1),
-  //     this.scene
-  //   );
-  //   camera.minZ = 0.1;
-  //   // This attaches the camera to the canvas
-  //   camera.attachControl(this.canvas, true);
-  //   camera.lowerRadiusLimit = 0.05;
-  //   camera.upperRadiusLimit = 10;
-  //   camera.wheelDeltaPercentage = 0.01;
-  //   camera.minZ = 0.01;
-
-  //   return camera;
-  // }
 
   async initBackground() {
     const bottle: Record<string, any> = {};
@@ -221,23 +118,10 @@ export class MainScene {
 
     const scene = this.scene;
     async function loadMeshes() {
-      // bottle.file = await BABYLON.SceneLoader.AppendAsync(
-      //   "https://patrickryanms.github.io/BabylonJStextures/Demos/sodaBottle/assets/gltf/sodaBottle.gltf"
-      // );
-      // bottle.glass = scene.getMeshByName("sodaBottle_low");
-      // bottle.liquid = scene.getMeshByName("soda_low");
-      // bottle.root = bottle.glass.parent;
-      // bottle.glass.alphaIndex = 2;
-      // bottle.liquid.alphaIndex = 1;
-      // bottle.glassLabels = bottle.glass.clone("glassLabels");
-      // bottle.glassLabels.alphaIndex = 0;
       table.file = await BABYLON.SceneLoader.AppendAsync(
         "https://patrickryanms.github.io/BabylonJStextures/Demos/sodaBottle/assets/gltf/table.gltf"
       );
       table.mesh = scene.getMeshByName("table_low");
-      // bottle.root.position = new BABYLON.Vector3(-0.09, 0.0, -0.09);
-      // bottle.root.rotation = new BABYLON.Vector3(0.0, 4.0, 0.0);
-      // bottle.root.scaling = new BABYLON.Vector3(0.5, 0.5, 0.5);
       lights.dirLight.includedOnlyMeshes.push(table.mesh);
     }
 
@@ -460,37 +344,59 @@ export class MainScene {
     // generateShadows();
   }
 
-  async initScene() {
+  async initScene(name: string) {
+    await this.loadModel(name);
+  }
+
+  async loadModel(name: string) {
     const scene = this.scene;
+    this.model = name;
+
     this.engine.hideLoadingUI();
 
-    await BABYLON.SceneLoader.AppendAsync(
-      // "https://patrickryanms.github.io/BabylonJStextures/Demos/sheen/SheenCloth.gltf"
-      "/qipao.gltf"
-      // "pimon.glb"
-    );
+    // await BABYLON.SceneLoader.AppendAsync("/qipao.glb");
+    await BABYLON.SceneLoader.AppendAsync(`/${name}.glb`);
 
-    const root = scene.getMeshByName("qipao_main")?.parent;
+    // const root = scene.getMeshByName("qipao_main")?.parent;
+    const root = scene.getMeshByName("program_main")?.parent;
     if (!root) {
       return;
     }
 
-    root.position = new BABYLON.Vector3(0, -0.1, -0.03);
-    root.scaling = new BABYLON.Vector3(0.2, 0.2, 0.2);
+    root.position = new BABYLON.Vector3(0, 0.05, -0.03);
+    root.scaling = new BABYLON.Vector3(0.1, 0.1, 0.1);
     root.rotation = new BABYLON.Vector3(0.0, -6.0, 0.0);
+  }
 
-    // Callback when assets are loaded
+  async updateModel(name: string) {
+    const root = this.scene.getMeshByName("program_main")?.parent;
+    if (root) {
+      await root.dispose();
+      await this.scene.removeMesh(root);
+    }
+
+    await this.loadModel(name);
+
+    const model = this.scene.getMeshByName("program_main"); // 替换为你的模型名称
+    if (!model || !this.material) {
+      return;
+    }
+
+    // 获取纹理对象
+
+    // 模型还没有材质，直接赋值 nextMaterial
+    // model.material = this.material;
   }
 
   getNextMaterial(src: string) {
     const texture = new BABYLON.Texture(src, this.scene); // drawer.exportTexture()是dataURL格式的图片数据
-    texture.vScale = -1;
-    texture.uScale = -1;
-
-    const normalMapTexture = new BABYLON.Texture(
-      "/technicalFabricSmall_normal_256.png",
-      this.scene
-    );
+    if (this.model === "tshirt") {
+      texture.vScale = -0.0001;
+      texture.uScale = -0.0001;
+    } else {
+      texture.vScale = -1;
+      texture.uScale = -1;
+    }
 
     const mat0 = new BABYLON.PBRMaterial("mat0", this.scene);
 
@@ -503,14 +409,17 @@ export class MainScene {
     mat0.directIntensity = 0.3; // 根据需要调整值
     mat0.environmentIntensity = 1.0; // 根据需要调整值
 
-    mat0.bumpTexture = normalMapTexture;
+    // mat0.bumpTexture = normalMapTexture;
     // 调整法线贴图的强度
-    mat0.bumpTexture.level = 0.3; // 根据需要调整值
+    // mat0.bumpTexture.level = 0.3; // 根据需要调整值
 
     mat0.metallic = 0.0;
-    mat0.roughness = 1;
+    mat0.roughness = 0.8;
 
-    mat0.backFaceCulling = true;
+    mat0.backFaceCulling = false;
+
+    this.material = mat0;
+
     return mat0;
   }
 

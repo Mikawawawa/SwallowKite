@@ -56,7 +56,7 @@ export const UploadTrigger: FunctionComponent<{
           type="file"
           accept="image/*"
         />
-        Add New Assets
+        添加新素材
       </Button>
     </Stack>
   );
