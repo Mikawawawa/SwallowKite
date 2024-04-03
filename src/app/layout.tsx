@@ -12,8 +12,8 @@ import { Compositor } from "@/modules/Composition";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "SwallowKite",
-  description: "Developed by Mikawawa",
+  title: "沙燕风筝纹样合成应用",
+  description: "沙燕风筝纹样合成",
 };
 
 export default function RootLayout({
@@ -62,7 +62,7 @@ export default function RootLayout({
                       color: "#FFFFFF",
                     }}
                   >
-                    Swallow Kite
+                    沙燕风筝纹样合成应用
                   </Typography>
                 </Link>
 

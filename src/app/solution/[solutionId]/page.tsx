@@ -50,7 +50,7 @@ export default function Home({ params }: any) {
     const texture = (await drawerRef.current?.exportTexture?.()) as string;
 
     SolutionManager.throttleSave(params.solutionId, { value, texture });
-    sceneRef.current?.updateMaterial?.("qipao_main", texture);
+    sceneRef.current?.updateMaterial?.("program_main", texture);
   }, []);
 
   const layersHelper = useLayerManager((value) => {
@@ -119,7 +119,15 @@ export default function Home({ params }: any) {
         }}
         spacing={2}
       >
-        <SceneComponent ref={sceneRef} />
+        <SceneComponent
+          ref={sceneRef}
+          onChangeModel={async (name: string) => {
+            await sceneRef?.current?.updateModel(name);
+            const texture =
+              (await drawerRef.current?.exportTexture?.()) as string;
+            await sceneRef?.current?.updateMaterial("program_main", texture);
+          }}
+        />
 
         <DrawerComponent
           ref={drawerRef}
