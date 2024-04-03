@@ -30,7 +30,7 @@ export class MainScene {
     this.engine.hideLoadingUI();
 
     // this.setSkyBox();
-    this.scene.debugLayer.show({ embedMode: false, handleResize: false });
+    // this.scene.debugLayer.show({ embedMode: false, handleResize: false });
 
     window.addEventListener("resize", () => {
       this.engine.resize();
