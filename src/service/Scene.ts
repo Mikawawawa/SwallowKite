@@ -30,7 +30,7 @@ export class MainScene {
     this.engine.hideLoadingUI();
 
     // this.setSkyBox();
-    this.scene.debugLayer.show({ embedMode: false, handleResize: false });
+    // this.scene.debugLayer.show({ embedMode: false, handleResize: false });
 
     window.addEventListener("resize", () => {
       this.engine.resize();
@@ -122,7 +122,7 @@ export class MainScene {
         "https://patrickryanms.github.io/BabylonJStextures/Demos/sodaBottle/assets/gltf/table.gltf"
       );
       table.mesh = scene.getMeshByName("table_low");
-      lights.dirLight.includedOnlyMeshes.push(table.mesh);
+      // lights.dirLight.includedOnlyMeshes.push(table.mesh);
     }
 
     let loadTexturesAsync = async function () {
