@@ -20,9 +20,7 @@ import {
   ModalClose,
   Sheet,
 } from "@mui/joy";
-import {
-  CompossiteImagePicker,
-} from "../Drawer/Controller/Config/fields/CompositePicker";
+import { CompossiteImagePicker } from "../Drawer/Controller/Config/fields/CompositePicker";
 import { Drawer as DrawerService } from "@/service/Drawer";
 import { useCompositeAssetsHelper } from "../Gallery/withLocal";
 import DynamicFeedIcon from "@mui/icons-material/DynamicFeed";
@@ -168,6 +166,9 @@ export const Compositor: React.FC<{}> = ({}) => {
               <Button
                 sx={{
                   width: "100%",
+                }}
+                onClick={() => {
+                  save();
                 }}
               >
                 保存
