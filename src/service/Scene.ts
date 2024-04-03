@@ -122,7 +122,7 @@ export class MainScene {
         "https://patrickryanms.github.io/BabylonJStextures/Demos/sodaBottle/assets/gltf/table.gltf"
       );
       table.mesh = scene.getMeshByName("table_low");
-      lights.dirLight.includedOnlyMeshes.push(table.mesh);
+      // lights.dirLight.includedOnlyMeshes.push(table.mesh);
     }
 
     let loadTexturesAsync = async function () {
