@@ -390,13 +390,9 @@ export class MainScene {
 
   getNextMaterial(src: string) {
     const texture = new BABYLON.Texture(src, this.scene); // drawer.exportTexture()是dataURL格式的图片数据
-    if (this.model === "tshirt") {
-      texture.vScale = -0.0001;
-      texture.uScale = -0.0001;
-    } else {
-      texture.vScale = -1;
-      texture.uScale = -1;
-    }
+
+    texture.vScale = -1;
+    texture.uScale = -1;
 
     const mat0 = new BABYLON.PBRMaterial("mat0", this.scene);
 
