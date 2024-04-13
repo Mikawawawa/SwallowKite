@@ -54,7 +54,7 @@ export class MainScene {
 
     const env = this.env;
     env.lighting = BABYLON.CubeTexture.CreateFromPrefilteredData(
-      "https://patrickryanms.github.io/BabylonJStextures/Demos/sodaBottle/assets/env/hamburg_hbf.env",
+      "/env/hamburg_hbf.env",
       scene
     );
     env.lighting.name = "hamburg_hbf";
@@ -70,7 +70,7 @@ export class MainScene {
     env.skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
     env.skyboxMaterial.backFaceCulling = false;
     env.skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture(
-      "https://patrickryanms.github.io/BabylonJStextures/Demos/sodaBottle/assets/skybox/hamburg",
+      "/env/hamburg",
       scene
     );
     env.skyboxMaterial.reflectionTexture.coordinatesMode =
@@ -118,225 +118,12 @@ export class MainScene {
 
     const scene = this.scene;
     async function loadMeshes() {
-      table.file = await BABYLON.SceneLoader.AppendAsync(
-        "https://patrickryanms.github.io/BabylonJStextures/Demos/sodaBottle/assets/gltf/table.gltf"
-      );
+      table.file = await BABYLON.SceneLoader.AppendAsync("/table/table.gltf");
       table.mesh = scene.getMeshByName("table_low");
       // lights.dirLight.includedOnlyMeshes.push(table.mesh);
     }
 
-    let loadTexturesAsync = async function () {
-      let textures: BABYLON.Texture[] = [];
-      return new Promise((resolve, reject) => {
-        let textureUrls = [
-          "https://patrickryanms.github.io/BabylonJStextures/Demos/sodaBottle/assets/gltf/sodaBottleMat_thickness.png",
-          "https://patrickryanms.github.io/BabylonJStextures/Demos/sodaBottle/assets/gltf/sodaMat_thickness.png",
-          "https://patrickryanms.github.io/BabylonJStextures/Demos/sodaBottle/assets/gltf/sodaBottleMat_translucency.png",
-        ];
-
-        for (let url of textureUrls) {
-          textures.push(new BABYLON.Texture(url, scene, false, false));
-        }
-
-        whenAllReady(textures, () => resolve(textures));
-      }).then(() => {
-        assignTextures(textures);
-      });
-    };
-
-    // test if a texture is loaded
-    let whenAllReady = function (
-      textures: BABYLON.Texture[],
-      resolve: Function
-    ) {
-      let numRemaining = textures.length;
-      if (numRemaining == 0) {
-        resolve();
-        return;
-      }
-
-      for (let i = 0; i < textures.length; i++) {
-        let texture = textures[i];
-        if (texture.isReady()) {
-          if (--numRemaining === 0) {
-            resolve();
-            return;
-          }
-        } else {
-          let onLoadObservable = texture.onLoadObservable;
-          if (onLoadObservable) {
-            onLoadObservable.addOnce(() => {
-              if (--numRemaining === 0) {
-                resolve();
-              }
-            });
-          }
-        }
-      }
-    };
-
-    let retrieveTexture = function (
-      meshMat: string,
-      channel: string,
-      textures: BABYLON.Texture[]
-    ) {
-      let texture;
-      for (let file of textures) {
-        let segment = file.name.split("/");
-        if (segment[segment.length - 1].split("_")[0] === meshMat) {
-          if (segment[segment.length - 1].split("_")[1] === channel + ".png") {
-            texture = file;
-            return texture;
-          }
-        }
-      }
-    };
-
-    const sodaMats: Record<string, any> = {};
-    const bottleTex: Record<string, any> = {};
-    const liquidTex: Record<string, any> = {};
-    function assignTextures(textures: BABYLON.Texture[]) {
-      bottleTex.baseColor = bottle.glass.material.albedoTexture;
-      bottleTex.orm = bottle.glass.material.metallicTexture;
-      bottleTex.normal = bottle.glass.material.bumpTexture;
-      bottleTex.thickness = retrieveTexture(
-        "sodaBottleMat",
-        "thickness",
-        textures
-      );
-      bottleTex.translucency = retrieveTexture(
-        "sodaBottleMat",
-        "translucency",
-        textures
-      );
-      liquidTex.baseColor = bottle.liquid.material.albedoTexture;
-      liquidTex.orm = bottle.liquid.material.metallicTexture;
-      liquidTex.normal = bottle.liquid.material.bumpTexture;
-      liquidTex.thickness = retrieveTexture("sodaMat", "thickness", textures);
-
-      bottle.glass.material.dispose();
-      bottle.liquid.material.dispose();
-    }
-
     BABYLON.NodeMaterial.IgnoreTexturesAtLoadTime = true;
-    const bottleParameters: Record<string, any> = {};
-    const liquidParameters: Record<string, any> = {};
-    async function createMaterials() {
-      sodaMats.bottle = new BABYLON.NodeMaterial("sodaBottleMat", scene, {
-        emitComments: false,
-      });
-      await sodaMats.bottle.loadAsync(
-        "https://patrickryanms.github.io/BabylonJStextures/Demos/sodaBottle/assets/shaders/glassShader.json"
-      );
-      sodaMats.bottle.build(false);
-
-      sodaMats.liquid = new BABYLON.NodeMaterial("sodaMat", scene, {
-        emitComments: false,
-      });
-      await sodaMats.liquid.loadAsync(
-        "https://patrickryanms.github.io/BabylonJStextures/Demos/sodaBottle/assets/shaders/sodaShader.json"
-      );
-      sodaMats.liquid.build(false);
-
-      sodaMats.glassLabels = sodaMats.bottle.clone("glassLabelsMat");
-
-      // get shader parameters
-      bottleParameters.baseColor =
-        sodaMats.bottle.getBlockByName("baseColorTex");
-      bottleParameters.orm = sodaMats.bottle.getBlockByName("orm");
-      bottleParameters.normal = sodaMats.bottle.getBlockByName("normalTex");
-      bottleParameters.thickness =
-        sodaMats.bottle.getBlockByName("thicknessTex");
-      bottleParameters.maxThickness =
-        sodaMats.bottle.getBlockByName("maxThickness");
-      bottleParameters.glassTint = sodaMats.bottle.getBlockByName("glassTint");
-      bottleParameters.fresnelColor =
-        sodaMats.bottle.getBlockByName("fresnelColor");
-      bottleParameters.translucency =
-        sodaMats.bottle.getBlockByName("refractionInt");
-      bottleParameters.glassAlphaSwitch =
-        sodaMats.bottle.getBlockByName("alphaSwitch");
-      bottleParameters.pbr = sodaMats.bottle.getBlockByName(
-        "PBRMetallicRoughness"
-      );
-
-      bottleParameters.labelBaseColor =
-        sodaMats.glassLabels.getBlockByName("baseColorTex");
-      bottleParameters.labelOrm = sodaMats.glassLabels.getBlockByName("orm");
-      bottleParameters.labelNormal =
-        sodaMats.glassLabels.getBlockByName("normalTex");
-      bottleParameters.labelThickness =
-        sodaMats.glassLabels.getBlockByName("thicknessTex");
-      bottleParameters.labelMaxThickness =
-        sodaMats.glassLabels.getBlockByName("maxThickness");
-      bottleParameters.labelGlassTint =
-        sodaMats.glassLabels.getBlockByName("glassTint");
-      bottleParameters.labelFresnelColor =
-        sodaMats.glassLabels.getBlockByName("fresnelColor");
-      bottleParameters.labelTranslucency =
-        sodaMats.glassLabels.getBlockByName("refractionInt");
-      bottleParameters.labelGlassAlphaSwitch =
-        sodaMats.glassLabels.getBlockByName("alphaSwitch");
-      bottleParameters.labelPbr = sodaMats.glassLabels.getBlockByName(
-        "PBRMetallicRoughness"
-      );
-
-      liquidParameters.maxThickness =
-        sodaMats.liquid.getBlockByName("maxThickness");
-
-      // set up glass rendering parameters
-      sodaMats.bottle.getAlphaTestTexture = () => bottleTex.baseColor;
-      sodaMats.liquid.getAlphaTestTexture = () => liquidTex.baseColor;
-      sodaMats.bottle.needDepthPrePass = true;
-      sodaMats.bottle.backFaceCulling = false;
-      sodaMats.glassLabels.forceDepthWrite = true;
-
-      // assign textures and baseline shader parameters
-      bottle.glass.material = sodaMats.bottle;
-      bottle.glassLabels.material = sodaMats.glassLabels;
-      bottleParameters.baseColor.texture =
-        bottleParameters.labelBaseColor.texture = bottleTex.baseColor;
-      bottleParameters.orm.texture = bottleParameters.labelOrm.texture =
-        bottleTex.orm;
-      bottleParameters.normal.texture = bottleParameters.labelNormal.texture =
-        bottleTex.normal;
-      bottleParameters.thickness.texture =
-        bottleParameters.labelThickness.texture = bottleTex.thickness;
-      bottleParameters.translucency.texture =
-        bottleParameters.labelTranslucency.texture = bottleTex.translucency;
-      bottleParameters.pbr.alphaTestCutoff = 0.0;
-      bottleParameters.labelPbr.alphaTestCutoff = 0.999;
-      bottleParameters.glassAlphaSwitch.value = 0.0;
-      bottleParameters.labelGlassAlphaSwitch.value = 1.0;
-      bottleParameters.maxThickness.value =
-        bottleParameters.labelMaxThickness.value = 5.0;
-      bottleParameters.glassTint.value = bottleParameters.labelGlassTint.value =
-        BABYLON.Color3.FromHexString("#aaaaaa");
-
-      // set up baseline shader parameters for liquid material
-      bottle.liquid.material = sodaMats.liquid;
-      liquidParameters.maxThickness.value = 1.5;
-    }
-
-    const shadows: Record<string, any> = {};
-    function generateShadows() {
-      shadows.shadowGenerator = new BABYLON.ShadowGenerator(
-        1024,
-        lights.dirLight
-      );
-      shadows.shadowGenerator.useBlurExponentialShadowMap = true;
-      shadows.shadowGenerator.blurBoxOffset = 2;
-      shadows.shadowGenerator.depthScale = 0;
-
-      // shadows.shadowGenerator.addShadowCaster(bottle.glass);
-      // shadows.shadowGenerator.addShadowCaster(bottle.liquid);
-
-      shadows.shadowGenerator.enableSoftTransparentShadow = true;
-      shadows.shadowGenerator.transparencyShadow = true;
-
-      table.mesh.receiveShadows = true;
-      table.mesh.material.environmentIntensity = 0.2;
-    }
 
     await loadMeshes();
     // await loadTexturesAsync();
@@ -355,7 +142,7 @@ export class MainScene {
     this.engine.hideLoadingUI();
 
     // await BABYLON.SceneLoader.AppendAsync("/qipao.glb");
-    await BABYLON.SceneLoader.AppendAsync(`/${name}.glb`);
+    await BABYLON.SceneLoader.AppendAsync(`/model/${name}.glb`);
 
     // const root = scene.getMeshByName("qipao_main")?.parent;
     const root = scene.getMeshByName("program_main")?.parent;
